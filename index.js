@@ -29,7 +29,7 @@ module.exports = async function createLnprc(config = {}) {
   const tlsPath = config.tls || (
     IS_MAC_OS
       ? `${HOME_DIR}/Library/Application Support/Lnd/tls.cert`
-      : `${HOME_DIR}/.lnd/lnd.conf`
+      : `${HOME_DIR}/.lnd/tls.cert`
   );
 
   /*
