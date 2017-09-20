@@ -2,9 +2,9 @@
 
 ## LNRPC
 
-Generates a Lightning Network RPC client directly from [github.com/lightningnetwork/lnd](https://github.com/lightningnetwork/lnd).  Lnrpc is versioned in step with lnd.
+Latest synced to `lnd@v0.3-alpha`.
 
-For best results, be sure to [install lnd](https://github.com/lightningnetwork/lnd/blob/master/docs/INSTALL.md) before using this project and ensure you have an lnd instance running.
+Generates a Lightning Network RPC client directly from [github.com/lightningnetwork/lnd](https://github.com/lightningnetwork/lnd).  Lnrpc is versioned in step with lnd.
 
 ### Installation
 
@@ -14,6 +14,8 @@ yarn add lnrpc
 # Or
 npm i lnrpc -S
 ```
+
+For best results, be sure to [install lnd](https://github.com/lightningnetwork/lnd/blob/master/docs/INSTALL.md) before using this project and ensure you have an lnd instance running.
 
 ### Usage
 
