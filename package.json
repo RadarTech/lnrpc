@@ -8,6 +8,7 @@
     "start": "node ./index.js",
     "postinstall": "napa lightningnetwork/lnd"
   },
+  "repository": "https://github.com/Matt-Jensen/lnrpc",
   "keywords": [
     "lnd",
     "lightning network",
