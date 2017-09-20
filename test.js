@@ -3,17 +3,47 @@ const pkgDir = require('pkg-dir');
 const fs = require('fs');
 const {join} = require('path');
 const {promisify} = require('util');
+const os = require('os');
 
 const createLnrpc = require('./index');
 
 const stat = promisify(fs.stat);
 const unlink = promisify(fs.unlink);
 const readFile = promisify(fs.readFile);
+const writeFile = promisify(fs.writeFile);
+const mkdir = promisify(fs.mkdir);
 
 const {assign} = Object;
 const {equal, fail} = assert;
 
 describe('npm postinstall', () => {
+  before(async () => {
+    const isMac = /^darwin/.test(process.platform);
+    const certDir = join(
+      os.homedir(),
+      isMac ? 'Library/Application Support/Lnd' : '.lnd'
+    );
+    const certFile = join(certDir, 'tls.cert');
+
+    /*
+     Ensure SSL cert dir exits
+     */
+    try {
+      await stat(certDir);
+    } catch (e) {
+      await mkdir(certDir);
+    }
+
+    /*
+     Ensure SSL cert file exists
+     */
+     try {
+       await stat(certFile);
+     } catch (e) {
+       await writeFile(certFile, '--test-cert--');
+     }
+  });
+
   it('should install lnd under `node_modules/lnd`', async () => {
     const root = await pkgDir(__dirname);
 

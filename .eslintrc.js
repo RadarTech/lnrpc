@@ -15,5 +15,6 @@ module.exports = {
     "process": true,
     "describe": true,
     "it": true,
+    "before": true,
   }
 };
