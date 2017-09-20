@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Matt-Jensen/lnrpc.svg?branch=master)](https://travis-ci.org/Matt-Jensen/lnrpc)
+
 ## LNRPC
 
 Generates a Lightning Network RPC client directly from [github.com/lightningnetwork/lnd](https://github.com/lightningnetwork/lnd).  Lnrpc is versioned in step with lnd.
