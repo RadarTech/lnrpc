@@ -13,7 +13,7 @@ const readFile = promisify(fs.readFile);
 const {assign} = Object;
 const {equal, fail} = assert;
 
-describe('npm postinstall', () =>{
+describe('npm postinstall', () => {
   it('should install lnd under `node_modules/lnd`', async () => {
     const root = await pkgDir(__dirname);
 
@@ -210,11 +210,15 @@ describe('lnrpc factory', () => {
 
 /**
  * Create a grpc stub
- * @param  {Object?}        config
+ * @param  {Object?}        options
  * @param  {LightningStub?} lightning
  * @return {Object}
  */
-function grpcStub(config = {}, lightning = LightningStub) {
+function grpcStub(options = {}, lightning = LightningStub) {
+  // provide mock cert if none specified
+  const config = assign({}, options);
+  if (!config.tls || !config.cert) config.cert = 'cert';
+
   return assign({
     credentials: {createSsl: () => ({})},
     load: () => ({
