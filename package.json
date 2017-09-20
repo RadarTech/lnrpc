@@ -1,12 +1,12 @@
 {
   "name": "lnrpc",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A Node.js RPC client for lightningnetwork/lnd",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/eslint . && ./node_modules/.bin/mocha ./test.js",
     "start": "node ./index.js",
-    "postinstall": "napa lightningnetwork/lnd#v0.3-alpha"
+    "postinstall": "napa lightningnetwork/lnd#v0.3-alpha:lnd"
   },
   "repository": "https://github.com/Matt-Jensen/lnrpc",
   "keywords": [
