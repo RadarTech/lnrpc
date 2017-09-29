@@ -1,6 +1,6 @@
 {
   "name": "lnrpc",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A Node.js RPC client for lightningnetwork/lnd",
   "main": "index.js",
   "scripts": {
