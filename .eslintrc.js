@@ -10,6 +10,7 @@ module.exports = {
     "__dirname": true,
     "Proxy": true,
     "Promise": true,
+    "Buffer": true,
     "require": true,
     "module": true,
     "process": true,

@@ -61,15 +61,21 @@ describe('TLS settings', () => {
   );
 
   it('should use configured `cert` over `tls` when provided', () => {
-    const expected = 'cert';
+    const expected = Buffer.from('cert');
 
     return createLnrpc({
-      cert: expected,
+      cert: expected.toString(),
       tls: 'not-expected',
       _grpc: grpcStub({
         credentials: {
           createSsl: (actual) => {
-            equal(actual, expected, 'configures provided `cert` value');
+            assert(actual instanceof Buffer, 'cert is a Buffer instance');
+
+            equal(
+              actual.toString(),
+              expected.toString(),
+              'configures bufferized `cert` value'
+            );
           },
         },
       }),

@@ -39,7 +39,14 @@ module.exports = async function createLnprc(config = {}) {
 
   try {
     // Use SSL cert string or fallback to file path
-    const cert = (config.cert || await readFile(tlsPath));
+    let cert = (config.cert || await readFile(tlsPath));
+
+    /*
+     Convert `cert` string to Buffer
+     */
+    if (!Buffer.isBuffer(cert)) {
+      cert = Buffer.from(cert);
+    }
 
     /*
      Required for lnd SSL handshake: (SSL_ERROR_SSL: error:14094410)
