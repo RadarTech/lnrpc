@@ -4,7 +4,7 @@
 
 Latest synced to `lnd@v0.3-alpha`.
 
-Generates a Lightning Network RPC client directly from [github.com/lightningnetwork/lnd](https://github.com/lightningnetwork/lnd).  Lnrpc is versioned in step with lnd, please see release branches: `lnd/v*.*.*`;
+Generates a Lightning Network RPC client directly from [github.com/lightningnetwork/lnd](https://github.com/lightningnetwork/lnd).  Lnrpc is versioned in step with lnd, please see release branches: `release/v*.*.*`;
 
 ### Installation
 
