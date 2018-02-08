@@ -68,7 +68,7 @@ const createLnrpc = require('lnrpc');
 
 ### API Reference
 
-[All lnrpc methods documentation can be found here](api.lightning.community).
+[All lnrpc methods documentation can be found here](http://api.lightning.community).
 
 ### Contributors
 
