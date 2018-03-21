@@ -2,9 +2,9 @@
 
 ## LNRPC
 
-Latest synced to `lnd@v0.3-alpha`.
+Latest synced to `lnd@v0.4.*-beta`.
 
-Generates a Lightning Network RPC client directly from [github.com/lightningnetwork/lnd](https://github.com/lightningnetwork/lnd).  Lnrpc is versioned in step with lnd, please see release branches: `release/v*.*.*`;
+Generates a Lightning Network RPC client directly from [github.com/lightningnetwork/lnd](https://github.com/lightningnetwork/lnd). Lnrpc is versioned in step with lnd, please see release branches: `release/v*.*.*`;
 
 ### Installation
 
@@ -28,7 +28,7 @@ const createLnrpc = require('lnrpc');
   const lnrpc = await createLnrpc();
 
   // All requests are promisified
-  const balance = await lnrpc.walletBalance({witness_only: true});
+  const balance = await lnrpc.walletBalance({ witness_only: true });
 
   // ...and you're off!
   console.log(balance);
@@ -54,14 +54,14 @@ const createLnrpc = require('lnrpc');
      defaults to `~/Library/Application\ Support/Lnd/tls.cert`
      however you can configure your own SSL certificate path like:
      */
-     tls: './path/to/tls.cert',
+    tls: './path/to/tls.cert',
 
     /*
      You can also provide a TLS certificate directly as a string
      (Just make sure you don't commit this to git).
      Overwrites: `tls`
      */
-    cert: process.env.MY_SSL_CERT
+    cert: process.env.MY_SSL_CERT,
   });
 })();
 ```
