@@ -28,7 +28,7 @@ const createLnrpc = require('lnrpc');
   const lnrpc = await createLnrpc();
 
   // All requests are promisified
-  const balance = await lnrpc.walletBalance({ witness_only: true });
+  const balance = await lnrpc.walletBalance({});
 
   // ...and you're off!
   console.log(balance);
