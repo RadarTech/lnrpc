@@ -8,8 +8,22 @@ const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 const stat = promisify(fs.stat);
 
-const IS_MAC_OS = /^darwin/.test(process.platform);
 const HOME_DIR = require('os').homedir();
+const DEFAULTS = {
+  grpc: GRPC,
+  server: 'localhost:10001',
+  tls: /^darwin/.test(process.platform) // is macOS?
+      ? `${HOME_DIR}/Library/Application Support/Lnd/tls.cert`
+      : `${HOME_DIR}/.lnd/tls.cert`,
+  subscriptionMethods: [
+    'subscribeInvoices',
+    'subscribeTransactions',
+    'subscribeChannelGraph',
+    'sendPayment',
+    'openChannel',
+    'closeChannel',
+  ],
+};
 
 /**
  * Factory for lnrpc instance
@@ -24,13 +38,12 @@ module.exports = async function createLnprc(config = {}) {
   /*
    Configuration options
    */
-  const grpc = config._grpc || GRPC; // allow test stubbing
-  const server = config.server || 'localhost:10001';
-  const tlsPath = config.tls || (
-    IS_MAC_OS
-      ? `${HOME_DIR}/Library/Application Support/Lnd/tls.cert`
-      : `${HOME_DIR}/.lnd/tls.cert`
-  );
+  const {
+    grpc,
+    server,
+    tls: tlsPath,
+    subscriptionMethods,
+  } = Object.assign({}, DEFAULTS, config);
 
   /*
    Generate grpc SSL credentials
@@ -91,6 +104,7 @@ module.exports = async function createLnprc(config = {}) {
 
   // Resolve proxy instance
   return new Proxy(lnrpc, {
+
     /**
      * Promisify each lightning RPC method
      * @param  {lnrpc.Lightning} target
@@ -100,11 +114,11 @@ module.exports = async function createLnprc(config = {}) {
     get(target, key) {
       const method = target[key];
 
-      if (typeof method === 'function') {
+      if (typeof method !== 'function' || subscriptionMethods.includes(key)) {
+        return target[key]; // forward
+      } else {
         return promisify(method);
       }
-
-      return target[key]; // forward
     },
   });
 };

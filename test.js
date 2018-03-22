@@ -66,7 +66,7 @@ describe('TLS settings', () => {
     return createLnrpc({
       cert: expected.toString(),
       tls: 'not-expected',
-      _grpc: grpcStub({
+      grpc: grpcStub({
         credentials: {
           createSsl: (actual) => {
             assert(actual instanceof Buffer, 'cert is a Buffer instance');
@@ -87,7 +87,7 @@ describe('TLS settings', () => {
 
     createLnrpc({
       tls: expected,
-      _grpc: grpcStub({
+      grpc: grpcStub({
         credentials: {
           createSsl: (actual) => {
             equal(actual, expected, 'configures provided `tls` value');
@@ -104,7 +104,7 @@ describe('TLS settings', () => {
 
   it('should default to a system lnd SSL cert when unconfigured', (done) => {
     createLnrpc({
-      _grpc: grpcStub({
+      grpc: grpcStub({
         credentials: {
           createSsl: (cert) => {
             assert(/lnd\.conf$/.test(cert), 'used system SSL cert file path');
@@ -132,7 +132,7 @@ describe('grpc lnd/proto instantiation', () => {
       // ensure rpc.proto file gets removed
     }
 
-    await createLnrpc({_grpc: grpcStub()});
+    await createLnrpc({grpc: grpcStub()});
 
     try {
       await stat(protoDest);
@@ -142,7 +142,7 @@ describe('grpc lnd/proto instantiation', () => {
   });
 
   it('should generate an `rpc.proto` without google annotations', async () => {
-    await createLnrpc({_grpc: grpcStub()});
+    await createLnrpc({grpc: grpcStub()});
 
     const root = await pkgDir(__dirname);
     const rpcProto = await readFile(join(root, 'rpc.proto'), 'utf-8');
@@ -159,7 +159,7 @@ describe('grpc lnd/proto instantiation', () => {
     const expected = join(root, 'rpc.proto');
 
     return createLnrpc({
-      _grpc: grpcStub({
+      grpc: grpcStub({
         load: (actual) => {
           equal(actual, expected, 'loaded generated `rpc.proto` via load');
           return grpcStub().load();
@@ -172,7 +172,7 @@ describe('grpc lnd/proto instantiation', () => {
     const expected = 'localhost:10001';
 
     return createLnrpc({
-      _grpc: grpcStub({}, function(actual) {
+      grpc: grpcStub({}, function(actual) {
         equal(actual, expected, 'defaults to expected server');
         return new LightningStub();
       }),
@@ -184,7 +184,7 @@ describe('grpc lnd/proto instantiation', () => {
 
     return createLnrpc({
       server: expected,
-      _grpc: grpcStub({}, function(actual) {
+      grpc: grpcStub({}, function(actual) {
         equal(actual, expected, 'recieved configured server');
         return new LightningStub();
       }),
@@ -198,7 +198,7 @@ describe('lnrpc factory', () => {
       server: 'localhost:10003',
       tls: './my.cert',
       cert: 'trust me',
-      _grpc: grpcStub(),
+      grpc: grpcStub(),
     }))
   );
 
@@ -206,7 +206,7 @@ describe('lnrpc factory', () => {
     const expected = {name: 'test'};
 
     const instance = await createLnrpc({
-      _grpc: grpcStub({}, function() {
+      grpc: grpcStub({}, function() {
         return expected;
       }),
     });
@@ -218,7 +218,7 @@ describe('lnrpc factory', () => {
     const expected = {};
 
     const instance = await createLnrpc({
-      _grpc: grpcStub({}, function() {
+      grpc: grpcStub({}, function() {
         return expected;
       }),
     });
@@ -234,13 +234,33 @@ describe('lnrpc factory', () => {
     };
 
     const instance = await createLnrpc({
-      _grpc: grpcStub({}, function() {
+      grpc: grpcStub({}, function() {
         return target;
       }),
     });
 
     const actual = await instance.getInfo({});
     equal(actual, expected, 'promisified `getInfo` target method');
+  });
+
+  it('should forward streaming methods, unmodified', async () => {
+    const expected = {on() {}, write() {}}; // RPC streaming response interface
+    const subscriptionMethods = ['stream1', 'stream2'];
+    const target = {
+      stream1: () => expected,
+      stream2: () => expected,
+    };
+
+    const instance = await createLnrpc({
+      subscriptionMethods,
+      grpc: grpcStub({}, function() {
+        return target;
+      }),
+    });
+
+    subscriptionMethods.forEach((method) => {
+      equal(instance[method](), expected, 'forwards original method');
+    });
   });
 });
 

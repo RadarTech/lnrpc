@@ -17,5 +17,6 @@ module.exports = {
     "describe": true,
     "it": true,
     "before": true,
+    "Reflect": true,
   }
 };
