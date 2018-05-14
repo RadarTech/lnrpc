@@ -15,7 +15,7 @@ yarn add lnrpc
 npm i lnrpc -S
 ```
 
-For best results, be sure to [install lnd](https://github.com/lightningnetwork/lnd/blob/master/docs/INSTALL.md) before using this project and ensure you have an lnd instance running.
+For best results, be sure to [install lnd](https://github.com/lightningnetwork/lnd/blob/master/docs/INSTALL.md) before using this project and ensure you have an lnd instance running with `--no-macaroons`.
 
 ### Usage
 
