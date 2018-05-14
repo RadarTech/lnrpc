@@ -176,10 +176,19 @@ describe('Lnrpc Factory', () => {
       });
     });
 
-    it('should provide all lightning methods as top-level methods', () => {
+    it('should provide all lightning methods top-level', () => {
       return createLnrpc({
         grpc: grpcStub(),
         lightning: {test: () => {}},
+      }).then((lnrpc) => {
+        equal(typeof lnrpc.test, 'function');
+      });
+    });
+
+    it('should provide all wallet unlocker methods top-level', () => {
+      return createLnrpc({
+        grpc: grpcStub(),
+        walletUnlocker: {test: () => {}},
       }).then((lnrpc) => {
         equal(typeof lnrpc.test, 'function');
       });
