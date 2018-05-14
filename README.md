@@ -1,6 +1,4 @@
-[![Build Status](https://travis-ci.org/Matt-Jensen/lnrpc.svg?branch=master)](https://travis-ci.org/Matt-Jensen/lnrpc)
-
-## LNRPC
+## LNRPC [![Build Status](https://travis-ci.org/Matt-Jensen/lnrpc.svg?branch=master)](https://travis-ci.org/Matt-Jensen/lnrpc)
 
 Latest synced to `lnd@v0.4.*-beta`.
 
