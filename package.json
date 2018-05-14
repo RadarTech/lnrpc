@@ -4,18 +4,13 @@
   "description": "A Node.js RPC client for lightningnetwork/lnd",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/eslint . && ./node_modules/.bin/mocha ./test.js",
+    "test":
+      "./node_modules/.bin/eslint . && ./node_modules/.bin/mocha ./test/**/*.test.js",
     "start": "node ./index.js",
     "postinstall": "napa lightningnetwork/lnd#v0.4-beta:lnd"
   },
   "repository": "https://github.com/Matt-Jensen/lnrpc",
-  "keywords": [
-    "lnd",
-    "lightning network",
-    "rpc",
-    "bitcoin",
-    "litecoin"
-  ],
+  "keywords": ["lnd", "lightning network", "rpc", "bitcoin", "litecoin"],
   "author": "Matt-Jensen",
   "license": "MIT",
   "dependencies": {
