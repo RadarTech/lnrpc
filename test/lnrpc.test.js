@@ -91,7 +91,7 @@ describe('Lnrpc Factory', () => {
             credentials: {
               createSsl: () => expSslCreds,
               createFromMetadataGenerator: (cb) => {
-                setTimeout(() => cb({}, () => {}));
+                cb({}, () => {});
                 return expMacaroonCreds;
               },
               combineChannelCredentials: (sslCreds, macaroonCreds) => {

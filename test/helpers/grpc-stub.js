@@ -39,7 +39,7 @@ module.exports = function grpcStub(
       credentials: {
         createSsl: () => ({}),
         createFromMetadataGenerator: (cb) => {
-          setTimeout(() => cb({}, () => {}));
+          cb({}, () => {});
           return {};
         },
         combineChannelCredentials: () => ({}),

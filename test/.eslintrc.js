@@ -4,6 +4,5 @@ module.exports = {
     it: true,
     after: true,
     before: true,
-    setTimeout: true,
   },
 };
