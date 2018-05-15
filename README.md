@@ -60,6 +60,18 @@ const createLnrpc = require('lnrpc');
      Overwrites: `tls`
      */
     cert: process.env.MY_SSL_CERT,
+
+    /*
+     Optional path to configure macaroon authentication
+     from LND generated macaroon file.
+     */
+    macaroonPath: './path/to/data/admin.macaroon',
+
+    /*
+     Optional way to configure macaroon authentication by
+     passing a hex encoded string of your macaroon file
+     */
+    macaroon: process.env.MY_MACAROON_HEX,
   });
 })();
 ```
