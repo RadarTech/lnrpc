@@ -11,6 +11,13 @@ const LightningStub = function LightningStub() {};
 const WalletUnlockerStub = function WalletUnlockerStub() {};
 
 /**
+ * Metadata
+ * @constructor
+ */
+function Metadata() {}
+Metadata.prototype.add = () => {};
+
+/**
  * Create a grpc stub
  * @param  {Object?}              options
  * @param  {LightningStub?}       lightning
@@ -28,7 +35,15 @@ module.exports = function grpcStub(
 
   return Object.assign(
     {
-      credentials: {createSsl: () => ({})},
+      Metadata,
+      credentials: {
+        createSsl: () => ({}),
+        createFromMetadataGenerator: (cb) => {
+          setTimeout(() => cb({}, () => {}));
+          return {};
+        },
+        combineChannelCredentials: () => ({}),
+      },
       load: () => ({
         lnrpc: {
           Lightning: lightning,

@@ -1,3 +1,4 @@
 node_modules
 .esm-cache
 rpc.proto
+*.macaroon

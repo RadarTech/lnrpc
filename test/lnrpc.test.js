@@ -10,6 +10,7 @@ const {LightningStub} = grpcStub;
 const stat = promisify(fs.stat);
 const unlink = promisify(fs.unlink);
 const readFile = promisify(fs.readFile);
+const writeFile = promisify(fs.writeFile);
 
 describe('Lnrpc Factory', () => {
   describe('TLS settings', () => {
@@ -75,6 +76,108 @@ describe('Lnrpc Factory', () => {
       })
         .then(fail)
         .catch(() => done());
+    });
+
+    it('should combine credentials when macaroon present', async () => {
+      let tests = 0;
+      const expSslCreds = {};
+      const expMacaroonCreds = {};
+
+      try {
+        await createLnrpc({
+          cert: '123',
+          macaroon: '746573740a',
+          grpc: grpcStub({
+            credentials: {
+              createSsl: () => expSslCreds,
+              createFromMetadataGenerator: (cb) => {
+                setTimeout(() => cb({}, () => {}));
+                return expMacaroonCreds;
+              },
+              combineChannelCredentials: (sslCreds, macaroonCreds) => {
+                equal(sslCreds, expSslCreds, 'has expected ssl credentials');
+                equal(
+                  macaroonCreds,
+                  expMacaroonCreds,
+                  'has expected macaroon credentials'
+                );
+                tests++;
+              },
+            },
+            load: () => {
+              throw new Error('force error');
+            },
+          }),
+        });
+      } catch (e) {} // eslint-disable-line
+
+      equal(tests, 1, 'called `combineChannelCredentials`');
+    });
+  });
+
+  describe('macaroon settings', () => {
+    let macaroonDest;
+    const macaroonTxt = 'test';
+    const macaroonHex = '74657374';
+
+    before(async () => {
+      const root = await pkgDir(__dirname);
+      macaroonDest = join(root, 'test.macaroon');
+      await writeFile(macaroonDest, macaroonTxt, 'utf8');
+    });
+
+    after(async () => {
+      await unlink(macaroonDest);
+    });
+
+    it('should set hex encoded macaroon from `macaroonPath`', async () => {
+      let tests = 0;
+
+      const CustomMetadataStub = function() {};
+      CustomMetadataStub.prototype.add = (_, macaroon) => {
+        tests++;
+        equal(macaroon, macaroonHex);
+      };
+
+      try {
+        await createLnrpc({
+          cert: '123',
+          macaroonPath: macaroonDest,
+          grpc: grpcStub({
+            Metadata: CustomMetadataStub,
+            load: () => {
+              throw new Error('force error');
+            },
+          }),
+        });
+      } catch (e) {} // eslint-disable-line
+
+      equal(tests, 1, 'called Metadata.add with macaroon');
+    });
+
+    it('should set macaroon from `macaroon` hex string', async () => {
+      let tests = 0;
+
+      const CustomMetadataStub = function() {};
+      CustomMetadataStub.prototype.add = (_, macaroon) => {
+        tests++;
+        equal(macaroon, macaroonHex);
+      };
+
+      try {
+        await createLnrpc({
+          cert: '123',
+          macaroon: macaroonHex,
+          grpc: grpcStub({
+            Metadata: CustomMetadataStub,
+            load: () => {
+              throw new Error('force error');
+            },
+          }),
+        });
+      } catch (e) {} // eslint-disable-line
+
+      equal(tests, 1, 'called Metadata.add with macaroon');
     });
   });
 
