@@ -1,8 +1,12 @@
 ## LNRPC [![Build Status](https://travis-ci.org/Matt-Jensen/lnrpc.svg?branch=master)](https://travis-ci.org/Matt-Jensen/lnrpc)
 
-Latest synced to `lnd@v0.4.*-beta`.
+Latest synced to [lnd@v0.4.1-beta](https://github.com/lightningnetwork/lnd/tree/v0.4.1-beta)
 
-Generates a Lightning Network RPC client directly from [github.com/lightningnetwork/lnd](https://github.com/lightningnetwork/lnd). Lnrpc is versioned in step with lnd, please see release branches: `release/v*.*.*`;
+### Features
+- 🛠Auto-generates [lnd/lnrpc](https://github.com/lightningnetwork/lnd/tree/master/lnrpc) client
+- ✨Wraps requests in promises
+- 🤝Easily setup SSL and Macaroons
+- 📚Instantiates all gRPC services
 
 ### Installation
 
