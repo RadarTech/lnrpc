@@ -52,7 +52,7 @@ const createLnrpc = require('lnrpc');
 
     /*
      By default  lnrpc looks for your tls certificate at:
-     `~/.lnd/lnd.conf`, unless it detects you're using macOS and
+     `~/.lnd/tls.cert`, unless it detects you're using macOS and
      defaults to `~/Library/Application\ Support/Lnd/tls.cert`
      however you can configure your own SSL certificate path like:
      */
