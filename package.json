@@ -7,7 +7,7 @@
     "test":
       "./node_modules/.bin/eslint . && ./node_modules/.bin/mocha ./test/**/*.test.js",
     "start": "node ./index.js",
-    "postinstall": "napa lightningnetwork/lnd#v0.4.1-beta:lnd"
+    "postinstall": "napa lightningnetwork/lnd:lnd"
   },
   "repository": "https://github.com/Matt-Jensen/lnrpc",
   "keywords": ["lnd", "lightning network", "rpc", "bitcoin", "litecoin"],
