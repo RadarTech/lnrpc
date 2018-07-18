@@ -1,7 +1,7 @@
 {
   "name": "lnrpc",
   "version": "0.3.0",
-  "description": "A Node.js RPC client for lightningnetwork/lnd",
+  "description": "User-centric Node.js gRPC client for lightningnetwork/lnd",
   "main": "index.js",
   "scripts": {
     "test":
@@ -10,7 +10,7 @@
     "postinstall": "napa lightningnetwork/lnd:lnd"
   },
   "repository": "https://github.com/Matt-Jensen/lnrpc",
-  "keywords": ["lnd", "lightning network", "rpc", "bitcoin", "litecoin"],
+  "keywords": ["lnd", "lightning network", "grpc", "client", "bitcoin", "litecoin"],
   "author": "Matt-Jensen",
   "license": "MIT",
   "dependencies": {
