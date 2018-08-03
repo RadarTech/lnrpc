@@ -25,5 +25,9 @@
   },
   "engines": {
     "node": ">= 8.*"
+  },
+  "napa-config": {
+    "cache": false,
+    "log-level": "error"
   }
 }
