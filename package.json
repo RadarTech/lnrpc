@@ -4,17 +4,24 @@
   "description": "User-centric Node.js gRPC client for lightningnetwork/lnd",
   "main": "index.js",
   "scripts": {
-    "test":
-      "./node_modules/.bin/eslint . && ./node_modules/.bin/mocha ./test/**/*.test.js",
+    "test": "./node_modules/.bin/eslint . && ./node_modules/.bin/mocha ./test/**/*.test.js",
     "start": "node ./index.js",
     "postinstall": "napa lightningnetwork/lnd:lnd"
   },
   "repository": "https://github.com/Matt-Jensen/lnrpc",
-  "keywords": ["lnd", "lightning network", "grpc", "client", "bitcoin", "litecoin"],
+  "keywords": [
+    "lnd",
+    "lightning network",
+    "grpc",
+    "client",
+    "bitcoin",
+    "litecoin"
+  ],
   "author": "Matt-Jensen",
   "license": "MIT",
   "dependencies": {
-    "grpc": "^1.6.0",
+    "@grpc/proto-loader": "^0.3.0",
+    "grpc": "^1.14.0-pre2",
     "napa": "^3.0.0",
     "pkg-dir": "^2.0.0"
   },

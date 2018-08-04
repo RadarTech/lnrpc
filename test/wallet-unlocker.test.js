@@ -7,7 +7,7 @@ const {stringify} = JSON;
 
 describe('Wallet Unlocker Service', () => {
   it('should not modify arguments', () => {
-    const descriptor = grpcStub().load();
+    const descriptor = grpcStub().loadPackageDefinition();
     const expDescriptor = stringify(descriptor);
     const server = 'localhost:10003';
     const expServer = `${server}`;
@@ -37,7 +37,7 @@ describe('Wallet Unlocker Service', () => {
         {},
         grpcStub.LightningStub,
         WalletUnlockerCustomStub
-      ).load();
+      ).loadPackageDefinition();
 
       assert.throws(
         () => createWalletUnlocker(descriptor, 'localhost:1', {}),
@@ -73,14 +73,14 @@ describe('Wallet Unlocker Service', () => {
       {},
       grpcStub.LightningStub,
       WalletUnlockerCustomStub
-    ).load();
+    ).loadPackageDefinition();
     const instance = createWalletUnlocker(descriptor, 'localhost:1', {});
     equal(instance.name, expected, 'proxy forwards to target props');
   });
 
   it('should allow setting on proxy target', () => {
     const expected = 'test';
-    const descriptor = grpcStub().load();
+    const descriptor = grpcStub().loadPackageDefinition();
     const instance = createWalletUnlocker(descriptor, 'localhost:1', {});
 
     instance.name = expected;
@@ -102,7 +102,7 @@ describe('Wallet Unlocker Service', () => {
       {},
       grpcStub.LightningStub,
       WalletUnlockerCustomStub
-    ).load();
+    ).loadPackageDefinition();
     const instance = createWalletUnlocker(descriptor, 'localhost:1', {});
 
     const actual = await instance.initWallet({});

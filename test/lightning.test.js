@@ -7,7 +7,7 @@ const {stringify} = JSON;
 
 describe('Lightning Service', () => {
   it('should not modify arguments', () => {
-    const descriptor = grpcStub().load();
+    const descriptor = grpcStub().loadPackageDefinition();
     const expDescriptor = stringify(descriptor);
     const server = 'localhost:10003';
     const expServer = `${server}`;
@@ -36,7 +36,10 @@ describe('Lightning Service', () => {
         throw new Error();
       };
 
-      const descriptor = grpcStub({}, LightningCustomStub).load();
+      const descriptor = grpcStub(
+        {},
+        LightningCustomStub
+      ).loadPackageDefinition();
       assert.throws(
         () => createLightning(descriptor, 'localhost:1', {}),
         (e) => {
@@ -67,14 +70,17 @@ describe('Lightning Service', () => {
       this.name = expected;
     }
 
-    const descriptor = grpcStub({}, LightningCustomStub).load();
+    const descriptor = grpcStub(
+      {},
+      LightningCustomStub
+    ).loadPackageDefinition();
     const instance = createLightning(descriptor, 'localhost:1', {});
     equal(instance.name, expected, 'proxy forwards to target props');
   });
 
   it('should allow setting on proxy target', () => {
     const expected = 'test';
-    const descriptor = grpcStub().load();
+    const descriptor = grpcStub().loadPackageDefinition();
     const instance = createLightning(descriptor, 'localhost:1', {});
 
     instance.name = expected;
@@ -92,7 +98,10 @@ describe('Lightning Service', () => {
     LightningCustomStub.prototype.getInfo = (_, cb) => {
       cb(null, expected);
     };
-    const descriptor = grpcStub({}, LightningCustomStub).load();
+    const descriptor = grpcStub(
+      {},
+      LightningCustomStub
+    ).loadPackageDefinition();
     const instance = createLightning(descriptor, 'localhost:1', {});
 
     const actual = await instance.getInfo({});
@@ -117,7 +126,10 @@ describe('Lightning Service', () => {
     LightningCustomStub.prototype.stream1 = () => expected;
     LightningCustomStub.prototype.stream2 = () => expected;
 
-    const descriptor = grpcStub({}, LightningCustomStub).load();
+    const descriptor = grpcStub(
+      {},
+      LightningCustomStub
+    ).loadPackageDefinition();
     const instance = createLightning(
       descriptor,
       'localhost:1',

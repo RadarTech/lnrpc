@@ -52,7 +52,7 @@ describe('Lnrpc Factory', () => {
               equal(actual, expected, 'configures provided `tls` value');
             },
           },
-          load: () => {
+          loadPackageDefinition: () => {
             throw new Error('force error');
           },
         }),
@@ -69,7 +69,7 @@ describe('Lnrpc Factory', () => {
               assert(/lnd\.conf$/.test(cert), 'used system SSL cert file path');
             },
           },
-          load: () => {
+          loadPackageDefinition: () => {
             throw new Error('force error');
           },
         }),
@@ -104,7 +104,7 @@ describe('Lnrpc Factory', () => {
                 tests++;
               },
             },
-            load: () => {
+            loadPackageDefinition: () => {
               throw new Error('force error');
             },
           }),
@@ -145,7 +145,7 @@ describe('Lnrpc Factory', () => {
           macaroonPath: macaroonDest,
           grpc: grpcStub({
             Metadata: CustomMetadataStub,
-            load: () => {
+            loadPackageDefinition: () => {
               throw new Error('force error');
             },
           }),
@@ -170,7 +170,7 @@ describe('Lnrpc Factory', () => {
           macaroon: macaroonHex,
           grpc: grpcStub({
             Metadata: CustomMetadataStub,
-            load: () => {
+            loadPackageDefinition: () => {
               throw new Error('force error');
             },
           }),
@@ -220,12 +220,13 @@ describe('Lnrpc Factory', () => {
       const expected = join(root, 'rpc.proto');
 
       return createLnrpc({
-        grpc: grpcStub({
-          load: (actual) => {
+        grpcLoader: {
+          load(actual) {
             equal(actual, expected, 'loaded generated `rpc.proto` via load');
-            return grpcStub().load();
+            return {};
           },
-        }),
+        },
+        grpc: grpcStub(),
       });
     });
 

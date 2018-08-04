@@ -44,7 +44,7 @@ module.exports = function grpcStub(
         },
         combineChannelCredentials: () => ({}),
       },
-      load: () => ({
+      loadPackageDefinition: () => ({
         lnrpc: {
           Lightning: lightning,
           WalletUnlocker: walletUnlocker,
