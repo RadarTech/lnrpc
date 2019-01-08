@@ -9,18 +9,17 @@ Maintained fork of [lnrpc](https://github.com/Matt-Jensen/lnrpc) adding support 
 - 📚Instantiates all gRPC services
 
 ### Installation
-
-```sh
-yarn add lnrpc
-
-# Or
-npm i lnrpc -S
-```
+TODO
 
 For best results, be sure to [install lnd](https://github.com/lightningnetwork/lnd/blob/master/docs/INSTALL.md) before using this project and ensure you have an lnd instance running with `--no-macaroons`, unless you provide macaroon authentication to your lnrpc instance.
 
 ### Change LND gRPC release version
-To change the gRPC definitions used for all auto-generated functionality edit the `config.lnd_release_tag` value in `package.json` to the target [LND release tag](https://github.com/lightningnetwork/lnd/releases). Rebuild `node_modules` and all references will update to the new LND target.
+To change the gRPC definitions used for all auto-generated types and RPC methods edit the `config.lnd_release_tag` value in `package.json` to the desired [LND release tag](https://github.com/lightningnetwork/lnd/releases) and run the following:
+
+```sh
+yarn generate
+```
+Newly generated type definitions will be available in `./generated`.
 
 ### Usage
 

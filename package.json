@@ -4,14 +4,16 @@
   "description": "User-centric Node.js gRPC client for lightningnetwork/lnd",
   "main": "index.js",
   "config": {
-    "lnd-release-tag": "v0.5.1-beta"
+    "lnd-release-tag": "v0.5.1-beta",
+    "protoc-version": "3.5.1"
   },
   "scripts": {
     "test": "./node_modules/.bin/eslint . && ./node_modules/.bin/mocha ./test/**/*.test.js",
     "start": "node ./index.js",
+    "generate": "sh ./generate_types.sh ${npm_package_config_lnd_release_tag} ${npm_package_config_protoc_version}",
     "postinstall": "napa lightningnetwork/lnd:lnd#${npm_package_config_lnd_release_tag}"
   },
-  "repository": "https://github.com/Matt-Jensen/lnrpc",
+  "repository": "https://github.com/RadarRelay/lnrpc",
   "keywords": [
     "lnd",
     "lightning network",
@@ -20,13 +22,14 @@
     "bitcoin",
     "litecoin"
   ],
-  "author": "Matt-Jensen",
+  "author": "Radar",
   "license": "MIT",
   "dependencies": {
     "@grpc/proto-loader": "^0.3.0",
     "grpc": "^1.14.0-pre2",
     "napa": "^3.0.0",
-    "pkg-dir": "^2.0.0"
+    "pkg-dir": "^2.0.0",
+    "ts-protoc-gen": "^0.8.0"
   },
   "devDependencies": {
     "eslint": "^4.7.1",
