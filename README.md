@@ -1,9 +1,9 @@
-## LNRPC [![Build Status](https://travis-ci.org/Matt-Jensen/lnrpc.svg?branch=master)](https://travis-ci.org/Matt-Jensen/lnrpc)
+## LNRPC
 
-Synced to [LND master branch](https://github.com/lightningnetwork/lnd/blob/master/version.go)
+Maintained fork of [lnrpc](https://github.com/Matt-Jensen/lnrpc) adding support for targeting LND release tags and generated type definitions.
 
 ### Features
-- 🛠Auto-generates [lnd/lnrpc](https://github.com/lightningnetwork/lnd/tree/master/lnrpc) client
+- 🛠Auto-generates [lnd/lnrpc](https://github.com/lightningnetwork/lnd/tree/master/lnrpc) client based on target release tag
 - ✨Wraps requests in promises
 - 🤝Easily setup SSL and Macaroons
 - 📚Instantiates all gRPC services
@@ -18,6 +18,9 @@ npm i lnrpc -S
 ```
 
 For best results, be sure to [install lnd](https://github.com/lightningnetwork/lnd/blob/master/docs/INSTALL.md) before using this project and ensure you have an lnd instance running with `--no-macaroons`, unless you provide macaroon authentication to your lnrpc instance.
+
+### Change LND gRPC release version
+To change the gRPC definitions used for all auto-generated functionality edit the `config.lnd_release_tag` value in `package.json` to the target [LND release tag](https://github.com/lightningnetwork/lnd/releases). Rebuild `node_modules` and all references will update to the new LND target.
 
 ### Usage
 
