@@ -46,8 +46,7 @@ echo "running protoc..."
   --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts \
   --ts_out=$GENERATED_TYPES_DIR \
   ./rpc.proto
-  # --js_out=import_style=commonjs,binary:$GENERATED_TYPES_DIR \
 
-# Cleanup downloaded protoc directory
+# Cleanup downloaded proto directory/files
 rm -r protoc
 rm -f ./rpc.proto
