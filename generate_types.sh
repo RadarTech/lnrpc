@@ -45,6 +45,7 @@ echo "running protoc..."
 ./protoc/bin/protoc \
   --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts \
   --ts_out=$GENERATED_TYPES_DIR \
+  ./google/api/*.proto \
   ./rpc.proto
 
 # Cleanup downloaded proto directory/files
