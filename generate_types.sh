@@ -11,7 +11,7 @@ yarn
 rm -f ./rpc.proto
 cp "./node_modules/lnd#${LND_RELEASE_TAG}/lnrpc/rpc.proto" .
 
-GENERATED_TYPES_DIR=generated
+GENERATED_TYPES_DIR=types/generated
 if [ -d "$GENERATED_TYPES_DIR" ]
 then
     rm -rf "$GENERATED_TYPES_DIR"
