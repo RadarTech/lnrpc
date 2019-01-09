@@ -91,9 +91,9 @@ const createLnrpc = require('lnrpc');
 To develop on the project please run:
 
 ```sh
-git clone git@github.com:Matt-Jensen/lnrpc.git && cd $_
+git clone git@github.com:RadarRelay/lnrpc.git && cd $_
 yarn
-npm run start
+yarn start
 ```
 
 ### License
