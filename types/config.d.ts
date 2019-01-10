@@ -1,5 +1,3 @@
-import { GrpcObject } from "grpc";
-
 export interface LnRpcClientConfig {
   server: string; // URL for the lightning node to connect to ie. localhost:10009
   tls: string; // /path/to/tls.cert
@@ -9,5 +7,5 @@ export interface LnRpcClientConfig {
   lightning: object;
   walletUnlocker: object;
   grpcLoader: any;
-  grpc: GrpcObject;
+  grpc: any;
 }
