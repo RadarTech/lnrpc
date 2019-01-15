@@ -1,7 +1,7 @@
 {
   "name": "lnrpc",
-  "version": "0.3.2",
-  "description": "User-centric Node.js gRPC client for lightningnetwork/lnd",
+  "version": "0.4.0",
+  "description": "typed node.js gRPC client for lightningnetwork/lnd",
   "main": "index.js",
   "types": "types/index.d.ts",
   "config": {
