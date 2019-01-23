@@ -11,6 +11,7 @@
   "scripts": {
     "test": "./node_modules/.bin/eslint . && ./node_modules/.bin/mocha ./test/**/*.test.js",
     "start": "node ./index.js",
+    "lint": "tslint -c tslint.json '{lib,test,types}/**/*.ts'",
     "generate": "sh ./generate_types.sh ${npm_package_config_lnd_release_tag} ${npm_package_config_protoc_version}",
     "postinstall": "napa lightningnetwork/lnd:lnd#${npm_package_config_lnd_release_tag}"
   },
@@ -35,7 +36,9 @@
   "devDependencies": {
     "eslint": "^4.7.1",
     "eslint-config-google": "^0.9.1",
-    "mocha": "^3.5.3"
+    "mocha": "^3.5.3",
+    "tslint": "^5.12.1",
+    "typescript": "^3.2.4"
   },
   "engines": {
     "node": ">= 8.*"
