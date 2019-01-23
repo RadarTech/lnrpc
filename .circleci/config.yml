@@ -1,0 +1,58 @@
+version: 2
+
+dependencies: &dependencies
+  run:
+    name: Install Dependencies
+    command: yarn install
+
+run_tests: &run_tests
+  working_directory: ~/project
+  steps:
+  - checkout
+  - *dependencies
+  - run: 
+      name: Run Tests
+      command: yarn test
+
+jobs:
+  lint:
+    docker:
+    - image: circleci/node:10
+    working_directory: ~/project
+    steps:
+    - checkout
+    - *dependencies
+    - run: 
+        name: Run Linter
+        command: yarn lint
+  audit:
+    docker:
+    - image: circleci/node:10
+    working_directory: ~/project
+    steps:
+    - checkout
+    - *dependencies
+    - run: 
+        name: Run Audit
+        command: yarn audit
+  test-node-8:
+    docker:
+    - image: circleci/node:8
+    <<: *run_tests
+  test-node-10:
+    docker:
+    - image: circleci/node:10
+    <<: *run_tests
+  test-node-11:
+    docker:
+    - image: circleci/node:11
+    <<: *run_tests
+
+workflows:
+  version: 2
+  default:
+    jobs:
+      - lint
+      - test-node-8
+      - test-node-10
+      - test-node-11

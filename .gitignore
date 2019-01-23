@@ -1,4 +1,5 @@
 node_modules
+yarn-error.log
 .esm-cache
 rpc.proto
 *.macaroon

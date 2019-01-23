@@ -1,0 +1,20 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "jsRules": {},
+    "linterOptions": {
+      "exclude": [
+          "node_modules",
+          "types/generated/**"
+      ]
+    },
+    "rules": {
+      "interface-name": [
+        true,
+        "never-prefix"
+      ]
+    },
+    "rulesDirectory": []
+}
