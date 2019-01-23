@@ -5,7 +5,6 @@ dependencies: &dependencies
     name: Install Dependencies
     command: yarn install
 
-
 run_tests: &run_tests
   working_directory: ~/project
   steps:
