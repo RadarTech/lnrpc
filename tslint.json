@@ -4,6 +4,17 @@
         "tslint:recommended"
     ],
     "jsRules": {},
-    "rules": {},
+    "linterOptions": {
+      "exclude": [
+          "node_modules",
+          "types/generated/**"
+      ]
+    },
+    "rules": {
+      "interface-name": [
+        true,
+        "never-prefix"
+      ]
+    },
     "rulesDirectory": []
 }
