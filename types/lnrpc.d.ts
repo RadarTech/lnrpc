@@ -24,7 +24,7 @@ import {
   FeeReportRequest,
   FeeReportResponse,
   ForwardingHistoryRequest,
-  ForwardingHistoryResponse
+  ForwardingHistoryResponse,
   GenSeedRequest,
   GenSeedResponse,
   GetInfoRequest,
