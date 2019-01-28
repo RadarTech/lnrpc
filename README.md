@@ -33,16 +33,26 @@ Newly generated type definitions will be available in `./generated`.
 Connecting to an lnd instance at `localhost:10001`.
 
 ```typescript
-import createLnRpc, { WalletBalanceRespone } from '@radartech/lnrpc';
+import createLnRpc, {
+  Invoice,
+  InvoiceSubscription,
+  WalletBalanceResponse
+} from '@radartech/lnrpc';
 
 (async function() {
   const lnRpcClient = await createLnRpc();
 
   // All requests are promisified and typed
-  const balanceResponse: WalletBalanceResponse.AsObject = await lnrpc.walletBalance({});
+  const balanceResponse: WalletBalanceResponse.AsObject = await lnRpcClient.walletBalance({});
 
   // ...and you're off!
   console.log(balanceResponse.confirmedBalance);
+
+  // subscribe to LND server events
+  const subscriber = await lnRpcClient.subscribeInvoices(<InvoiceSubscription.AsObject>{});
+  subscriber.on('data', (invoice: Invoice.AsObject) => {
+    console.log(invoice); // do something with invoice
+  });
 })();
 ```
 
