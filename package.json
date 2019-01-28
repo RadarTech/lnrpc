@@ -1,7 +1,7 @@
 {
   "name": "@radartech/lnrpc",
   "version": "0.5.1-beta",
-  "description": "typed node.js gRPC client for lightningnetwork/lnd",
+  "description": "typed gRPC client for lightningnetwork/lnd",
   "main": "index.js",
   "types": "types/index.d.ts",
   "config": {
@@ -15,7 +15,7 @@
     "generate": "sh ./generate_types.sh ${npm_package_config_lnd_release_tag} ${npm_package_config_protoc_version}",
     "postinstall": "napa lightningnetwork/lnd:lnd#${npm_package_config_lnd_release_tag}"
   },
-  "repository": "https://github.com/RadarRelay/lnrpc",
+  "repository": "https://github.com/RadarTech/lnrpc",
   "keywords": [
     "lnd",
     "lightning network",
@@ -23,7 +23,7 @@
     "client",
     "bitcoin"
   ],
-  "author": "Radar",
+  "author": "RadarTech",
   "license": "MIT",
   "dependencies": {
     "@grpc/proto-loader": "^0.3.0",

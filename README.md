@@ -11,6 +11,8 @@ Maintained fork of [lnrpc](https://github.com/Matt-Jensen/lnrpc) adding support 
 
 ### Installation
 ```sh
+npm install @radartech/lnrpc
+# OR
 yarn add @radartech/lnrpc
 ```
 
@@ -20,6 +22,8 @@ Install [lnd](https://github.com/lightningnetwork/lnd/blob/master/docs/INSTALL.m
 To change the gRPC definitions used for all auto-generated types and RPC methods edit the `config.lnd_release_tag` value in `package.json` to the desired [LND release tag](https://github.com/lightningnetwork/lnd/releases) and run the following:
 
 ```sh
+npm run generate
+# OR
 yarn generate
 ```
 Newly generated type definitions will be available in `./generated`.
@@ -95,6 +99,11 @@ To develop on the project please run:
 
 ```sh
 git clone git@github.com:RadarTech/lnrpc.git && cd $_
+
+
+npm install
+npm start
+# OR
 yarn
 yarn start
 ```
