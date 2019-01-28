@@ -1,17 +1,20 @@
 ## LNRPC
 
-Maintained fork of [lnrpc](https://github.com/Matt-Jensen/lnrpc) adding support for targeting LND release tags and generated type definitions.
+Maintained fork of [lnrpc](https://github.com/Matt-Jensen/lnrpc) adding support for generating typescript type definitions.
 
 ### Features
-- 🛠Auto-generates [lnd/lnrpc](https://github.com/lightningnetwork/lnd/tree/master/lnrpc) client based on target release tag
-- ✨Wraps requests in promises
-- 🤝Easily setup SSL and Macaroons
-- 📚Instantiates all gRPC services
+- Auto-generates [lnd/lnrpc](https://github.com/lightningnetwork/lnd/tree/master/lnrpc) client and typescript definitons based on target release tag
+- Wraps requests in promises
+- Easily setup SSL and Macaroons
+- Instantiates all gRPC services
+- uint64/int64 types cast to string
 
 ### Installation
-TODO
+```sh
+yarn add @radartech/lnrpc
+```
 
-For best results, be sure to [install lnd](https://github.com/lightningnetwork/lnd/blob/master/docs/INSTALL.md) before using this project and ensure you have an lnd instance running with `--no-macaroons`, unless you provide macaroon authentication to your lnrpc instance.
+Install [lnd](https://github.com/lightningnetwork/lnd/blob/master/docs/INSTALL.md) before using this project and ensure you have an lnd instance running with `--no-macaroons`, unless you provide macaroon authentication to your lnrpc instance when created.
 
 ### Change LND gRPC release version
 To change the gRPC definitions used for all auto-generated types and RPC methods edit the `config.lnd_release_tag` value in `package.json` to the desired [LND release tag](https://github.com/lightningnetwork/lnd/releases) and run the following:
@@ -25,27 +28,27 @@ Newly generated type definitions will be available in `./generated`.
 
 Connecting to an lnd instance at `localhost:10001`.
 
-```javascript
-const createLnrpc = require('lnrpc');
+```typescript
+import createLnRpc, { WalletBalanceRespone } from 'lnrpc';
 
 (async function() {
-  const lnrpc = await createLnrpc();
+  const lnRpcClient = await createLnRpc();
 
-  // All requests are promisified
-  const balance = await lnrpc.walletBalance({});
+  // All requests are promisified and typed
+  const balanceResponse: WalletBalanceResponse.AsObject = await lnrpc.walletBalance({});
 
   // ...and you're off!
-  console.log(balance);
+  console.log(balanceResponse.confirmedBalance);
 })();
 ```
 
 ### Options
 
-```javascript
-const createLnrpc = require('lnrpc');
+```typescript
+import createLnRpc from 'lnrpc';
 
 (async function() {
-  const lnrcpCustom = await createLnrpc({
+  const lnRcpCustom = await createLnRpc({
     /*
      By default lnrpc connects to `localhost:10001`,
      however we can point to any host.
@@ -91,7 +94,7 @@ const createLnrpc = require('lnrpc');
 To develop on the project please run:
 
 ```sh
-git clone git@github.com:RadarRelay/lnrpc.git && cd $_
+git clone git@github.com:RadarTech/lnrpc.git && cd $_
 yarn
 yarn start
 ```
