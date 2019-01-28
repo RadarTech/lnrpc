@@ -29,7 +29,7 @@ Newly generated type definitions will be available in `./generated`.
 Connecting to an lnd instance at `localhost:10001`.
 
 ```typescript
-import createLnRpc, { WalletBalanceRespone } from 'lnrpc';
+import createLnRpc, { WalletBalanceRespone } from '@radartech/lnrpc';
 
 (async function() {
   const lnRpcClient = await createLnRpc();
@@ -45,7 +45,7 @@ import createLnRpc, { WalletBalanceRespone } from 'lnrpc';
 ### Options
 
 ```typescript
-import createLnRpc from 'lnrpc';
+import createLnRpc from '@radartech/lnrpc';
 
 (async function() {
   const lnRcpCustom = await createLnRpc({
