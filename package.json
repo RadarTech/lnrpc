@@ -15,7 +15,7 @@
     "generate": "sh ./generate_types.sh ${npm_package_config_lnd_release_tag} ${npm_package_config_protoc_version}",
     "postinstall": "napa lightningnetwork/lnd:lnd#${npm_package_config_lnd_release_tag}"
   },
-  "repository": "https://github.com/RadarRelay/lnrpc",
+  "repository": "https://github.com/RadarTech/lnrpc",
   "keywords": [
     "lnd",
     "lightning network",
