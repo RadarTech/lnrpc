@@ -150,17 +150,17 @@ export class LnRpc {
    * walletBalance returns total unspent outputs(confirmed and unconfirmed), all confirmed unspent outputs and all
    * unconfirmed unspent outputs under control of the wallet.
    */
-  public walletBalance(args: WalletBalanceRequest): Promise<WalletBalanceResponse>;
+  public walletBalance(args?: WalletBalanceRequest): Promise<WalletBalanceResponse>;
 
   /**
    * channelBalance returns the total funds available across all open channels in satoshis.
    */
-  public channelBalance(args: ChannelBalanceRequest): Promise<ChannelBalanceResponse>;
+  public channelBalance(args?: ChannelBalanceRequest): Promise<ChannelBalanceResponse>;
 
   /**
    * getTransactions returns a list describing all the known transactions relevant to the wallet.
    */
-  public getTransactions(args: GetTransactionsRequest): Promise<TransactionDetails>;
+  public getTransactions(args?: GetTransactionsRequest): Promise<TransactionDetails>;
 
   /**
    * sendCoins executes a request to send coins to a particular address. Unlike sendMany, this RPC call only allows
@@ -173,7 +173,7 @@ export class LnRpc {
    * subscribeTransactions creates a uni-directional stream from the server to the client in which any newly
    * discovered transactions relevant to the wallet are sent over.
    */
-  public subscribeTransactions(args: GetTransactionsRequest): Promise<Stream>;
+  public subscribeTransactions(args?: GetTransactionsRequest): Promise<Stream>;
 
   /**
    * sendMany handles a request for a transaction that creates multiple specified outputs in parallel. If neither
@@ -215,20 +215,20 @@ export class LnRpc {
   /**
    * listPeers returns a verbose listing of all currently active peers.
    */
-  public listPeers(args: ListPeersRequest): Promise<ListPeersResponse>;
+  public listPeers(args?: ListPeersRequest): Promise<ListPeersResponse>;
 
   /**
    * getInfo returns general information concerning the lightning node including it’s identity pubkey, alias, the
    * chains it is connected to, and information concerning the number of open+pending channels.
    */
-  public getInfo(args: GetInfoRequest): Promise<GetInfoResponse>;
+  public getInfo(args?: GetInfoRequest): Promise<GetInfoResponse>;
 
   /**
    * pendingChannels returns a list of all the channels that are currently considered “pending”. A channel is
    * pending if it has finished the funding workflow and is waiting for confirmations for the funding txn, or is in
    * the process of closure, either initiated cooperatively or non-cooperatively.
    */
-  public pendingChannels(args: PendingChannelsRequest): Promise<PendingChannelsResponse>;
+  public pendingChannels(args?: PendingChannelsRequest): Promise<PendingChannelsResponse>;
 
   /**
    * listChannels returns a description of all the open channels that this node is a participant in.
@@ -337,12 +337,12 @@ export class LnRpc {
   /**
    * listPayments returns a list of all outgoing payments.
    */
-  public listPayments(args: ListPaymentsRequest): Promise<ListPaymentsResponse>;
+  public listPayments(args?: ListPaymentsRequest): Promise<ListPaymentsResponse>;
 
   /**
    * deleteAllPayments deletes all outgoing payments from DB.
    */
-  public deleteAllPayments(args: DeleteAllPaymentsRequest): Promise<DeleteAllPaymentsResponse>;
+  public deleteAllPayments(args?: DeleteAllPaymentsRequest): Promise<DeleteAllPaymentsResponse>;
 
   /**
    * describeGraph returns a description of the latest graph state from the point of view of the node. The graph
@@ -376,12 +376,12 @@ export class LnRpc {
   /**
    * getNetworkInfo returns some basic stats about the known channel graph from the point of view of the node.
    */
-  public getNetworkInfo(args: NetworkInfoRequest): Promise<NetworkInfo>;
+  public getNetworkInfo(args?: NetworkInfoRequest): Promise<NetworkInfo>;
 
   /**
    * stopDaemon will send a shutdown request to the interrupt handler, triggering a graceful shutdown of the daemon.
    */
-  public stopDaemon(args: StopRequest): Promise<StopResponse>;
+  public stopDaemon(args?: StopRequest): Promise<StopResponse>;
 
   /**
    * subscribeChannelGraph launches a streaming RPC that allows the caller to receive notifications upon any
@@ -402,7 +402,7 @@ export class LnRpc {
    * feeReport allows the caller to obtain a report detailing the current fee schedule enforced by the node globally
    * for each channel.
    */
-  public feeReport(args: FeeReportRequest): Promise<FeeReportResponse>;
+  public feeReport(args?: FeeReportRequest): Promise<FeeReportResponse>;
 
   /**
    * updateChannelPolicy allows the caller to update the fee schedule and channel policies for all channels globally,
