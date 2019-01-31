@@ -1,5 +1,5 @@
-import Gen from './generated/rpc_pb';
-import { Stream } from 'stream';
+import { Stream } from "stream";
+import Gen from "./generated/rpc_pb";
 
 // Overwrite specific properties
 type Overwrite<T1, T2> = {
