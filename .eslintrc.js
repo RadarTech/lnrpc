@@ -16,4 +16,7 @@ module.exports = {
     process: true,
     Reflect: true,
   },
+  rules: {
+    'no-invalid-this': 0,
+  }
 };
