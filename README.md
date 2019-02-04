@@ -48,14 +48,14 @@ import createLnRpc, {
   const lnRpcClient = await createLnRpc();
 
   // All requests are promisified and typed
-  const balanceResponse: WalletBalanceResponse.AsObject = await lnRpcClient.walletBalance({});
+  const balanceResponse: WalletBalanceResponse = await lnRpcClient.walletBalance();
 
   // ...and you're off!
   console.log(balanceResponse.confirmedBalance);
 
   // subscribe to LND server events
-  const subscriber = await lnRpcClient.subscribeInvoices(<InvoiceSubscription.AsObject>{});
-  subscriber.on('data', (invoice: Invoice.AsObject) => {
+  const subscriber = await lnRpcClient.subscribeInvoices(<InvoiceSubscription>{});
+  subscriber.on('data', (invoice: Invoice) => {
     console.log(invoice); // do something with invoice
   });
 })();
