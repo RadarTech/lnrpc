@@ -185,7 +185,7 @@ export class LnRpc {
   /**
    * newAddress creates a new address under control of the local wallet.
    */
-  public newAddress(args: NewAddressRequest): Promise<NewAddressResponse>;
+  public newAddress(args?: NewAddressRequest): Promise<NewAddressResponse>;
 
   /**
    * signMessage signs a message with this node’s private key. The returned signature string is zbase32 encoded and
@@ -233,12 +233,12 @@ export class LnRpc {
   /**
    * listChannels returns a description of all the open channels that this node is a participant in.
    */
-  public listChannels(args: ListChannelsRequest): Promise<ListChannelsResponse>;
+  public listChannels(args?: ListChannelsRequest): Promise<ListChannelsResponse>;
 
   /**
    * closedChannels returns a description of all the closed channels that this node was a participant in.
    */
-  public closedChannels(args: ClosedChannelsRequest): Promise<ClosedChannelsResponse>;
+  public closedChannels(args?: ClosedChannelsRequest): Promise<ClosedChannelsResponse>;
 
   /**
    * openChannelSync is a synchronous version of the openChannel RPC call. This call is meant to be consumed by
@@ -310,7 +310,7 @@ export class LnRpc {
    * in order to paginate backwards. If you wish to paginate forwards, you must explicitly set the flag to false.
    * If none of the parameters are specified, then the last 100 invoices will be returned.
    */
-  public listInvoices(args: ListInvoiceRequest): Promise<ListInvoiceResponse>;
+  public listInvoices(args?: ListInvoiceRequest): Promise<ListInvoiceResponse>;
 
   /**
    * lookupInvoice attempts to look up an invoice according to its payment hash. The passed payment hash must
@@ -326,7 +326,7 @@ export class LnRpc {
    * settle events for invoices with a settleIndex greater than the specified value. One or both of these fields
    * can be set. If no fields are set, then we’ll only send out the latest add/settle events.
    */
-  public subscribeInvoices(args: InvoiceSubscription): Promise<Stream>;
+  public subscribeInvoices(args?: InvoiceSubscription): Promise<Stream>;
 
   /**
    * decodePayReq takes an encoded payment request string and attempts to decode it, returning a full description
@@ -350,7 +350,7 @@ export class LnRpc {
    * vertexes themselves. As this is a directed graph, the edges also contain the node directional specific routing
    * policy which includes: the time lock delta, fee information, etc.
    */
-  public describeGraph(args: ChannelGraphRequest): Promise<ChannelGraph>;
+  public describeGraph(args?: ChannelGraphRequest): Promise<ChannelGraph>;
 
   /**
    * getChanInfo returns the latest authenticated network announcement for the given channel identified by its
@@ -389,7 +389,7 @@ export class LnRpc {
    * new nodes coming online, nodes updating their authenticated attributes, new channels being advertised, updates
    * in the routing policy for a directional channel edge, and when channels are closed on-chain.
    */
-  public subscribeChannelGraph(args: GraphTopologySubscription): Promise<Stream>;
+  public subscribeChannelGraph(args?: GraphTopologySubscription): Promise<Stream>;
 
   /**
    * debugLevel allows a caller to programmatically set the logging verbosity of lnd. The logging can be targeted
@@ -418,5 +418,5 @@ export class LnRpc {
    * result each message can only contain 50k entries. Each response has the index offset of the last entry. The
    * index offset can be provided to the request to allow the caller to skip a series of records.
    */
-  public forwardingHistory(args: ForwardingHistoryRequest): Promise<ForwardingHistoryResponse>;
+  public forwardingHistory(args?: ForwardingHistoryRequest): Promise<ForwardingHistoryResponse>;
 }
