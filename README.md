@@ -15,9 +15,9 @@ Maintained fork of [lnrpc](https://github.com/Matt-Jensen/lnrpc) adding support 
 
 ### Installation
 ```sh
-npm install @radartech/lnrpc
+npm install @radar/lnrpc
 # OR
-yarn add @radartech/lnrpc
+yarn add @radar/lnrpc
 ```
 
 Install [lnd](https://github.com/lightningnetwork/lnd/blob/master/docs/INSTALL.md) before using this project and ensure you have an lnd instance running with `--no-macaroons`, unless you provide macaroon authentication to your lnrpc instance when created.
@@ -41,7 +41,7 @@ import createLnRpc, {
   Invoice,
   InvoiceSubscription,
   WalletBalanceResponse
-} from '@radartech/lnrpc';
+} from '@radar/lnrpc';
 
 (async function() {
   const lnRpcClient = await createLnRpc();
@@ -63,7 +63,7 @@ import createLnRpc, {
 ### Options
 
 ```typescript
-import createLnRpc from '@radartech/lnrpc';
+import createLnRpc from '@radar/lnrpc';
 
 (async function() {
   const lnRcpCustom = await createLnRpc({
