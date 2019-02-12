@@ -2,7 +2,6 @@
 
 [![CircleCI](https://img.shields.io/circleci/project/github/RadarTech/lnrpc/master.svg?style=flat)](https://circleci.com/gh/RadarTech/lnrpc)
 [![Known Vulnerabilities](https://snyk.io/test/github/RadarTech/lnrpc/badge.svg?targetFile=package.json)](https://snyk.io/test/github/RadarTech/lnrpc?targetFile=package.json)
-[![NPM Version](https://img.shields.io/npm/v/@radartech/lnrpc.svg?style=flat)](https://www.npmjs.com/package/@radartech/lnrpc)
 [![License](https://img.shields.io/github/license/radartech/lnrpc.svg?style=flat)](https://img.shields.io/github/license/radartech/lnrpc.svg?style=flat)
 
 Maintained fork of [lnrpc](https://github.com/Matt-Jensen/lnrpc) adding support for generating typescript type definitions.
