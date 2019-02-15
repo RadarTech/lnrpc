@@ -64,10 +64,12 @@ import createLnRpc, {
 ### Options
 
 ```typescript
-import createLnRpc from '@radar/lnrpc';
+import createLnRpc, {
+  GetInfoResponse
+} from '@radar/lnrpc';
 
 (async function() {
-  const lnRcpCustom = await createLnRpc({
+  const lnRpcClient = await createLnRpc({
     /*
      By default lnrpc connects to `localhost:10001`,
      however we can point to any host.
@@ -97,10 +99,19 @@ import createLnRpc from '@radar/lnrpc';
 
     /*
      Optional way to configure macaroon authentication by
-     passing a hex encoded string of your macaroon file
+     passing a hex encoded string of your macaroon file.
+     Encoding: `xxd -ps -u -c 1000 ./path/to/data/admin.macaroon`
+     Details: https://github.com/lightningnetwork/lnd/blob/master/docs/macaroons.md#using-macaroons-with-grpc-clients
      */
     macaroon: process.env.MY_MACAROON_HEX,
   });
+
+  try {
+    const getInfoResponse: GetInfoResponse = await lnRpcClient.getInfo();
+    console.log(getInfoResponse);
+  } catch (error) {
+    console.error(error);
+  }
 })();
 ```
 
