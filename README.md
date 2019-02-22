@@ -54,9 +54,9 @@ import createLnRpc, {
   console.log(balanceResponse.confirmedBalance);
 
   // subscribe to LND server events
-  const subscriber = await lnRpcClient.subscribeInvoices(<InvoiceSubscription>{});
+  const subscriber = await lnRpcClient.subscribeInvoices();
   subscriber.on('data', (invoice: Invoice) => {
-    console.log(invoice); // do something with invoice
+    console.log(invoice); // do something with invoice event
   });
 })();
 ```
@@ -101,7 +101,7 @@ import createLnRpc, {
      Optional way to configure macaroon authentication by
      passing a hex encoded string of your macaroon file.
      Encoding: `xxd -ps -u -c 1000 ./path/to/data/admin.macaroon`
-     Details: https://github.com/lightningnetwork/lnd/blob/master/docs/macaroons.md#using-macaroons-with-grpc-clients
+     Details: https://github.com/lightningnetwork/lnd/blob/dc3db4b/docs/macaroons.md#using-macaroons-with-grpc-clients
      */
     macaroon: process.env.MY_MACAROON_HEX,
   });
