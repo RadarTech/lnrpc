@@ -5,12 +5,11 @@ set -e
 
 LND_RELEASE_TAG=$1
 PROTOC_VERSION=$2
-LND_REPO_PATH="./node_modules/lnd#${LND_RELEASE_TAG}"
 
 # Clone LND release and extract rpc.proto
 yarn
-rm -rf ./rpc.proto
-node lib/proto-sanitizer.js "${LND_REPO_PATH}/lnrpc/rpc.proto" "./rpc.proto"
+rm -f ./rpc.proto
+node lib/proto-sanitizer.js "./node_modules/lnd#${LND_RELEASE_TAG}/lnrpc/rpc.proto" "./rpc.proto"
 
 GENERATED_TYPES_DIR=types/generated
 if [ -d "$GENERATED_TYPES_DIR" ]
