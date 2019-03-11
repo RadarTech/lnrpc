@@ -34,8 +34,8 @@ export namespace GenSeedRequest {
 
 export class GenSeedResponse extends jspb.Message {
   clearCipherSeedMnemonicList(): void;
-  getCipherSeedMnemonicList(): Array<string>;
-  setCipherSeedMnemonicList(value: Array<string>): void;
+  getCipherSeedMnemonic(): Array<string>;
+  setCipherSeedMnemonic(value: Array<string>): void;
   addCipherSeedMnemonic(value: string, index?: number): string;
 
   getEncipheredSeed(): Uint8Array | string;
@@ -55,7 +55,7 @@ export class GenSeedResponse extends jspb.Message {
 
 export namespace GenSeedResponse {
   export type AsObject = {
-    cipherSeedMnemonicList: Array<string>,
+    cipherSeedMnemonic: Array<string>,
     encipheredSeed: Uint8Array | string,
   }
 }
@@ -67,8 +67,8 @@ export class InitWalletRequest extends jspb.Message {
   setWalletPassword(value: Uint8Array | string): void;
 
   clearCipherSeedMnemonicList(): void;
-  getCipherSeedMnemonicList(): Array<string>;
-  setCipherSeedMnemonicList(value: Array<string>): void;
+  getCipherSeedMnemonic(): Array<string>;
+  setCipherSeedMnemonic(value: Array<string>): void;
   addCipherSeedMnemonic(value: string, index?: number): string;
 
   getAezeedPassphrase(): Uint8Array | string;
@@ -92,7 +92,7 @@ export class InitWalletRequest extends jspb.Message {
 export namespace InitWalletRequest {
   export type AsObject = {
     walletPassword: Uint8Array | string,
-    cipherSeedMnemonicList: Array<string>,
+    cipherSeedMnemonic: Array<string>,
     aezeedPassphrase: Uint8Array | string,
     recoveryWindow: number,
   }
@@ -223,8 +223,8 @@ export class Transaction extends jspb.Message {
   setTotalFees(value: string): void;
 
   clearDestAddressesList(): void;
-  getDestAddressesList(): Array<string>;
-  setDestAddressesList(value: Array<string>): void;
+  getDestAddresses(): Array<string>;
+  setDestAddresses(value: Array<string>): void;
   addDestAddresses(value: string, index?: number): string;
 
   serializeBinary(): Uint8Array;
@@ -246,7 +246,7 @@ export namespace Transaction {
     blockHeight: number,
     timeStamp: string,
     totalFees: string,
-    destAddressesList: Array<string>,
+    destAddresses: Array<string>,
   }
 }
 
@@ -268,8 +268,8 @@ export namespace GetTransactionsRequest {
 
 export class TransactionDetails extends jspb.Message {
   clearTransactionsList(): void;
-  getTransactionsList(): Array<Transaction>;
-  setTransactionsList(value: Array<Transaction>): void;
+  getTransactions(): Array<Transaction>;
+  setTransactions(value: Array<Transaction>): void;
   addTransactions(value?: Transaction, index?: number): Transaction;
 
   serializeBinary(): Uint8Array;
@@ -284,7 +284,7 @@ export class TransactionDetails extends jspb.Message {
 
 export namespace TransactionDetails {
   export type AsObject = {
-    transactionsList: Array<Transaction.AsObject>,
+    transactions: Array<Transaction.AsObject>,
   }
 }
 
@@ -419,8 +419,8 @@ export class SendToRouteRequest extends jspb.Message {
   setPaymentHashString(value: string): void;
 
   clearRoutesList(): void;
-  getRoutesList(): Array<Route>;
-  setRoutesList(value: Array<Route>): void;
+  getRoutes(): Array<Route>;
+  setRoutes(value: Array<Route>): void;
   addRoutes(value?: Route, index?: number): Route;
 
   serializeBinary(): Uint8Array;
@@ -437,7 +437,7 @@ export namespace SendToRouteRequest {
   export type AsObject = {
     paymentHash: Uint8Array | string,
     paymentHashString: string,
-    routesList: Array<Route.AsObject>,
+    routes: Array<Route.AsObject>,
   }
 }
 
@@ -898,8 +898,8 @@ export class Channel extends jspb.Message {
   setNumUpdates(value: string): void;
 
   clearPendingHtlcsList(): void;
-  getPendingHtlcsList(): Array<HTLC>;
-  setPendingHtlcsList(value: Array<HTLC>): void;
+  getPendingHtlcs(): Array<HTLC>;
+  setPendingHtlcs(value: Array<HTLC>): void;
   addPendingHtlcs(value?: HTLC, index?: number): HTLC;
 
   getCsvDelay(): number;
@@ -934,7 +934,7 @@ export namespace Channel {
     totalSatoshisSent: string,
     totalSatoshisReceived: string,
     numUpdates: string,
-    pendingHtlcsList: Array<HTLC.AsObject>,
+    pendingHtlcs: Array<HTLC.AsObject>,
     csvDelay: number,
     pb_private: boolean,
   }
@@ -974,8 +974,8 @@ export namespace ListChannelsRequest {
 
 export class ListChannelsResponse extends jspb.Message {
   clearChannelsList(): void;
-  getChannelsList(): Array<Channel>;
-  setChannelsList(value: Array<Channel>): void;
+  getChannels(): Array<Channel>;
+  setChannels(value: Array<Channel>): void;
   addChannels(value?: Channel, index?: number): Channel;
 
   serializeBinary(): Uint8Array;
@@ -990,7 +990,7 @@ export class ListChannelsResponse extends jspb.Message {
 
 export namespace ListChannelsResponse {
   export type AsObject = {
-    channelsList: Array<Channel.AsObject>,
+    channels: Array<Channel.AsObject>,
   }
 }
 
@@ -1101,8 +1101,8 @@ export namespace ClosedChannelsRequest {
 
 export class ClosedChannelsResponse extends jspb.Message {
   clearChannelsList(): void;
-  getChannelsList(): Array<ChannelCloseSummary>;
-  setChannelsList(value: Array<ChannelCloseSummary>): void;
+  getChannels(): Array<ChannelCloseSummary>;
+  setChannels(value: Array<ChannelCloseSummary>): void;
   addChannels(value?: ChannelCloseSummary, index?: number): ChannelCloseSummary;
 
   serializeBinary(): Uint8Array;
@@ -1117,7 +1117,7 @@ export class ClosedChannelsResponse extends jspb.Message {
 
 export namespace ClosedChannelsResponse {
   export type AsObject = {
-    channelsList: Array<ChannelCloseSummary.AsObject>,
+    channels: Array<ChannelCloseSummary.AsObject>,
   }
 }
 
@@ -1187,8 +1187,8 @@ export namespace ListPeersRequest {
 
 export class ListPeersResponse extends jspb.Message {
   clearPeersList(): void;
-  getPeersList(): Array<Peer>;
-  setPeersList(value: Array<Peer>): void;
+  getPeers(): Array<Peer>;
+  setPeers(value: Array<Peer>): void;
   addPeers(value?: Peer, index?: number): Peer;
 
   serializeBinary(): Uint8Array;
@@ -1203,7 +1203,7 @@ export class ListPeersResponse extends jspb.Message {
 
 export namespace ListPeersResponse {
   export type AsObject = {
-    peersList: Array<Peer.AsObject>,
+    peers: Array<Peer.AsObject>,
   }
 }
 
@@ -1252,13 +1252,13 @@ export class GetInfoResponse extends jspb.Message {
   setTestnet(value: boolean): void;
 
   clearChainsList(): void;
-  getChainsList(): Array<string>;
-  setChainsList(value: Array<string>): void;
+  getChains(): Array<string>;
+  setChains(value: Array<string>): void;
   addChains(value: string, index?: number): string;
 
   clearUrisList(): void;
-  getUrisList(): Array<string>;
-  setUrisList(value: Array<string>): void;
+  getUris(): Array<string>;
+  setUris(value: Array<string>): void;
   addUris(value: string, index?: number): string;
 
   getBestHeaderTimestamp(): string;
@@ -1291,8 +1291,8 @@ export namespace GetInfoResponse {
     blockHash: string,
     syncedToChain: boolean,
     testnet: boolean,
-    chainsList: Array<string>,
-    urisList: Array<string>,
+    chains: Array<string>,
+    uris: Array<string>,
     bestHeaderTimestamp: string,
     version: string,
     numInactiveChannels: number,
@@ -1644,23 +1644,23 @@ export class PendingChannelsResponse extends jspb.Message {
   setTotalLimboBalance(value: string): void;
 
   clearPendingOpenChannelsList(): void;
-  getPendingOpenChannelsList(): Array<PendingChannelsResponse.PendingOpenChannel>;
-  setPendingOpenChannelsList(value: Array<PendingChannelsResponse.PendingOpenChannel>): void;
+  getPendingOpenChannels(): Array<PendingChannelsResponse.PendingOpenChannel>;
+  setPendingOpenChannels(value: Array<PendingChannelsResponse.PendingOpenChannel>): void;
   addPendingOpenChannels(value?: PendingChannelsResponse.PendingOpenChannel, index?: number): PendingChannelsResponse.PendingOpenChannel;
 
   clearPendingClosingChannelsList(): void;
-  getPendingClosingChannelsList(): Array<PendingChannelsResponse.ClosedChannel>;
-  setPendingClosingChannelsList(value: Array<PendingChannelsResponse.ClosedChannel>): void;
+  getPendingClosingChannels(): Array<PendingChannelsResponse.ClosedChannel>;
+  setPendingClosingChannels(value: Array<PendingChannelsResponse.ClosedChannel>): void;
   addPendingClosingChannels(value?: PendingChannelsResponse.ClosedChannel, index?: number): PendingChannelsResponse.ClosedChannel;
 
   clearPendingForceClosingChannelsList(): void;
-  getPendingForceClosingChannelsList(): Array<PendingChannelsResponse.ForceClosedChannel>;
-  setPendingForceClosingChannelsList(value: Array<PendingChannelsResponse.ForceClosedChannel>): void;
+  getPendingForceClosingChannels(): Array<PendingChannelsResponse.ForceClosedChannel>;
+  setPendingForceClosingChannels(value: Array<PendingChannelsResponse.ForceClosedChannel>): void;
   addPendingForceClosingChannels(value?: PendingChannelsResponse.ForceClosedChannel, index?: number): PendingChannelsResponse.ForceClosedChannel;
 
   clearWaitingCloseChannelsList(): void;
-  getWaitingCloseChannelsList(): Array<PendingChannelsResponse.WaitingCloseChannel>;
-  setWaitingCloseChannelsList(value: Array<PendingChannelsResponse.WaitingCloseChannel>): void;
+  getWaitingCloseChannels(): Array<PendingChannelsResponse.WaitingCloseChannel>;
+  setWaitingCloseChannels(value: Array<PendingChannelsResponse.WaitingCloseChannel>): void;
   addWaitingCloseChannels(value?: PendingChannelsResponse.WaitingCloseChannel, index?: number): PendingChannelsResponse.WaitingCloseChannel;
 
   serializeBinary(): Uint8Array;
@@ -1676,10 +1676,10 @@ export class PendingChannelsResponse extends jspb.Message {
 export namespace PendingChannelsResponse {
   export type AsObject = {
     totalLimboBalance: string,
-    pendingOpenChannelsList: Array<PendingChannelsResponse.PendingOpenChannel.AsObject>,
-    pendingClosingChannelsList: Array<PendingChannelsResponse.ClosedChannel.AsObject>,
-    pendingForceClosingChannelsList: Array<PendingChannelsResponse.ForceClosedChannel.AsObject>,
-    waitingCloseChannelsList: Array<PendingChannelsResponse.WaitingCloseChannel.AsObject>,
+    pendingOpenChannels: Array<PendingChannelsResponse.PendingOpenChannel.AsObject>,
+    pendingClosingChannels: Array<PendingChannelsResponse.ClosedChannel.AsObject>,
+    pendingForceClosingChannels: Array<PendingChannelsResponse.ForceClosedChannel.AsObject>,
+    waitingCloseChannels: Array<PendingChannelsResponse.WaitingCloseChannel.AsObject>,
   }
 
   export class PendingChannel extends jspb.Message {
@@ -1830,8 +1830,8 @@ export namespace PendingChannelsResponse {
     setRecoveredBalance(value: string): void;
 
     clearPendingHtlcsList(): void;
-    getPendingHtlcsList(): Array<PendingHTLC>;
-    setPendingHtlcsList(value: Array<PendingHTLC>): void;
+    getPendingHtlcs(): Array<PendingHTLC>;
+    setPendingHtlcs(value: Array<PendingHTLC>): void;
     addPendingHtlcs(value?: PendingHTLC, index?: number): PendingHTLC;
 
     serializeBinary(): Uint8Array;
@@ -1852,7 +1852,7 @@ export namespace PendingChannelsResponse {
       maturityHeight: number,
       blocksTilMaturity: number,
       recoveredBalance: string,
-      pendingHtlcsList: Array<PendingHTLC.AsObject>,
+      pendingHtlcs: Array<PendingHTLC.AsObject>,
     }
   }
 }
@@ -1981,8 +1981,8 @@ export namespace QueryRoutesRequest {
 
 export class QueryRoutesResponse extends jspb.Message {
   clearRoutesList(): void;
-  getRoutesList(): Array<Route>;
-  setRoutesList(value: Array<Route>): void;
+  getRoutes(): Array<Route>;
+  setRoutes(value: Array<Route>): void;
   addRoutes(value?: Route, index?: number): Route;
 
   serializeBinary(): Uint8Array;
@@ -1997,7 +1997,7 @@ export class QueryRoutesResponse extends jspb.Message {
 
 export namespace QueryRoutesResponse {
   export type AsObject = {
-    routesList: Array<Route.AsObject>,
+    routes: Array<Route.AsObject>,
   }
 }
 
@@ -2060,8 +2060,8 @@ export class Route extends jspb.Message {
   setTotalAmt(value: string): void;
 
   clearHopsList(): void;
-  getHopsList(): Array<Hop>;
-  setHopsList(value: Array<Hop>): void;
+  getHops(): Array<Hop>;
+  setHops(value: Array<Hop>): void;
   addHops(value?: Hop, index?: number): Hop;
 
   getTotalFeesMsat(): string;
@@ -2085,7 +2085,7 @@ export namespace Route {
     totalTimeLock: number,
     totalFees: string,
     totalAmt: string,
-    hopsList: Array<Hop.AsObject>,
+    hops: Array<Hop.AsObject>,
     totalFeesMsat: string,
     totalAmtMsat: string,
   }
@@ -2152,8 +2152,8 @@ export class LightningNode extends jspb.Message {
   setAlias(value: string): void;
 
   clearAddressesList(): void;
-  getAddressesList(): Array<NodeAddress>;
-  setAddressesList(value: Array<NodeAddress>): void;
+  getAddresses(): Array<NodeAddress>;
+  setAddresses(value: Array<NodeAddress>): void;
   addAddresses(value?: NodeAddress, index?: number): NodeAddress;
 
   getColor(): string;
@@ -2174,7 +2174,7 @@ export namespace LightningNode {
     lastUpdate: number,
     pubKey: string,
     alias: string,
-    addressesList: Array<NodeAddress.AsObject>,
+    addresses: Array<NodeAddress.AsObject>,
     color: string,
   }
 }
@@ -2313,13 +2313,13 @@ export namespace ChannelGraphRequest {
 
 export class ChannelGraph extends jspb.Message {
   clearNodesList(): void;
-  getNodesList(): Array<LightningNode>;
-  setNodesList(value: Array<LightningNode>): void;
+  getNodes(): Array<LightningNode>;
+  setNodes(value: Array<LightningNode>): void;
   addNodes(value?: LightningNode, index?: number): LightningNode;
 
   clearEdgesList(): void;
-  getEdgesList(): Array<ChannelEdge>;
-  setEdgesList(value: Array<ChannelEdge>): void;
+  getEdges(): Array<ChannelEdge>;
+  setEdges(value: Array<ChannelEdge>): void;
   addEdges(value?: ChannelEdge, index?: number): ChannelEdge;
 
   serializeBinary(): Uint8Array;
@@ -2334,8 +2334,8 @@ export class ChannelGraph extends jspb.Message {
 
 export namespace ChannelGraph {
   export type AsObject = {
-    nodesList: Array<LightningNode.AsObject>,
-    edgesList: Array<ChannelEdge.AsObject>,
+    nodes: Array<LightningNode.AsObject>,
+    edges: Array<ChannelEdge.AsObject>,
   }
 }
 
@@ -2477,18 +2477,18 @@ export namespace GraphTopologySubscription {
 
 export class GraphTopologyUpdate extends jspb.Message {
   clearNodeUpdatesList(): void;
-  getNodeUpdatesList(): Array<NodeUpdate>;
-  setNodeUpdatesList(value: Array<NodeUpdate>): void;
+  getNodeUpdates(): Array<NodeUpdate>;
+  setNodeUpdates(value: Array<NodeUpdate>): void;
   addNodeUpdates(value?: NodeUpdate, index?: number): NodeUpdate;
 
   clearChannelUpdatesList(): void;
-  getChannelUpdatesList(): Array<ChannelEdgeUpdate>;
-  setChannelUpdatesList(value: Array<ChannelEdgeUpdate>): void;
+  getChannelUpdates(): Array<ChannelEdgeUpdate>;
+  setChannelUpdates(value: Array<ChannelEdgeUpdate>): void;
   addChannelUpdates(value?: ChannelEdgeUpdate, index?: number): ChannelEdgeUpdate;
 
   clearClosedChansList(): void;
-  getClosedChansList(): Array<ClosedChannelUpdate>;
-  setClosedChansList(value: Array<ClosedChannelUpdate>): void;
+  getClosedChans(): Array<ClosedChannelUpdate>;
+  setClosedChans(value: Array<ClosedChannelUpdate>): void;
   addClosedChans(value?: ClosedChannelUpdate, index?: number): ClosedChannelUpdate;
 
   serializeBinary(): Uint8Array;
@@ -2503,16 +2503,16 @@ export class GraphTopologyUpdate extends jspb.Message {
 
 export namespace GraphTopologyUpdate {
   export type AsObject = {
-    nodeUpdatesList: Array<NodeUpdate.AsObject>,
-    channelUpdatesList: Array<ChannelEdgeUpdate.AsObject>,
-    closedChansList: Array<ClosedChannelUpdate.AsObject>,
+    nodeUpdates: Array<NodeUpdate.AsObject>,
+    channelUpdates: Array<ChannelEdgeUpdate.AsObject>,
+    closedChans: Array<ClosedChannelUpdate.AsObject>,
   }
 }
 
 export class NodeUpdate extends jspb.Message {
   clearAddressesList(): void;
-  getAddressesList(): Array<string>;
-  setAddressesList(value: Array<string>): void;
+  getAddresses(): Array<string>;
+  setAddresses(value: Array<string>): void;
   addAddresses(value: string, index?: number): string;
 
   getIdentityKey(): string;
@@ -2538,7 +2538,7 @@ export class NodeUpdate extends jspb.Message {
 
 export namespace NodeUpdate {
   export type AsObject = {
-    addressesList: Array<string>,
+    addresses: Array<string>,
     identityKey: string,
     globalFeatures: Uint8Array | string,
     alias: string,
@@ -2661,8 +2661,8 @@ export namespace HopHint {
 
 export class RouteHint extends jspb.Message {
   clearHopHintsList(): void;
-  getHopHintsList(): Array<HopHint>;
-  setHopHintsList(value: Array<HopHint>): void;
+  getHopHints(): Array<HopHint>;
+  setHopHints(value: Array<HopHint>): void;
   addHopHints(value?: HopHint, index?: number): HopHint;
 
   serializeBinary(): Uint8Array;
@@ -2677,7 +2677,7 @@ export class RouteHint extends jspb.Message {
 
 export namespace RouteHint {
   export type AsObject = {
-    hopHintsList: Array<HopHint.AsObject>,
+    hopHints: Array<HopHint.AsObject>,
   }
 }
 
@@ -2730,8 +2730,8 @@ export class Invoice extends jspb.Message {
   setCltvExpiry(value: string): void;
 
   clearRouteHintsList(): void;
-  getRouteHintsList(): Array<RouteHint>;
-  setRouteHintsList(value: Array<RouteHint>): void;
+  getRouteHints(): Array<RouteHint>;
+  setRouteHints(value: Array<RouteHint>): void;
   addRouteHints(value?: RouteHint, index?: number): RouteHint;
 
   getPrivate(): boolean;
@@ -2777,7 +2777,7 @@ export namespace Invoice {
     expiry: string,
     fallbackAddr: string,
     cltvExpiry: string,
-    routeHintsList: Array<RouteHint.AsObject>,
+    routeHints: Array<RouteHint.AsObject>,
     pb_private: boolean,
     addIndex: string,
     settleIndex: string,
@@ -2877,8 +2877,8 @@ export namespace ListInvoiceRequest {
 
 export class ListInvoiceResponse extends jspb.Message {
   clearInvoicesList(): void;
-  getInvoicesList(): Array<Invoice>;
-  setInvoicesList(value: Array<Invoice>): void;
+  getInvoices(): Array<Invoice>;
+  setInvoices(value: Array<Invoice>): void;
   addInvoices(value?: Invoice, index?: number): Invoice;
 
   getLastIndexOffset(): string;
@@ -2899,7 +2899,7 @@ export class ListInvoiceResponse extends jspb.Message {
 
 export namespace ListInvoiceResponse {
   export type AsObject = {
-    invoicesList: Array<Invoice.AsObject>,
+    invoices: Array<Invoice.AsObject>,
     lastIndexOffset: string,
     firstIndexOffset: string,
   }
@@ -2940,8 +2940,8 @@ export class Payment extends jspb.Message {
   setCreationDate(value: string): void;
 
   clearPathList(): void;
-  getPathList(): Array<string>;
-  setPathList(value: Array<string>): void;
+  getPath(): Array<string>;
+  setPath(value: Array<string>): void;
   addPath(value: string, index?: number): string;
 
   getFee(): string;
@@ -2971,7 +2971,7 @@ export namespace Payment {
     paymentHash: string,
     value: string,
     creationDate: string,
-    pathList: Array<string>,
+    path: Array<string>,
     fee: string,
     paymentPreimage: string,
     valueSat: string,
@@ -2997,8 +2997,8 @@ export namespace ListPaymentsRequest {
 
 export class ListPaymentsResponse extends jspb.Message {
   clearPaymentsList(): void;
-  getPaymentsList(): Array<Payment>;
-  setPaymentsList(value: Array<Payment>): void;
+  getPayments(): Array<Payment>;
+  setPayments(value: Array<Payment>): void;
   addPayments(value?: Payment, index?: number): Payment;
 
   serializeBinary(): Uint8Array;
@@ -3013,7 +3013,7 @@ export class ListPaymentsResponse extends jspb.Message {
 
 export namespace ListPaymentsResponse {
   export type AsObject = {
-    paymentsList: Array<Payment.AsObject>,
+    payments: Array<Payment.AsObject>,
   }
 }
 
@@ -3180,8 +3180,8 @@ export class PayReq extends jspb.Message {
   setCltvExpiry(value: string): void;
 
   clearRouteHintsList(): void;
-  getRouteHintsList(): Array<RouteHint>;
-  setRouteHintsList(value: Array<RouteHint>): void;
+  getRouteHints(): Array<RouteHint>;
+  setRouteHints(value: Array<RouteHint>): void;
   addRouteHints(value?: RouteHint, index?: number): RouteHint;
 
   serializeBinary(): Uint8Array;
@@ -3205,7 +3205,7 @@ export namespace PayReq {
     descriptionHash: string,
     fallbackAddr: string,
     cltvExpiry: string,
-    routeHintsList: Array<RouteHint.AsObject>,
+    routeHints: Array<RouteHint.AsObject>,
   }
 }
 
@@ -3259,8 +3259,8 @@ export namespace ChannelFeeReport {
 
 export class FeeReportResponse extends jspb.Message {
   clearChannelFeesList(): void;
-  getChannelFeesList(): Array<ChannelFeeReport>;
-  setChannelFeesList(value: Array<ChannelFeeReport>): void;
+  getChannelFees(): Array<ChannelFeeReport>;
+  setChannelFees(value: Array<ChannelFeeReport>): void;
   addChannelFees(value?: ChannelFeeReport, index?: number): ChannelFeeReport;
 
   getDayFeeSum(): string;
@@ -3284,7 +3284,7 @@ export class FeeReportResponse extends jspb.Message {
 
 export namespace FeeReportResponse {
   export type AsObject = {
-    channelFeesList: Array<ChannelFeeReport.AsObject>,
+    channelFees: Array<ChannelFeeReport.AsObject>,
     dayFeeSum: string,
     weekFeeSum: string,
     monthFeeSum: string,
@@ -3428,8 +3428,8 @@ export namespace ForwardingEvent {
 
 export class ForwardingHistoryResponse extends jspb.Message {
   clearForwardingEventsList(): void;
-  getForwardingEventsList(): Array<ForwardingEvent>;
-  setForwardingEventsList(value: Array<ForwardingEvent>): void;
+  getForwardingEvents(): Array<ForwardingEvent>;
+  setForwardingEvents(value: Array<ForwardingEvent>): void;
   addForwardingEvents(value?: ForwardingEvent, index?: number): ForwardingEvent;
 
   getLastOffsetIndex(): number;
@@ -3447,7 +3447,7 @@ export class ForwardingHistoryResponse extends jspb.Message {
 
 export namespace ForwardingHistoryResponse {
   export type AsObject = {
-    forwardingEventsList: Array<ForwardingEvent.AsObject>,
+    forwardingEvents: Array<ForwardingEvent.AsObject>,
     lastOffsetIndex: number,
   }
 }
