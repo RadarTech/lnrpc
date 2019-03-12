@@ -6,7 +6,7 @@ set -e
 LND_RELEASE_TAG=$1
 PROTOC_VERSION=$2
 
-# Install LND and extract rpc.proto
+# Clone LND release and extract rpc.proto
 yarn
 rm -f ./rpc.proto
 node lib/proto-sanitizer.js "./node_modules/lnd#${LND_RELEASE_TAG}/lnrpc/rpc.proto" "./rpc.proto"
@@ -49,5 +49,4 @@ echo "running protoc..."
   ./rpc.proto
 
 # Cleanup downloaded proto directory/files
-rm -r protoc
-rm -f ./rpc.proto
+rm -rf ./rpc.proto protoc

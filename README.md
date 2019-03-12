@@ -2,6 +2,7 @@
 
 [![CircleCI](https://img.shields.io/circleci/project/github/RadarTech/lnrpc/master.svg?style=flat)](https://circleci.com/gh/RadarTech/lnrpc)
 [![Known Vulnerabilities](https://snyk.io/test/github/RadarTech/lnrpc/badge.svg?targetFile=package.json)](https://snyk.io/test/github/RadarTech/lnrpc?targetFile=package.json)
+[![NPM Version](https://img.shields.io/npm/v/@radar/lnrpc.svg?style=flat)](https://www.npmjs.com/package/@radar/lnrpc)
 [![License](https://img.shields.io/github/license/radartech/lnrpc.svg?style=flat)](https://img.shields.io/github/license/radartech/lnrpc.svg?style=flat)
 
 Maintained fork of [lnrpc](https://github.com/Matt-Jensen/lnrpc) adding support for generating typescript type definitions.
@@ -53,9 +54,9 @@ import createLnRpc, {
   console.log(balanceResponse.confirmedBalance);
 
   // subscribe to LND server events
-  const subscriber = await lnRpcClient.subscribeInvoices(<InvoiceSubscription>{});
+  const subscriber = await lnRpcClient.subscribeInvoices();
   subscriber.on('data', (invoice: Invoice) => {
-    console.log(invoice); // do something with invoice
+    console.log(invoice); // do something with invoice event
   });
 })();
 ```
@@ -63,10 +64,12 @@ import createLnRpc, {
 ### Options
 
 ```typescript
-import createLnRpc from '@radar/lnrpc';
+import createLnRpc, {
+  GetInfoResponse
+} from '@radar/lnrpc';
 
 (async function() {
-  const lnRcpCustom = await createLnRpc({
+  const lnRpcClient = await createLnRpc({
     /*
      By default lnrpc connects to `localhost:10001`,
      however we can point to any host.
@@ -96,10 +99,19 @@ import createLnRpc from '@radar/lnrpc';
 
     /*
      Optional way to configure macaroon authentication by
-     passing a hex encoded string of your macaroon file
+     passing a hex encoded string of your macaroon file.
+     Encoding: `xxd -ps -u -c 1000 ./path/to/data/admin.macaroon`
+     Details: https://github.com/lightningnetwork/lnd/blob/dc3db4b/docs/macaroons.md#using-macaroons-with-grpc-clients
      */
     macaroon: process.env.MY_MACAROON_HEX,
   });
+
+  try {
+    const getInfoResponse: GetInfoResponse = await lnRpcClient.getInfo();
+    console.log(getInfoResponse);
+  } catch (error) {
+    console.error(error);
+  }
 })();
 ```
 
