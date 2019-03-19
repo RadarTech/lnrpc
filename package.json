@@ -15,7 +15,6 @@
     "lint": "tslint -c tslint.json '{lib,test,types}/**/*.ts'",
     "generate": "sh ./generate_types.sh ${npm_package_config_lnd_release_tag} ${npm_package_config_protoc_version} && node lib/clean-repeated.js",
     "postinstall": "git clone --depth 1 --branch ${npm_package_config_lnd_release_tag} ${npm_package_config_lnd_url} ./node_modules/lnd#${npm_package_config_lnd_release_tag} || true"
-
   },
   "repository": "https://github.com/RadarTech/lnrpc",
   "keywords": [
@@ -28,9 +27,9 @@
   "author": "RadarTech",
   "license": "MIT",
   "dependencies": {
+    "@grpc/grpc-js": "^0.3.6",
     "@grpc/proto-loader": "^0.4.0",
     "@types/google-protobuf": "^3.2.7",
-    "grpc": "^1.14.0-pre2",
     "pkg-dir": "^2.0.0",
     "ts-protoc-gen": "^0.8.0"
   },
