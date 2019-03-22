@@ -13,6 +13,8 @@ const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 
 describe('Lnrpc Factory', () => {
+  const certStub = 'cert';
+
   describe('TLS settings', () => {
     it('should throw an error when tls file not found', () =>
       createLnrpc({tls: './not-a-file.cert'})
@@ -193,7 +195,10 @@ describe('Lnrpc Factory', () => {
         // ensure rpc.proto file gets removed
       }
 
-      await createLnrpc({grpc: grpcStub()});
+      await createLnrpc({
+        grpc: grpcStub(),
+        cert: certStub,
+      });
 
       try {
         await stat(protoDest);
@@ -203,7 +208,10 @@ describe('Lnrpc Factory', () => {
     });
 
     it('should generate a `rpc.proto` without google annotations', async () => {
-      await createLnrpc({grpc: grpcStub()});
+      await createLnrpc({
+        grpc: grpcStub(),
+        cert: certStub,
+      });
 
       const root = await pkgDir(__dirname);
       const rpcProto = await readFile(join(root, 'rpc.proto'), 'utf-8');
@@ -227,6 +235,7 @@ describe('Lnrpc Factory', () => {
           },
         },
         grpc: grpcStub(),
+        cert: certStub,
       });
     });
 
@@ -238,6 +247,7 @@ describe('Lnrpc Factory', () => {
           equal(actual, expected, 'defaults to expected server');
           return new LightningStub();
         }),
+        cert: certStub,
       });
     });
 
@@ -250,20 +260,28 @@ describe('Lnrpc Factory', () => {
           equal(actual, expected, 'recieved configured server');
           return new LightningStub();
         }),
+        cert: certStub,
       });
     });
   });
 
   describe('proxy instance', () => {
     it('should provide access to GRPC Package Definition', () => {
-      return createLnrpc({grpc: grpcStub()}).then((lnrpc) => {
+      return createLnrpc({
+        grpc: grpcStub(),
+        cert: certStub,
+      }).then((lnrpc) => {
         equal(typeof lnrpc.description, 'object');
       });
     });
 
     it('should provide access to the lightning instance', () => {
       const expected = {};
-      return createLnrpc({grpc: grpcStub(), lightning: expected}).then(
+      return createLnrpc({
+        grpc: grpcStub(),
+        lightning: expected,
+        cert: certStub}
+      ).then(
         (lnrpc) => {
           equal(lnrpc.lightning, expected);
         }
@@ -275,6 +293,7 @@ describe('Lnrpc Factory', () => {
       return createLnrpc({
         grpc: grpcStub(),
         walletUnlocker: expected,
+        cert: certStub,
       }).then((lnrpc) => {
         equal(lnrpc.walletUnlocker, expected);
       });
@@ -284,6 +303,7 @@ describe('Lnrpc Factory', () => {
       return createLnrpc({
         grpc: grpcStub(),
         lightning: {test: () => {}},
+        cert: certStub,
       }).then((lnrpc) => {
         equal(typeof lnrpc.test, 'function');
       });
@@ -293,6 +313,7 @@ describe('Lnrpc Factory', () => {
       return createLnrpc({
         grpc: grpcStub(),
         walletUnlocker: {test: () => {}},
+        cert: certStub,
       }).then((lnrpc) => {
         equal(typeof lnrpc.test, 'function');
       });

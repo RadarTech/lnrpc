@@ -6,6 +6,8 @@ const {LightningStub} = grpcStub;
 const {equal} = assert;
 
 describe('Release API', () => {
+  const certStub = 'cert';
+
   it('should expose a lnrpc factory function as default', () => {
     equal(typeof createLnrpc, 'function');
   });
@@ -20,6 +22,7 @@ describe('Release API', () => {
 
     return createLnrpc({
       grpc: grpcStub({}, LightningCustomStub),
+      cert: certStub,
     }).then((lnrpc) => {
       equal(typeof lnrpc.walletBalance, 'function');
     });
@@ -35,6 +38,7 @@ describe('Release API', () => {
 
     return createLnrpc({
       grpc: grpcStub({}, LightningStub, WalletUnlockerStub),
+      cert: certStub,
     }).then((lnrpc) => {
       equal(typeof lnrpc.walletUnlocker.initWallet, 'function');
     });
