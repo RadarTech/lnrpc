@@ -1,115 +1,587 @@
-import { Stream } from "stream";
-import Gen from "./generated/rpc_pb";
+import { Readable, Writable } from "stream";
 
-// Overwrite specific properties
-type Overwrite<T1, T2> = {
-  [P in Exclude<keyof T1, keyof T2>]: T1[P]
-} & T2;
+export enum AddressType {
+  WITNESS_PUBKEY_HASH = 0,
+  NESTED_PUBKEY_HASH = 1,
+}
 
-export type GenSeedRequest = Partial<Gen.GenSeedRequest.AsObject>;
-export type GenSeedResponse = Gen.GenSeedResponse.AsObject;
-export type InitWalletRequest = Overwrite<Gen.InitWalletRequest.AsObject, {
-  aezeedPassphrase?: Uint8Array | string,
-  recoveryWindow?: number,
-}>;
-export type InitWalletResponse = Gen.InitWalletResponse.AsObject;
-export type UnlockWalletRequest = Overwrite<Gen.UnlockWalletRequest.AsObject, {
-  recoveryWindow?: number,
-}>;
-export type UnlockWalletResponse = Gen.UnlockWalletResponse.AsObject;
-export type ChangePasswordRequest = Gen.ChangePasswordRequest.AsObject;
-export type ChangePasswordResponse = Gen.ChangePasswordResponse.AsObject;
-export type WalletBalanceRequest = Gen.WalletBalanceRequest.AsObject;
-export type WalletBalanceResponse = Gen.WalletBalanceResponse.AsObject;
-export type ChannelBalanceRequest = Gen.ChannelBalanceRequest.AsObject;
-export type ChannelBalanceResponse = Gen.ChannelBalanceResponse.AsObject;
-export type GetTransactionsRequest = Gen.GetTransactionsRequest.AsObject;
-export type TransactionDetails = Gen.TransactionDetails.AsObject;
-export type SendCoinsRequest = Overwrite<Gen.SendCoinsRequest.AsObject, {
-  targetConf?: number,
-  satPerByte?: string,
-}>;
-export type SendCoinsResponse = Gen.SendCoinsResponse.AsObject;
-export type SendManyRequest = Overwrite<Gen.SendManyRequest.AsObject, {
-  targetConf?: number,
-  satPerByte?: string,
-}>;
-export type SendManyResponse = Gen.SendManyResponse.AsObject;
-export type NewAddressRequest = Partial<Gen.NewAddressRequest.AsObject>;
-export type NewAddressResponse = Gen.NewAddressResponse.AsObject;
-export type SignMessageRequest = Gen.SignMessageRequest.AsObject;
-export type SignMessageResponse = Gen.SignMessageResponse.AsObject;
-export type VerifyMessageRequest = Gen.VerifyMessageRequest.AsObject;
-export type VerifyMessageResponse = Gen.VerifyMessageResponse.AsObject;
-export type ConnectPeerRequest = Overwrite<Gen.ConnectPeerRequest.AsObject, {
-  perm?: boolean,
-}>;
-export type ConnectPeerResponse = Gen.ConnectPeerResponse.AsObject;
-export type DisconnectPeerRequest = Gen.DisconnectPeerRequest.AsObject;
-export type DisconnectPeerResponse = Gen.DisconnectPeerResponse.AsObject;
-export type ListPeersRequest = Gen.ListPeersRequest.AsObject;
-export type ListPeersResponse = Gen.ListPeersResponse.AsObject;
-export type GetInfoRequest = Gen.GetInfoRequest.AsObject;
-export type GetInfoResponse = Gen.GetInfoResponse.AsObject;
-export type PendingChannelsRequest = Gen.PendingChannelsRequest.AsObject;
-export type PendingChannelsResponse = Gen.PendingChannelsResponse.AsObject;
-export type ListChannelsRequest = Partial<Gen.ListChannelsRequest.AsObject>;
-export type ListChannelsResponse = Gen.ListChannelsResponse.AsObject;
-export type ClosedChannelsRequest = Partial<Gen.ClosedChannelsRequest.AsObject>;
-export type ClosedChannelsResponse = Gen.ClosedChannelsResponse.AsObject;
-export type OpenChannelRequest = Partial<Gen.OpenChannelRequest.AsObject>;
-export type ChannelPoint = Gen.ChannelPoint.AsObject;
-export type CloseChannelRequest = Overwrite<Gen.CloseChannelRequest.AsObject, {
-  force?: boolean,
-  targetConf?: number,
-  satPerByte?: string,
-}>;
-export type AbandonChannelRequest = Gen.AbandonChannelRequest.AsObject;
-export type AbandonChannelResponse = Gen.AbandonChannelResponse.AsObject;
-export type SendRequest = Partial<Gen.SendRequest.AsObject>;
-export type SendResponse = Gen.SendResponse.AsObject;
-export type SendToRouteRequest = Partial<Gen.SendToRouteRequest.AsObject>;
-export type Invoice = Partial<Gen.Invoice.AsObject>;
-export type AddInvoiceResponse = Gen.AddInvoiceResponse.AsObject;
-export type ListInvoiceRequest = Partial<Gen.ListInvoiceRequest.AsObject>;
-export type ListInvoiceResponse = Gen.ListInvoiceResponse.AsObject;
-export type PaymentHash = Partial<Gen.PaymentHash.AsObject>;
-export type InvoiceSubscription = Gen.InvoiceSubscription.AsObject;
-export type PayReqString = Gen.PayReqString.AsObject;
-export type PayReq = Gen.PayReq.AsObject;
-export type ListPaymentsRequest = Gen.ListPaymentsRequest.AsObject;
-export type ListPaymentsResponse = Gen.ListPaymentsResponse.AsObject;
-export type DeleteAllPaymentsRequest = Gen.DeleteAllPaymentsRequest.AsObject;
-export type DeleteAllPaymentsResponse = Gen.DeleteAllPaymentsResponse.AsObject;
-export type ChannelGraphRequest = Partial<Gen.ChannelGraphRequest.AsObject>;
-export type ChannelGraph = Gen.ChannelGraph.AsObject;
-export type ChanInfoRequest = Gen.ChanInfoRequest.AsObject;
-export type ChannelEdge = Gen.ChannelEdge.AsObject;
-export type NodeInfoRequest = Gen.NodeInfoRequest.AsObject;
-export type NodeInfo = Gen.NodeInfo.AsObject;
-export type QueryRoutesRequest = Overwrite<Gen.QueryRoutesRequest.AsObject, {
-  amt?: string,
-  numRoutes?: number,
-  finalCltvDelta?: number,
-}>;
-export type QueryRoutesResponse = Gen.QueryRoutesResponse.AsObject;
-export type NetworkInfoRequest = Gen.NetworkInfoRequest.AsObject;
-export type NetworkInfo = Gen.NetworkInfo.AsObject;
-export type StopRequest = Gen.StopRequest.AsObject;
-export type StopResponse = Gen.StopResponse.AsObject;
-export type GraphTopologySubscription = Gen.GraphTopologySubscription.AsObject;
-export type DebugLevelRequest = Overwrite<Gen.DebugLevelRequest.AsObject, {
-  show?: boolean,
-}>;
-export type DebugLevelResponse = Gen.DebugLevelResponse.AsObject;
-export type FeeReportRequest = Gen.FeeReportRequest.AsObject;
-export type FeeReportResponse = Gen.FeeReportResponse.AsObject;
-export type PolicyUpdateRequest = Overwrite<Gen.PolicyUpdateRequest.AsObject, {
-  global?: boolean,
-}>;
-export type PolicyUpdateResponse = Gen.PolicyUpdateResponse.AsObject;
-export type ForwardingHistoryRequest = Partial<Gen.ForwardingHistoryRequest.AsObject>;
-export type ForwardingHistoryResponse = Gen.ForwardingHistoryResponse.AsObject;
+export enum ClosureType {
+  COOPERATIVE_CLOSE = 0,
+  LOCAL_FORCE_CLOSE = 1,
+  REMOTE_FORCE_CLOSE = 2,
+  BREACH_CLOSE = 3,
+  FUNDING_CANCELED = 4,
+  ABANDONED = 5,
+}
+
+export interface Transaction {
+  txHash: string;
+  amount: string;
+  numConfirmations: number;
+  blockHash: string;
+  blockHeight: number;
+  timeStamp: string;
+  totalFees: string;
+  destAddresses: string[];
+}
+
+export interface LightningAddress {
+  pubkey: string;
+  host: string;
+}
+
+export interface Peer {
+  pubKey: string;
+  address: string;
+  bytesSent: string;
+  bytesRecv: string;
+  satSent: string;
+  satRecv: string;
+  inbound: boolean;
+  pingTime: string;
+}
+
+export interface PendingHTLC {
+  incoming: boolean;
+  amount: string;
+  outpoint: string;
+  maturityHeight: number;
+  blocksTilMaturity: number;
+  stage: number;
+}
+
+export interface HTLC {
+  incoming: boolean;
+  amount: string;
+  hashLock: Uint8Array | string;
+  expirationHeight: number;
+}
+
+export interface PendingChannel {
+  remoteNodePub: string;
+  channelPoint: string;
+  capacity: string;
+  localBalance: string;
+  remoteBalance: string;
+}
+
+export interface PendingOpenChannel {
+  channel?: PendingChannel;
+  confirmationHeight: number;
+  commitFee: string;
+  commitWeight: string;
+  feePerKw: string;
+}
+
+export interface ClosedChannel {
+  channel?: PendingChannel;
+  closingTxid: string;
+}
+
+export interface ForceClosedChannel {
+  channel?: PendingChannel;
+  closingTxid: string;
+  limboBalance: string;
+  maturityHeight: number;
+  blocksTilMaturity: number;
+  recoveredBalance: string;
+  pendingHtlcs: PendingHTLC[];
+}
+
+export interface WaitingCloseChannel {
+  channel?: PendingChannel;
+  limboBalance: string;
+}
+
+export interface Channel {
+  active: boolean;
+  remotePubkey: string;
+  channelPoint: string;
+  chanId: string;
+  capacity: string;
+  localBalance: string;
+  remoteBalance: string;
+  commitFee: string;
+  commitWeight: string;
+  feePerKw: string;
+  unsettledBalance: string;
+  totalSatoshisSent: string;
+  totalSatoshisReceived: string;
+  numUpdates: string;
+  pendingHtlcs: HTLC[];
+  csvDelay: number;
+  pb_private: boolean;
+}
+
+export interface ChannelCloseSummary {
+  channelPoint: string;
+  chanId: string;
+  chainHash: string;
+  closingTxHash: string;
+  remotePubkey: string;
+  capacity: string;
+  closeHeight: number;
+  settledBalance: string;
+  timeLockedBalance: string;
+  closeType: ClosureType;
+}
+
+export interface FeeLimit {
+  fixed: string;
+  percent: string;
+}
+
+export interface Hop {
+  chanId: string;
+  chanCapacity: string;
+  amtToForward: string;
+  fee: string;
+  expiry: number;
+  amtToForwardMsat: string;
+  feeMsat: string;
+  pubKey: string;
+}
+
+export interface Route {
+  totalTimeLock: number;
+  totalFees: string;
+  totalAmt: string;
+  hops: Hop[];
+  totalFeesMsat: string;
+  totalAmtMsat: string;
+}
+
+export interface HopHint {
+  nodeId: string;
+  chanId: string;
+  feeBaseMsat: number;
+  feeProportionalMillionths: number;
+  cltvExpiryDelta: number;
+}
+
+export interface RouteHint {
+  hopHints: HopHint[];
+}
+
+export interface Payment {
+  paymentHash: string;
+  value: string;
+  creationDate: string;
+  path: string[];
+  fee: string;
+  paymentPreimage: string;
+  valueSat: string;
+  valueMsat: string;
+}
+
+export interface NodeAddress {
+  network: string;
+  addr: string;
+}
+
+export interface LightningNode {
+  lastUpdate: number;
+  pubKey: string;
+  alias: string;
+  addresses: NodeAddress;
+  color: string;
+}
+
+export interface RoutingPolicy {
+  timeLockDelta: number;
+  minHtlc: string;
+  feeBaseMsat: string;
+  feeRateMilliMsat: string;
+  disabled: boolean;
+}
+
+export interface ChannelFeeReport {
+  chanPoint: string;
+  baseFeeMsat: string;
+  feePerMil: string;
+  feeRate: number;
+}
+
+export interface ForwardingEvent {
+  timestamp: string;
+  chanIdIn: string;
+  chanIdOut: string;
+  amtIn: string;
+  amtOut: string;
+  fee: string;
+}
+
+export interface GenSeedRequest {
+  aezeedPassphrase?: Uint8Array | string;
+  seedEntropy?: Uint8Array | string;
+}
+
+export interface GenSeedResponse {
+  cipherSeedMnemonic: string[];
+  encipheredSeed: Uint8Array | string;
+}
+
+export interface InitWalletRequest {
+  walletPassword: Uint8Array | string;
+  cipherSeedMnemonic: string[];
+  aezeedPassphrase?: Uint8Array | string;
+  recoveryWindow?: number;
+}
+
+export interface UnlockWalletRequest {
+  walletPassword: Uint8Array | string;
+  recoveryWindow?: number;
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: Uint8Array | string;
+  newPassword: Uint8Array | string;
+}
+
+export interface WalletBalanceResponse {
+  totalBalance: string;
+  confirmedBalance: string;
+  unconfirmedBalance: string;
+}
+
+export interface ChannelBalanceResponse {
+  balance: string;
+  pendingOpenBalance: string;
+}
+
+export interface TransactionDetails {
+  transactions: Transaction[];
+}
+
+export interface SendCoinsRequest {
+  addr: string;
+  amount: string;
+  targetConf?: number;
+  satPerByte?: string;
+}
+
+export interface SendCoinsResponse {
+  txid: string;
+}
+
+export interface SendManyRequest {
+  addrtoamountMap: Array<[string, number]>;
+  targetConf?: number;
+  satPerByte?: string;
+}
+
+export interface SendManyResponse {
+  txid: string;
+}
+
+export interface NewAddressRequest {
+  type?: AddressType;
+}
+
+export interface NewAddressResponse {
+  address: string;
+}
+
+export interface SignMessageRequest {
+  msg: Uint8Array | string;
+}
+
+export interface SignMessageResponse {
+  signature: string;
+}
+
+export interface VerifyMessageRequest {
+  msg: Uint8Array | string;
+  signature: string;
+}
+
+export interface VerifyMessageResponse {
+  valid: boolean;
+  pubkey: string;
+}
+
+export interface ConnectPeerRequest {
+  addr?: LightningAddress;
+  perm?: boolean;
+}
+
+export interface DisconnectPeerRequest {
+  pubKey: string;
+}
+
+export interface ListPeersResponse {
+  peers: Peer[];
+}
+
+export interface GetInfoResponse {
+  identityPubkey: string;
+  alias: string;
+  numPendingChannels: number;
+  numActiveChannels: number;
+  numPeers: number;
+  blockHeight: number;
+  blockHash: string;
+  syncedToChain: boolean;
+  testnet: boolean;
+  chains: string[];
+  uris: string[];
+  bestHeaderTimestamp: string;
+  version: string;
+  numInactiveChannels: number;
+}
+
+export interface PendingChannelsResponse {
+  totalLimboBalance: string;
+  pendingOpenChannels: PendingOpenChannel[];
+  pendingClosingChannels: ClosedChannel[];
+  pendingForceClosingChannels: ForceClosedChannel[];
+  waitingCloseChannels: WaitingCloseChannel[];
+}
+
+export interface ListChannelsRequest {
+  activeOnly?: boolean;
+  inactiveOnly?: boolean;
+  publicOnly?: boolean;
+  privateOnly?: boolean;
+}
+
+export interface ListChannelsResponse {
+  channels: Channel[];
+}
+
+export interface ClosedChannelsRequest {
+  cooperative?: boolean;
+  localForce?: boolean;
+  remoteForce?: boolean;
+  breach?: boolean;
+  fundingCanceled?: boolean;
+  abandoned?: boolean;
+}
+
+export interface ClosedChannelsResponse {
+  channels: ChannelCloseSummary[];
+}
+
+export interface OpenChannelRequest {
+  nodePubkey?: Uint8Array | string;
+  nodePubkeyString?: string;
+  localFundingAmount?: string;
+  pushSat?: string;
+  targetConf?: number;
+  satPerByte?: string;
+  pb_private?: boolean;
+  minHtlcMsat?: string;
+  remoteCsvDelay?: number;
+  minConfs?: number;
+  spendUnconfirmed?: boolean;
+}
+
+export interface ChannelPoint {
+  fundingTxidBytes: Uint8Array | string;
+  fundingTxidStr: string;
+  outputIndex: number;
+}
+
+export interface CloseChannelRequest {
+  channelPoint: ChannelPoint;
+  force?: boolean;
+  targetConf?: number;
+  satPerByte?: string;
+}
+
+export interface AbandonChannelRequest {
+  channelPoint?: ChannelPoint;
+}
+
+export interface SendRequest {
+  dest?: Uint8Array | string;
+  destString?: string;
+  amt?: string;
+  paymentHash?: Uint8Array | string;
+  paymentHashString?: string;
+  paymentRequest?: string;
+  finalCltvDelta?: number;
+  feeLimit?: FeeLimit;
+}
+
+export interface SendResponse {
+  paymentError: string;
+  paymentPreimage: Uint8Array | string;
+  paymentRoute?: Route;
+}
+
+export interface SendToRouteRequest {
+  paymentHash?: Uint8Array | string;
+  paymentHashString?: string;
+  routes?: Route[];
+}
+
+export interface Invoice {
+  memo?: string;
+  receipt?: Uint8Array | string;
+  rPreimage?: Uint8Array | string;
+  rHash?: Uint8Array | string;
+  value?: string;
+  settled?: boolean;
+  creationDate?: string;
+  settleDate?: string;
+  paymentRequest?: string;
+  descriptionHash?: Uint8Array | string;
+  expiry?: string;
+  fallbackAddr?: string;
+  cltvExpiry?: string;
+  routeHints?: RouteHint[];
+  pb_private?: boolean;
+  addIndex?: string;
+  settleIndex?: string;
+  amtPaid?: string;
+  amtPaidSat?: string;
+  amtPaidMsat?: string;
+}
+
+export interface AddInvoiceResponse {
+  rHash: Uint8Array | string;
+  paymentRequest: string;
+  addIndex: string;
+}
+
+export interface ListInvoiceRequest {
+  pendingOnly?: boolean;
+  indexOffset?: string;
+  numMaxInvoices?: string;
+  reversed?: boolean;
+}
+
+export interface ListInvoiceResponse {
+  invoices: Invoice[];
+  lastIndexOffset: string;
+  firstIndexOffset: string;
+}
+
+export interface PaymentHash {
+  rHashStr?: string;
+  rHash?: Uint8Array | string;
+}
+
+export interface InvoiceSubscription {
+  addIndex?: string;
+  settleIndex?: string;
+}
+
+export interface PayReqString {
+  payReq: string;
+}
+
+export interface PayReq {
+  destination: string;
+  paymentHash: string;
+  numSatoshis: string;
+  timestamp: string;
+  expiry: string;
+  description: string;
+  descriptionHash: string;
+  fallbackAddr: string;
+  cltvExpiry: string;
+  routeHints?: RouteHint[];
+}
+
+export interface ListPaymentsResponse {
+  payments: Payment[];
+}
+
+export interface ChannelGraphRequest {
+  includeUnannounced?: boolean;
+}
+
+export interface ChannelGraph {
+  nodes: LightningNode[];
+  edges: ChannelEdge[];
+}
+
+export interface ChanInfoRequest {
+  chanId: string;
+}
+
+export interface ChannelEdge {
+  channelId: string;
+  chanPoint: string;
+  lastUpdate: number;
+  node1Pub: string;
+  node2Pub: string;
+  capacity: string;
+  node1Policy?: RoutingPolicy;
+  node2Policy?: RoutingPolicy;
+}
+
+export interface NodeInfoRequest {
+  pubKey: string;
+}
+
+export interface NodeInfo {
+  node?: LightningNode;
+  numChannels: number;
+  totalCapacity: string;
+}
+
+export interface QueryRoutesRequest {
+  pubKey: string;
+  amt?: string;
+  numRoutes?: number;
+  finalCltvDelta?: number;
+  feeLimit?: FeeLimit;
+}
+
+export interface QueryRoutesResponse {
+  routes: Route[];
+}
+
+export interface NetworkInfo {
+  graphDiameter: number;
+  avgOutDegree: number;
+  maxOutDegree: number;
+  numNodes: number;
+  numChannels: number;
+  totalNetworkCapacity: string;
+  avgChannelSize: number;
+  minChannelSize: string;
+  maxChannelSize: string;
+}
+
+export interface DebugLevelRequest {
+  show?: boolean;
+  levelSpec: string;
+}
+
+export interface DebugLevelResponse {
+  subSystems: string;
+}
+
+export interface FeeReportResponse {
+  channelFees: ChannelFeeReport[];
+  dayFeeSum: string;
+  weekFeeSum: string;
+  monthFeeSum: string;
+}
+
+export interface PolicyUpdateRequest {
+  global?: boolean;
+  chanPoint?: ChannelPoint;
+  baseFeeMsat: string;
+  feeRate: number;
+  timeLockDelta: number;
+}
+
+export interface ForwardingHistoryRequest {
+  startTime?: string;
+  endTime?: string;
+  indexOffset?: number;
+  numMaxEvents?: number;
+}
+
+export interface ForwardingHistoryResponse {
+  forwardingEvents: ForwardingEvent[];
+  lastOffsetIndex: number;
+}
 
 /**
  * LND gRPC API Client
@@ -133,34 +605,34 @@ export class LnRpc {
    * be used along with the genSeed RPC to obtain a seed, then present it to the user. Once it has been verified by
    * the user, the seed can be fed into this RPC in order to commit the new wallet.
    */
-  public initWallet(args: InitWalletRequest): Promise<InitWalletResponse>;
+  public initWallet(args: InitWalletRequest): Promise<{}>;
 
   /**
    * unlockWallet is used at startup of lnd to provide a password to unlock the wallet database.
    */
-  public unlockWallet(args: UnlockWalletRequest): Promise<UnlockWalletResponse>;
+  public unlockWallet(args: UnlockWalletRequest): Promise<{}>;
 
   /**
    * changePassword changes the password of the encrypted wallet. This will automatically unlock the wallet
    * database if successful.
    */
-  public changePassword(args: ChangePasswordRequest): Promise<ChangePasswordResponse>;
+  public changePassword(args: ChangePasswordRequest): Promise<{}>;
 
   /**
    * walletBalance returns total unspent outputs(confirmed and unconfirmed), all confirmed unspent outputs and all
    * unconfirmed unspent outputs under control of the wallet.
    */
-  public walletBalance(args?: WalletBalanceRequest): Promise<WalletBalanceResponse>;
+  public walletBalance(args?: {}): Promise<WalletBalanceResponse>;
 
   /**
    * channelBalance returns the total funds available across all open channels in satoshis.
    */
-  public channelBalance(args?: ChannelBalanceRequest): Promise<ChannelBalanceResponse>;
+  public channelBalance(args?: {}): Promise<ChannelBalanceResponse>;
 
   /**
    * getTransactions returns a list describing all the known transactions relevant to the wallet.
    */
-  public getTransactions(args?: GetTransactionsRequest): Promise<TransactionDetails>;
+  public getTransactions(args?: {}): Promise<TransactionDetails>;
 
   /**
    * sendCoins executes a request to send coins to a particular address. Unlike sendMany, this RPC call only allows
@@ -173,7 +645,7 @@ export class LnRpc {
    * subscribeTransactions creates a uni-directional stream from the server to the client in which any newly
    * discovered transactions relevant to the wallet are sent over.
    */
-  public subscribeTransactions(args?: GetTransactionsRequest): Promise<Stream>;
+  public subscribeTransactions(args?: {}): Promise<Readable>;
 
   /**
    * sendMany handles a request for a transaction that creates multiple specified outputs in parallel. If neither
@@ -204,31 +676,31 @@ export class LnRpc {
    * connectPeer attempts to establish a connection to a remote peer. This is at the networking level, and is used
    * for communication between nodes. This is distinct from establishing a channel with a peer.
    */
-  public connectPeer(args: ConnectPeerRequest): Promise<ConnectPeerResponse>;
+  public connectPeer(args: ConnectPeerRequest): Promise<{}>;
 
   /**
    * disconnectPeer attempts to disconnect one peer from another identified by a given pubKey. In the case that we
    * currently have a pending or active channel with the target peer, then this action will be not be allowed.
    */
-  public disconnectPeer(args: DisconnectPeerRequest): Promise<DisconnectPeerResponse>;
+  public disconnectPeer(args: DisconnectPeerRequest): Promise<{}>;
 
   /**
    * listPeers returns a verbose listing of all currently active peers.
    */
-  public listPeers(args?: ListPeersRequest): Promise<ListPeersResponse>;
+  public listPeers(args?: {}): Promise<ListPeersResponse>;
 
   /**
    * getInfo returns general information concerning the lightning node including it’s identity pubkey, alias, the
    * chains it is connected to, and information concerning the number of open+pending channels.
    */
-  public getInfo(args?: GetInfoRequest): Promise<GetInfoResponse>;
+  public getInfo(args?: {}): Promise<GetInfoResponse>;
 
   /**
    * pendingChannels returns a list of all the channels that are currently considered “pending”. A channel is
    * pending if it has finished the funding workflow and is waiting for confirmations for the funding txn, or is in
    * the process of closure, either initiated cooperatively or non-cooperatively.
    */
-  public pendingChannels(args?: PendingChannelsRequest): Promise<PendingChannelsResponse>;
+  public pendingChannels(args?: {}): Promise<PendingChannelsResponse>;
 
   /**
    * listChannels returns a description of all the open channels that this node is a participant in.
@@ -252,7 +724,7 @@ export class LnRpc {
    * to specify a target number of blocks that the funding transaction should be confirmed in, or a manual fee rate
    * to us for the funding transaction. If neither are specified, then a lax block confirmation target is used.
    */
-  public openChannel(args: OpenChannelRequest): Promise<Stream>;
+  public openChannel(args: OpenChannelRequest): Promise<Readable>;
 
   /**
    * closeChannel attempts to close an active channel identified by its channel outpoint (ChannelPoint). The
@@ -261,21 +733,21 @@ export class LnRpc {
    * either a target number of blocks until the closure transaction is confirmed, or a manual fee rate. If neither
    * are specified, then a default lax, block confirmation target is used.
    */
-  public closeChannel(args: CloseChannelRequest): Promise<Stream>;
+  public closeChannel(args: CloseChannelRequest): Promise<Readable>;
 
   /**
    * abandonChannel removes all channel state from the database except for a close summary. This method can be used
    * to get rid of permanently unusable channels due to bugs fixed in newer versions of lnd. Only available when in
    * debug builds of lnd.
    */
-  public abandonChannel(args: AbandonChannelRequest): Promise<AbandonChannelResponse>;
+  public abandonChannel(args: AbandonChannelRequest): Promise<{}>;
 
   /**
    * sendPayment dispatches a bi-directional streaming RPC for sending payments through the Lightning Network. A
    * single RPC invocation creates a persistent bi-directional stream allowing clients to rapidly send payments
    * through the Lightning Network with a single persistent connection.
    */
-  public sendPayment(args: SendRequest): Promise<Stream>;
+  public sendPayment(args: SendRequest): Promise<Writable>;
 
   /**
    * sendPaymentSync is the synchronous non-streaming version of sendPayment. This RPC is intended to be consumed
@@ -289,7 +761,7 @@ export class LnRpc {
    * differs from SendPayment in that it allows users to specify a full route manually. This can be used for things
    * like rebalancing, and atomic swaps.
    */
-  public sendToRoute(args: SendToRouteRequest): Promise<Stream>;
+  public sendToRoute(args: SendToRouteRequest): Promise<Writable>;
 
   /**
    * sendToRouteSync is a synchronous version of sendToRoute. It Will block until the payment either fails or succeeds.
@@ -326,7 +798,7 @@ export class LnRpc {
    * settle events for invoices with a settleIndex greater than the specified value. One or both of these fields
    * can be set. If no fields are set, then we’ll only send out the latest add/settle events.
    */
-  public subscribeInvoices(args?: InvoiceSubscription): Promise<Stream>;
+  public subscribeInvoices(args?: InvoiceSubscription): Promise<Readable>;
 
   /**
    * decodePayReq takes an encoded payment request string and attempts to decode it, returning a full description
@@ -337,12 +809,12 @@ export class LnRpc {
   /**
    * listPayments returns a list of all outgoing payments.
    */
-  public listPayments(args?: ListPaymentsRequest): Promise<ListPaymentsResponse>;
+  public listPayments(args?: {}): Promise<ListPaymentsResponse>;
 
   /**
    * deleteAllPayments deletes all outgoing payments from DB.
    */
-  public deleteAllPayments(args?: DeleteAllPaymentsRequest): Promise<DeleteAllPaymentsResponse>;
+  public deleteAllPayments(args?: {}): Promise<{}>;
 
   /**
    * describeGraph returns a description of the latest graph state from the point of view of the node. The graph
@@ -376,12 +848,12 @@ export class LnRpc {
   /**
    * getNetworkInfo returns some basic stats about the known channel graph from the point of view of the node.
    */
-  public getNetworkInfo(args?: NetworkInfoRequest): Promise<NetworkInfo>;
+  public getNetworkInfo(args?: {}): Promise<NetworkInfo>;
 
   /**
    * stopDaemon will send a shutdown request to the interrupt handler, triggering a graceful shutdown of the daemon.
    */
-  public stopDaemon(args?: StopRequest): Promise<StopResponse>;
+  public stopDaemon(args?: {}): Promise<{}>;
 
   /**
    * subscribeChannelGraph launches a streaming RPC that allows the caller to receive notifications upon any
@@ -389,7 +861,7 @@ export class LnRpc {
    * new nodes coming online, nodes updating their authenticated attributes, new channels being advertised, updates
    * in the routing policy for a directional channel edge, and when channels are closed on-chain.
    */
-  public subscribeChannelGraph(args?: GraphTopologySubscription): Promise<Stream>;
+  public subscribeChannelGraph(args?: {}): Promise<Readable>;
 
   /**
    * debugLevel allows a caller to programmatically set the logging verbosity of lnd. The logging can be targeted
@@ -402,13 +874,13 @@ export class LnRpc {
    * feeReport allows the caller to obtain a report detailing the current fee schedule enforced by the node globally
    * for each channel.
    */
-  public feeReport(args?: FeeReportRequest): Promise<FeeReportResponse>;
+  public feeReport(args?: {}): Promise<FeeReportResponse>;
 
   /**
    * updateChannelPolicy allows the caller to update the fee schedule and channel policies for all channels globally,
    * or a particular channel.
    */
-  public updateChannelPolicy(args: PolicyUpdateRequest): Promise<PolicyUpdateResponse>;
+  public updateChannelPolicy(args: PolicyUpdateRequest): Promise<{}>;
 
   /**
    * forwardingHistory allows the caller to query the htlcswitch for a record of all HTLC’s forwarded within the

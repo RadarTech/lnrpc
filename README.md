@@ -27,6 +27,12 @@ Install [lnd](https://github.com/lightningnetwork/lnd/blob/master/docs/INSTALL.m
 To change the gRPC definitions used for all auto-generated types and RPC methods edit the `config.lnd_release_tag` value in `package.json` to the desired [LND release tag](https://github.com/lightningnetwork/lnd/releases) and run the following:
 
 ```sh
+npm run update-proto
+# OR
+yarn update-proto
+
+# AND
+
 npm run generate
 # OR
 yarn generate
