@@ -217,34 +217,26 @@ export interface GenSeedRequest {
 }
 
 export interface GenSeedResponse {
-  cipherSeedMnemonic: Array<string>;
+  cipherSeedMnemonic: string[];
   encipheredSeed: Uint8Array | string;
 }
 
 export interface InitWalletRequest {
   walletPassword: Uint8Array | string;
-  cipherSeedMnemonic: Array<string>;
+  cipherSeedMnemonic: string[];
   aezeedPassphrase?: Uint8Array | string;
   recoveryWindow?: number;
 }
-
-export interface InitWalletResponse {}
 
 export interface UnlockWalletRequest {
   walletPassword: Uint8Array | string;
   recoveryWindow?: number;
 }
 
-export interface UnlockWalletResponse {}
-
 export interface ChangePasswordRequest {
   currentPassword: Uint8Array | string;
   newPassword: Uint8Array | string;
 }
-
-export interface ChangePasswordResponse {}
-
-export interface WalletBalanceRequest {}
 
 export interface WalletBalanceResponse {
   totalBalance: string;
@@ -252,14 +244,10 @@ export interface WalletBalanceResponse {
   unconfirmedBalance: string;
 }
 
-export interface ChannelBalanceRequest {}
-
 export interface ChannelBalanceResponse {
   balance: string;
   pendingOpenBalance: string;
 }
-
-export interface GetTransactionsRequest {}
 
 export interface TransactionDetails {
   transactions: Transaction[];
@@ -277,7 +265,7 @@ export interface SendCoinsResponse {
 }
 
 export interface SendManyRequest {
-  addrtoamountMap: [string, number][];
+  addrtoamountMap: Array<[string, number]>;
   targetConf?: number;
   satPerByte?: string;
 }
@@ -317,21 +305,13 @@ export interface ConnectPeerRequest {
   perm?: boolean;
 }
 
-export interface ConnectPeerResponse {}
-
 export interface DisconnectPeerRequest {
   pubKey: string;
 }
 
-export interface DisconnectPeerResponse {}
-
-export interface ListPeersRequest {}
-
 export interface ListPeersResponse {
   peers: Peer[];
 }
-
-export interface GetInfoRequest {}
 
 export interface GetInfoResponse {
   identityPubkey: string;
@@ -349,8 +329,6 @@ export interface GetInfoResponse {
   version: string;
   numInactiveChannels: number;
 }
-
-export interface PendingChannelsRequest {}
 
 export interface PendingChannelsResponse {
   totalLimboBalance: string;
@@ -414,8 +392,6 @@ export interface CloseChannelRequest {
 export interface AbandonChannelRequest {
   channelPoint?: ChannelPoint;
 }
-
-export interface AbandonChannelResponse {}
 
 export interface SendRequest {
   dest?: Uint8Array | string;
@@ -509,15 +485,9 @@ export interface PayReq {
   routeHints?: RouteHint[];
 }
 
-export interface ListPaymentsRequest {}
-
 export interface ListPaymentsResponse {
   payments: Payment[];
 }
-
-export interface DeleteAllPaymentsRequest {}
-
-export interface DeleteAllPaymentsResponse {}
 
 export interface ChannelGraphRequest {
   includeUnannounced?: boolean;
@@ -565,8 +535,6 @@ export interface QueryRoutesResponse {
   routes: Route[];
 }
 
-export interface NetworkInfoRequest {}
-
 export interface NetworkInfo {
   graphDiameter: number;
   avgOutDegree: number;
@@ -579,12 +547,6 @@ export interface NetworkInfo {
   maxChannelSize: string;
 }
 
-export interface StopRequest {}
-
-export interface StopResponse {}
-
-export interface GraphTopologySubscription {}
-
 export interface DebugLevelRequest {
   show?: boolean;
   levelSpec: string;
@@ -593,8 +555,6 @@ export interface DebugLevelRequest {
 export interface DebugLevelResponse {
   subSystems: string;
 }
-
-export interface FeeReportRequest {}
 
 export interface FeeReportResponse {
   channelFees: ChannelFeeReport[];
@@ -610,8 +570,6 @@ export interface PolicyUpdateRequest {
   feeRate: number;
   timeLockDelta: number;
 }
-
-export interface PolicyUpdateResponse {}
 
 export interface ForwardingHistoryRequest {
   startTime: string;
@@ -647,34 +605,34 @@ export class LnRpc {
    * be used along with the genSeed RPC to obtain a seed, then present it to the user. Once it has been verified by
    * the user, the seed can be fed into this RPC in order to commit the new wallet.
    */
-  public initWallet(args: InitWalletRequest): Promise<InitWalletResponse>;
+  public initWallet(args: InitWalletRequest): Promise<{}>;
 
   /**
    * unlockWallet is used at startup of lnd to provide a password to unlock the wallet database.
    */
-  public unlockWallet(args: UnlockWalletRequest): Promise<UnlockWalletResponse>;
+  public unlockWallet(args: UnlockWalletRequest): Promise<{}>;
 
   /**
    * changePassword changes the password of the encrypted wallet. This will automatically unlock the wallet
    * database if successful.
    */
-  public changePassword(args: ChangePasswordRequest): Promise<ChangePasswordResponse>;
+  public changePassword(args: ChangePasswordRequest): Promise<{}>;
 
   /**
    * walletBalance returns total unspent outputs(confirmed and unconfirmed), all confirmed unspent outputs and all
    * unconfirmed unspent outputs under control of the wallet.
    */
-  public walletBalance(args?: WalletBalanceRequest): Promise<WalletBalanceResponse>;
+  public walletBalance(args?: {}): Promise<WalletBalanceResponse>;
 
   /**
    * channelBalance returns the total funds available across all open channels in satoshis.
    */
-  public channelBalance(args?: ChannelBalanceRequest): Promise<ChannelBalanceResponse>;
+  public channelBalance(args?: {}): Promise<ChannelBalanceResponse>;
 
   /**
    * getTransactions returns a list describing all the known transactions relevant to the wallet.
    */
-  public getTransactions(args?: GetTransactionsRequest): Promise<TransactionDetails>;
+  public getTransactions(args?: {}): Promise<TransactionDetails>;
 
   /**
    * sendCoins executes a request to send coins to a particular address. Unlike sendMany, this RPC call only allows
@@ -687,7 +645,7 @@ export class LnRpc {
    * subscribeTransactions creates a uni-directional stream from the server to the client in which any newly
    * discovered transactions relevant to the wallet are sent over.
    */
-  public subscribeTransactions(args?: GetTransactionsRequest): Promise<Readable>;
+  public subscribeTransactions(args?: {}): Promise<Readable>;
 
   /**
    * sendMany handles a request for a transaction that creates multiple specified outputs in parallel. If neither
@@ -718,31 +676,31 @@ export class LnRpc {
    * connectPeer attempts to establish a connection to a remote peer. This is at the networking level, and is used
    * for communication between nodes. This is distinct from establishing a channel with a peer.
    */
-  public connectPeer(args: ConnectPeerRequest): Promise<ConnectPeerResponse>;
+  public connectPeer(args: ConnectPeerRequest): Promise<{}>;
 
   /**
    * disconnectPeer attempts to disconnect one peer from another identified by a given pubKey. In the case that we
    * currently have a pending or active channel with the target peer, then this action will be not be allowed.
    */
-  public disconnectPeer(args: DisconnectPeerRequest): Promise<DisconnectPeerResponse>;
+  public disconnectPeer(args: DisconnectPeerRequest): Promise<{}>;
 
   /**
    * listPeers returns a verbose listing of all currently active peers.
    */
-  public listPeers(args?: ListPeersRequest): Promise<ListPeersResponse>;
+  public listPeers(args?: {}): Promise<ListPeersResponse>;
 
   /**
    * getInfo returns general information concerning the lightning node including it’s identity pubkey, alias, the
    * chains it is connected to, and information concerning the number of open+pending channels.
    */
-  public getInfo(args?: GetInfoRequest): Promise<GetInfoResponse>;
+  public getInfo(args?: {}): Promise<GetInfoResponse>;
 
   /**
    * pendingChannels returns a list of all the channels that are currently considered “pending”. A channel is
    * pending if it has finished the funding workflow and is waiting for confirmations for the funding txn, or is in
    * the process of closure, either initiated cooperatively or non-cooperatively.
    */
-  public pendingChannels(args?: PendingChannelsRequest): Promise<PendingChannelsResponse>;
+  public pendingChannels(args?: {}): Promise<PendingChannelsResponse>;
 
   /**
    * listChannels returns a description of all the open channels that this node is a participant in.
@@ -782,7 +740,7 @@ export class LnRpc {
    * to get rid of permanently unusable channels due to bugs fixed in newer versions of lnd. Only available when in
    * debug builds of lnd.
    */
-  public abandonChannel(args: AbandonChannelRequest): Promise<AbandonChannelResponse>;
+  public abandonChannel(args: AbandonChannelRequest): Promise<{}>;
 
   /**
    * sendPayment dispatches a bi-directional streaming RPC for sending payments through the Lightning Network. A
@@ -851,12 +809,12 @@ export class LnRpc {
   /**
    * listPayments returns a list of all outgoing payments.
    */
-  public listPayments(args?: ListPaymentsRequest): Promise<ListPaymentsResponse>;
+  public listPayments(args?: {}): Promise<ListPaymentsResponse>;
 
   /**
    * deleteAllPayments deletes all outgoing payments from DB.
    */
-  public deleteAllPayments(args?: DeleteAllPaymentsRequest): Promise<DeleteAllPaymentsResponse>;
+  public deleteAllPayments(args?: {}): Promise<{}>;
 
   /**
    * describeGraph returns a description of the latest graph state from the point of view of the node. The graph
@@ -890,12 +848,12 @@ export class LnRpc {
   /**
    * getNetworkInfo returns some basic stats about the known channel graph from the point of view of the node.
    */
-  public getNetworkInfo(args?: NetworkInfoRequest): Promise<NetworkInfo>;
+  public getNetworkInfo(args?: {}): Promise<NetworkInfo>;
 
   /**
    * stopDaemon will send a shutdown request to the interrupt handler, triggering a graceful shutdown of the daemon.
    */
-  public stopDaemon(args?: StopRequest): Promise<StopResponse>;
+  public stopDaemon(args?: {}): Promise<{}>;
 
   /**
    * subscribeChannelGraph launches a streaming RPC that allows the caller to receive notifications upon any
@@ -903,7 +861,7 @@ export class LnRpc {
    * new nodes coming online, nodes updating their authenticated attributes, new channels being advertised, updates
    * in the routing policy for a directional channel edge, and when channels are closed on-chain.
    */
-  public subscribeChannelGraph(args?: GraphTopologySubscription): Promise<Readable>;
+  public subscribeChannelGraph(args?: {}): Promise<Readable>;
 
   /**
    * debugLevel allows a caller to programmatically set the logging verbosity of lnd. The logging can be targeted
@@ -916,13 +874,13 @@ export class LnRpc {
    * feeReport allows the caller to obtain a report detailing the current fee schedule enforced by the node globally
    * for each channel.
    */
-  public feeReport(args?: FeeReportRequest): Promise<FeeReportResponse>;
+  public feeReport(args?: {}): Promise<FeeReportResponse>;
 
   /**
    * updateChannelPolicy allows the caller to update the fee schedule and channel policies for all channels globally,
    * or a particular channel.
    */
-  public updateChannelPolicy(args: PolicyUpdateRequest): Promise<PolicyUpdateResponse>;
+  public updateChannelPolicy(args: PolicyUpdateRequest): Promise<{}>;
 
   /**
    * forwardingHistory allows the caller to query the htlcswitch for a record of all HTLC’s forwarded within the
