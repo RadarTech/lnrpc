@@ -38,9 +38,9 @@ describe('Install', () => {
   });
 
   const targetLndDir =
-    `node_modules/lnd#${process.env.npm_package_config_lnd_release_tag}`;
+    `lnd/${process.env.npm_package_config_lnd_release_tag}`;
 
-  it('should generate lnd dir under `node_modules/lnd`', async () => {
+  it('should generate lnd dir under `lnd/`', async () => {
     const root = await pkgDir(__dirname);
 
     return stat(join(root, targetLndDir))
@@ -48,15 +48,15 @@ describe('Install', () => {
       .catch((e) => assert.fail(`${targetLndDir} was not installed`));
   });
 
-  it('should have a lnd/lnrpc/rpc.proto file', async () => {
+  it('should have a lnd/rpc.proto file', async () => {
     const root = await pkgDir(__dirname);
 
-    return stat(join(root, `${targetLndDir}/lnrpc/rpc.proto`))
+    return stat(join(root, `${targetLndDir}/rpc.proto`))
       .then((stats) =>
-        assert(stats.isFile(), `${targetLndDir}/lnrpc/rpc.proto exists`)
+        assert(stats.isFile(), `${targetLndDir}/rpc.proto exists`)
       )
       .catch((e) =>
-        assert.fail(`${targetLndDir}/lnrpc/rpc.proto was not installed`)
+        assert.fail(`${targetLndDir}/rpc.proto was not installed`)
       );
   });
 });
