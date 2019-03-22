@@ -572,10 +572,10 @@ export interface PolicyUpdateRequest {
 }
 
 export interface ForwardingHistoryRequest {
-  startTime: string;
-  endTime: string;
-  indexOffset: number;
-  numMaxEvents: number;
+  startTime?: string;
+  endTime?: string;
+  indexOffset?: number;
+  numMaxEvents?: number;
 }
 
 export interface ForwardingHistoryResponse {
