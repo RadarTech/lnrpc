@@ -53,7 +53,7 @@ export interface PendingHTLC {
 export interface HTLC {
   incoming: boolean;
   amount: string;
-  hashLock: Uint8Array | string;
+  hashLock: Buffer | string;
   expirationHeight: number;
 }
 
@@ -212,30 +212,30 @@ export interface ForwardingEvent {
 }
 
 export interface GenSeedRequest {
-  aezeedPassphrase?: Uint8Array | string;
-  seedEntropy?: Uint8Array | string;
+  aezeedPassphrase?: Buffer | string;
+  seedEntropy?: Buffer | string;
 }
 
 export interface GenSeedResponse {
   cipherSeedMnemonic: string[];
-  encipheredSeed: Uint8Array | string;
+  encipheredSeed: Buffer | string;
 }
 
 export interface InitWalletRequest {
-  walletPassword: Uint8Array | string;
+  walletPassword: Buffer | string;
   cipherSeedMnemonic: string[];
-  aezeedPassphrase?: Uint8Array | string;
+  aezeedPassphrase?: Buffer | string;
   recoveryWindow?: number;
 }
 
 export interface UnlockWalletRequest {
-  walletPassword: Uint8Array | string;
+  walletPassword: Buffer | string;
   recoveryWindow?: number;
 }
 
 export interface ChangePasswordRequest {
-  currentPassword: Uint8Array | string;
-  newPassword: Uint8Array | string;
+  currentPassword: Buffer | string;
+  newPassword: Buffer | string;
 }
 
 export interface WalletBalanceResponse {
@@ -283,7 +283,7 @@ export interface NewAddressResponse {
 }
 
 export interface SignMessageRequest {
-  msg: Uint8Array | string;
+  msg: Buffer | string;
 }
 
 export interface SignMessageResponse {
@@ -291,7 +291,7 @@ export interface SignMessageResponse {
 }
 
 export interface VerifyMessageRequest {
-  msg: Uint8Array | string;
+  msg: Buffer | string;
   signature: string;
 }
 
@@ -363,7 +363,7 @@ export interface ClosedChannelsResponse {
 }
 
 export interface OpenChannelRequest {
-  nodePubkey?: Uint8Array | string;
+  nodePubkey?: Buffer | string;
   nodePubkeyString?: string;
   localFundingAmount?: string;
   pushSat?: string;
@@ -377,7 +377,7 @@ export interface OpenChannelRequest {
 }
 
 export interface ChannelPoint {
-  fundingTxidBytes: Uint8Array | string;
+  fundingTxidBytes: Buffer | string;
   fundingTxidStr: string;
   outputIndex: number;
 }
@@ -394,10 +394,10 @@ export interface AbandonChannelRequest {
 }
 
 export interface SendRequest {
-  dest?: Uint8Array | string;
+  dest?: Buffer | string;
   destString?: string;
   amt?: string;
-  paymentHash?: Uint8Array | string;
+  paymentHash?: Buffer | string;
   paymentHashString?: string;
   paymentRequest?: string;
   finalCltvDelta?: number;
@@ -406,27 +406,27 @@ export interface SendRequest {
 
 export interface SendResponse {
   paymentError: string;
-  paymentPreimage: Uint8Array | string;
+  paymentPreimage: Buffer | string;
   paymentRoute?: Route;
 }
 
 export interface SendToRouteRequest {
-  paymentHash?: Uint8Array | string;
+  paymentHash?: Buffer | string;
   paymentHashString?: string;
   routes?: Route[];
 }
 
 export interface Invoice {
   memo?: string;
-  receipt?: Uint8Array | string;
-  rPreimage?: Uint8Array | string;
-  rHash?: Uint8Array | string;
+  receipt?: Buffer | string;
+  rPreimage?: Buffer | string;
+  rHash?: Buffer | string;
   value?: string;
   settled?: boolean;
   creationDate?: string;
   settleDate?: string;
   paymentRequest?: string;
-  descriptionHash?: Uint8Array | string;
+  descriptionHash?: Buffer | string;
   expiry?: string;
   fallbackAddr?: string;
   cltvExpiry?: string;
@@ -440,7 +440,7 @@ export interface Invoice {
 }
 
 export interface AddInvoiceResponse {
-  rHash: Uint8Array | string;
+  rHash: Buffer | string;
   paymentRequest: string;
   addIndex: string;
 }
@@ -460,7 +460,7 @@ export interface ListInvoiceResponse {
 
 export interface PaymentHash {
   rHashStr?: string;
-  rHash?: Uint8Array | string;
+  rHash?: Buffer | string;
 }
 
 export interface InvoiceSubscription {
