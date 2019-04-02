@@ -502,17 +502,17 @@ export interface ChannelUpdate {
   capacity: string;
   routingPolicy: RoutingPolicy;
   advertisingNode: string;
-  connectingNode: string
+  connectingNode: string;
 }
 
 export interface ClosedChannelUpdate {
   chanId: string;
   capacity: string;
   closedHeight: string;
-  chanPoint: ChannelPoint
+  chanPoint: ChannelPoint;
 }
 
-export interface ChannelGraphSubscription{
+export interface ChannelGraphSubscription {
   nodeUpdates: NodeUpdate[];
   channelUpdates: ChannelUpdate[];
   closedChans: ClosedChannelUpdate[];
