@@ -489,6 +489,35 @@ export interface ListPaymentsResponse {
   payments: Payment[];
 }
 
+export interface NodeUpdate {
+  addresses: string[];
+  identityKey: string;
+  globalFeatures: string;
+  alias: string;
+}
+
+export interface ChannelUpdate {
+  chanId: string;
+  chanPoint: ChannelPoint;
+  capacity: string;
+  routingPolicy: RoutingPolicy;
+  advertisingNode: string;
+  connectingNode: string;
+}
+
+export interface ClosedChannelUpdate {
+  chanId: string;
+  capacity: string;
+  closedHeight: string;
+  chanPoint: ChannelPoint;
+}
+
+export interface ChannelGraphSubscription {
+  nodeUpdates: NodeUpdate[];
+  channelUpdates: ChannelUpdate[];
+  closedChans: ClosedChannelUpdate[];
+}
+
 export interface ChannelGraphRequest {
   includeUnannounced?: boolean;
 }
