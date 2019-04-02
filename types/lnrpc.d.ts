@@ -110,7 +110,7 @@ export interface Channel {
   numUpdates: string;
   pendingHtlcs: HTLC[];
   csvDelay: number;
-  pb_private: boolean;
+  private: boolean;
 }
 
 export interface ChannelCloseSummary {
@@ -369,7 +369,7 @@ export interface OpenChannelRequest {
   pushSat?: string;
   targetConf?: number;
   satPerByte?: string;
-  pb_private?: boolean;
+  private?: boolean;
   minHtlcMsat?: string;
   remoteCsvDelay?: number;
   minConfs?: number;
@@ -431,7 +431,7 @@ export interface Invoice {
   fallbackAddr?: string;
   cltvExpiry?: string;
   routeHints?: RouteHint[];
-  pb_private?: boolean;
+  private?: boolean;
   addIndex?: string;
   settleIndex?: string;
   amtPaid?: string;
