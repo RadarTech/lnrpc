@@ -1,4 +1,4 @@
-import { Readable, Writable } from "stream";
+import { Duplex, Readable } from "./streams";
 
 export enum AddressType {
   WITNESS_PUBKEY_HASH = 0,
@@ -376,6 +376,20 @@ export interface OpenChannelRequest {
   spendUnconfirmed?: boolean;
 }
 
+export interface PendingUpdate {
+  txid: Buffer | string;
+  outputIndex: number;
+}
+
+export interface ChannelOpenUpdate {
+  channelPoint: ChannelPoint;
+}
+
+export interface OpenStatusUpdate {
+  chanPending: PendingUpdate;
+  chanOpen: ChannelOpenUpdate;
+}
+
 export interface ChannelPoint {
   fundingTxidBytes: Buffer | string;
   fundingTxidStr: string;
@@ -387,6 +401,16 @@ export interface CloseChannelRequest {
   force?: boolean;
   targetConf?: number;
   satPerByte?: string;
+}
+
+export interface ChannelCloseUpdate {
+  closingTxid: Buffer | string;
+  success: boolean;
+}
+
+export interface CloseStatusUpdate {
+  closePending: PendingUpdate;
+  chanClose: ChannelCloseUpdate;
 }
 
 export interface AbandonChannelRequest {
@@ -512,7 +536,7 @@ export interface ClosedChannelUpdate {
   chanPoint: ChannelPoint;
 }
 
-export interface ChannelGraphSubscription {
+export interface GraphTopologyUpdate {
   nodeUpdates: NodeUpdate[];
   channelUpdates: ChannelUpdate[];
   closedChans: ClosedChannelUpdate[];
@@ -674,7 +698,7 @@ export class LnRpc {
    * subscribeTransactions creates a uni-directional stream from the server to the client in which any newly
    * discovered transactions relevant to the wallet are sent over.
    */
-  public subscribeTransactions(args?: {}): Promise<Readable>;
+  public subscribeTransactions(args?: {}): Promise<Readable<Transaction>>;
 
   /**
    * sendMany handles a request for a transaction that creates multiple specified outputs in parallel. If neither
@@ -753,7 +777,7 @@ export class LnRpc {
    * to specify a target number of blocks that the funding transaction should be confirmed in, or a manual fee rate
    * to us for the funding transaction. If neither are specified, then a lax block confirmation target is used.
    */
-  public openChannel(args: OpenChannelRequest): Promise<Readable>;
+  public openChannel(args: OpenChannelRequest): Promise<Readable<OpenStatusUpdate>>;
 
   /**
    * closeChannel attempts to close an active channel identified by its channel outpoint (ChannelPoint). The
@@ -762,7 +786,7 @@ export class LnRpc {
    * either a target number of blocks until the closure transaction is confirmed, or a manual fee rate. If neither
    * are specified, then a default lax, block confirmation target is used.
    */
-  public closeChannel(args: CloseChannelRequest): Promise<Readable>;
+  public closeChannel(args: CloseChannelRequest): Promise<Readable<CloseStatusUpdate>>;
 
   /**
    * abandonChannel removes all channel state from the database except for a close summary. This method can be used
@@ -776,7 +800,7 @@ export class LnRpc {
    * single RPC invocation creates a persistent bi-directional stream allowing clients to rapidly send payments
    * through the Lightning Network with a single persistent connection.
    */
-  public sendPayment(args: SendRequest): Promise<Writable>;
+  public sendPayment(args: SendRequest): Promise<Duplex<SendRequest, SendResponse>>;
 
   /**
    * sendPaymentSync is the synchronous non-streaming version of sendPayment. This RPC is intended to be consumed
@@ -790,7 +814,7 @@ export class LnRpc {
    * differs from SendPayment in that it allows users to specify a full route manually. This can be used for things
    * like rebalancing, and atomic swaps.
    */
-  public sendToRoute(args: SendToRouteRequest): Promise<Writable>;
+  public sendToRoute(args: SendToRouteRequest): Promise<Duplex<SendToRouteRequest, SendResponse>>;
 
   /**
    * sendToRouteSync is a synchronous version of sendToRoute. It Will block until the payment either fails or succeeds.
@@ -827,7 +851,7 @@ export class LnRpc {
    * settle events for invoices with a settleIndex greater than the specified value. One or both of these fields
    * can be set. If no fields are set, then we’ll only send out the latest add/settle events.
    */
-  public subscribeInvoices(args?: InvoiceSubscription): Promise<Readable>;
+  public subscribeInvoices(args?: InvoiceSubscription): Promise<Readable<Invoice>>;
 
   /**
    * decodePayReq takes an encoded payment request string and attempts to decode it, returning a full description
@@ -890,7 +914,7 @@ export class LnRpc {
    * new nodes coming online, nodes updating their authenticated attributes, new channels being advertised, updates
    * in the routing policy for a directional channel edge, and when channels are closed on-chain.
    */
-  public subscribeChannelGraph(args?: {}): Promise<Readable>;
+  public subscribeChannelGraph(args?: {}): Promise<Readable<GraphTopologyUpdate>>;
 
   /**
    * debugLevel allows a caller to programmatically set the logging verbosity of lnd. The logging can be targeted
