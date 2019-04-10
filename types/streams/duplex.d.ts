@@ -14,8 +14,8 @@ declare class Duplex<REQ = any, RES = any> extends Readable<RES> implements Writ
   public write(chunk: REQ, encoding?: string, cb?: (error: Error | null | undefined) => void): boolean;
   public setDefaultEncoding(encoding: string): this;
   public end(cb?: () => void): void;
-  public end(chunk: any, cb?: () => void): void;
-  public end(chunk: any, encoding?: string, cb?: () => void): void;
+  public end(chunk: REQ, cb?: () => void): void;
+  public end(chunk: REQ, encoding?: string, cb?: () => void): void;
   public cork(): void;
   public uncork(): void;
 }
