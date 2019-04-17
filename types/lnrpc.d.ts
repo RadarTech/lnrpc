@@ -561,7 +561,7 @@ export interface Invoice {
   amtPaid?: string;
   amtPaidSat?: string;
   amtPaidMsat?: string;
-  state: InvoiceState;
+  state?: InvoiceState;
 }
 
 export interface AddInvoiceResponse {
