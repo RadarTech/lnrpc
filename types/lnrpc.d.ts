@@ -1102,7 +1102,7 @@ export class LnRpc {
    * remaining within the channel. If we are able to unpack the backup, then the
    * new channel will be shown under listchannels, as well as pending channels.
    */
-  public restoreChanBackups(args: RestoreChanBackupRequest): Promise<{}>;
+  public restoreChannelBackups(args: RestoreChanBackupRequest): Promise<{}>;
 
   /**
    * SubscribeChannelBackups allows a client to sub-subscribe to the most up to
