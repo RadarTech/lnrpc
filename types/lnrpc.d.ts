@@ -1,5 +1,4 @@
 import { Duplex, Readable } from "./streams";
-import { ChanBackupSnapshot, ChannelPoint, EstimateFeeResponse, EstimateFeeRequest, ExportChannelBackupRequest, ChanBackupExportRequest, VerifyChanBackupResponse, RestoreBackupResponse, ChannelBackupSubscription } from "./generated/rpc_pb";
 
 export enum AddressType {
   WITNESS_PUBKEY_HASH = 0,
@@ -280,6 +279,33 @@ export interface Utxo {
 export interface ChannelBackups {
   chanBackups: ChannelBackup[];
 }
+
+export interface ChanBackupSnapshot {
+  singleChanBackups?: ChannelBackups;
+  multiChanBackup?: MultiChanBackup;
+}
+
+export interface EstimateFeeResponse {
+  feeSat: string;
+  feerateSatPerByte: string;
+}
+
+export interface EstimateFeeRequest {
+  addrtoamountMap: Array<[string, number]>,
+  targetConf: number
+}
+
+export interface ExportChannelBackupRequest {
+  chanPoint?: ChannelPoint;
+}
+
+export interface ChanBackupExportRequest {}
+
+export interface VerifyChanBackupResponse {}
+
+export interface RestoreBackupResponse {}
+
+export interface ChannelBackupSubscription {}
 
 export interface InitWalletRequest {
   walletPassword: Buffer | string;
