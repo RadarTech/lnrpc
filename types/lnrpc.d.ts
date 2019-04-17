@@ -3,6 +3,8 @@ import { Duplex, Readable } from "./streams";
 export enum AddressType {
   WITNESS_PUBKEY_HASH = 0,
   NESTED_PUBKEY_HASH = 1,
+  UNUSED_WITNESS_PUBKEY_HASH = 2,
+  UNUSED_NESTED_PUBKEY_HASH = 3,
 }
 
 export enum ClosureType {
@@ -12,6 +14,40 @@ export enum ClosureType {
   BREACH_CLOSE = 3,
   FUNDING_CANCELED = 4,
   ABANDONED = 5,
+}
+
+export enum SyncType {
+  UNKNOWN_SYNC = 0,
+  ACTIVE_SYNC = 1,
+  PASSIVE_SYNC = 2,
+}
+
+export enum UpdateType {
+  OPEN_CHANNEL = 0,
+  CLOSED_CHANNEL = 1,
+  ACTIVE_CHANNEL = 2,
+  INACTIVE_CHANNEL = 3,
+}
+
+export enum ChannelCase {
+  CHANNEL_NOT_SET = 0,
+  OPEN_CHANNEL = 1,
+  CLOSED_CHANNEL = 2,
+  ACTIVE_CHANNEL = 3,
+  INACTIVE_CHANNEL = 4,
+}
+
+export enum InvoiceState {
+  OPEN = 0,
+  SETTLED = 1,
+  CANCELED = 2,
+  ACCEPTED = 3,
+}
+
+export enum BackupCase {
+  BACKUP_NOT_SET = 0,
+  CHAN_BACKUPS = 1,
+  MULTI_CHAN_BACKUP = 2,
 }
 
 export interface Transaction {
@@ -39,6 +75,7 @@ export interface Peer {
   satRecv: string;
   inbound: boolean;
   pingTime: string;
+  syncType: SyncType;
 }
 
 export interface PendingHTLC {
@@ -111,6 +148,8 @@ export interface Channel {
   pendingHtlcs: HTLC[];
   csvDelay: number;
   private: boolean;
+  initiator: boolean;
+  chanStatusFlags: string;
 }
 
 export interface ChannelCloseSummary {
@@ -193,6 +232,7 @@ export interface RoutingPolicy {
   feeBaseMsat: string;
   feeRateMilliMsat: string;
   disabled: boolean;
+  maxHtlcMsat: string;
 }
 
 export interface ChannelFeeReport {
@@ -209,6 +249,7 @@ export interface ForwardingEvent {
   amtIn: string;
   amtOut: string;
   fee: string;
+  feeMsat: string;
 }
 
 export interface GenSeedRequest {
@@ -221,16 +262,56 @@ export interface GenSeedResponse {
   encipheredSeed: Buffer | string;
 }
 
+export interface OutPoint {
+  txidBytes: Buffer | string;
+  txidStr: string;
+  outputIndex: number;
+}
+
+export interface Utxo {
+  type: AddressType;
+  address: string;
+  amountSat: string;
+  pkScript: string;
+  outpoint?: OutPoint;
+  confirmations: string;
+}
+
+export interface ChannelBackups {
+  chanBackups: ChannelBackup[];
+}
+
+export interface ChanBackupSnapshot {
+  singleChanBackups?: ChannelBackups;
+  multiChanBackup?: MultiChanBackup;
+}
+
+export interface EstimateFeeResponse {
+  feeSat: string;
+  feerateSatPerByte: string;
+}
+
+export interface EstimateFeeRequest {
+  addrtoamountMap: Array<[string, number]>;
+  targetConf: number;
+}
+
+export interface ExportChannelBackupRequest {
+  chanPoint?: ChannelPoint;
+}
+
 export interface InitWalletRequest {
   walletPassword: Buffer | string;
   cipherSeedMnemonic: string[];
   aezeedPassphrase?: Buffer | string;
   recoveryWindow?: number;
+  channelBackups?: ChanBackupSnapshot;
 }
 
 export interface UnlockWalletRequest {
   walletPassword: Buffer | string;
   recoveryWindow?: number;
+  channelBackups?: ChanBackupSnapshot;
 }
 
 export interface ChangePasswordRequest {
@@ -258,6 +339,7 @@ export interface SendCoinsRequest {
   amount: string;
   targetConf?: number;
   satPerByte?: string;
+  sendAll?: boolean;
 }
 
 export interface SendCoinsResponse {
@@ -311,6 +393,15 @@ export interface DisconnectPeerRequest {
 
 export interface ListPeersResponse {
   peers: Peer[];
+}
+
+export interface ListUnspentRequest {
+  minConfs: number;
+  maxConfs: number;
+}
+
+export interface ListUnspentResponse {
+  utxos: Utxo[];
 }
 
 export interface GetInfoResponse {
@@ -426,18 +517,27 @@ export interface SendRequest {
   paymentRequest?: string;
   finalCltvDelta?: number;
   feeLimit?: FeeLimit;
+  outgoingChanId?: string;
+  cltvLimit?: number;
 }
 
 export interface SendResponse {
   paymentError: string;
   paymentPreimage: Buffer | string;
   paymentRoute?: Route;
+  paymentHash: Buffer | string;
 }
 
 export interface SendToRouteRequest {
   paymentHash?: Buffer | string;
   paymentHashString?: string;
   routes?: Route[];
+  route?: Route;
+}
+
+export interface Chain {
+  chain: string;
+  network: string;
 }
 
 export interface Invoice {
@@ -461,6 +561,7 @@ export interface Invoice {
   amtPaid?: string;
   amtPaidSat?: string;
   amtPaidMsat?: string;
+  state: InvoiceState;
 }
 
 export interface AddInvoiceResponse {
@@ -551,6 +652,34 @@ export interface ChannelGraph {
   edges: ChannelEdge[];
 }
 
+export interface ChannelEventUpdate {
+  openChannel?: Channel;
+  closedChannel?: ChannelCloseSummary;
+  activeChannel?: ChannelPoint;
+  inactiveChannel?: ChannelPoint;
+  type: ChannelEventUpdate;
+}
+
+export interface EdgeLocator {
+  channelId: string;
+  directionReverse: boolean;
+}
+
+export interface ChannelBackup {
+  chanPoint?: ChannelPoint;
+  chanBackup: Buffer | string;
+}
+
+export interface MultiChanBackup {
+  chanPoints: ChannelPoint[];
+  multiChanBackup: Buffer | string;
+}
+
+export interface RestoreChanBackupRequest {
+  chanBackups?: ChannelBackups;
+  multiChanBackup: Buffer | string;
+}
+
 export interface ChanInfoRequest {
   chanId: string;
 }
@@ -582,6 +711,9 @@ export interface QueryRoutesRequest {
   numRoutes?: number;
   finalCltvDelta?: number;
   feeLimit?: FeeLimit;
+  ignoredNodes: Buffer[] | string[];
+  ignoredEdges: EdgeLocator[];
+  sourcePubKey: string;
 }
 
 export interface QueryRoutesResponse {
@@ -598,6 +730,8 @@ export interface NetworkInfo {
   avgChannelSize: number;
   minChannelSize: string;
   maxChannelSize: string;
+  medianChannelSize: string;
+  medianChannelSizeSat: string;
 }
 
 export interface DebugLevelRequest {
@@ -686,6 +820,18 @@ export class LnRpc {
    * getTransactions returns a list describing all the known transactions relevant to the wallet.
    */
   public getTransactions(args?: {}): Promise<TransactionDetails>;
+
+  /**
+   * EstimateFee asks the chain backend to estimate the fee rate and total fees for a transaction
+   * that pays to multiple specified outputs.
+   */
+  public estimateFee(args?: EstimateFeeRequest): Promise <EstimateFeeResponse>;
+
+  /**
+   * ListUnspent returns a list of all utxos spendable by the wallet with a number of confirmations
+   * between the specified minimum and maximum.
+   */
+  public listUnspent(args?: ListUnspentRequest): Promise<ListUnspentResponse>;
 
   /**
    * sendCoins executes a request to send coins to a particular address. Unlike sendMany, this RPC call only allows
@@ -915,6 +1061,59 @@ export class LnRpc {
    * in the routing policy for a directional channel edge, and when channels are closed on-chain.
    */
   public subscribeChannelGraph(args?: {}): Promise<Readable<GraphTopologyUpdate>>;
+
+  /**
+   * SubscribeChannelEvents creates a uni-directional stream from the server to
+   * the client in which any updates relevant to the state of the channels are
+   * sent over. Events include new active channels, inactive channels, and closed
+   * channels.
+   */
+  public subscribeChannelEvents(args?: {}): Promise<Readable<ChannelEventUpdate>>;
+
+  /**
+   * ExportChannelBackup attempts to return an encrypted static channel backup
+   * for the target channel identified by it channel point. The backup is
+   * encrypted with a key generated from the aezeed seed of the user. The
+   * returned backup can either be restored using the RestoreChannelBackup
+   * method once lnd is running, or via the InitWallet and UnlockWallet methods
+   * from the WalletUnlocker service.
+   */
+  public exportChannelBackup(args?: ExportChannelBackupRequest): Promise<ChannelBackup>;
+
+  /**
+   * ExportAllChannelBackups returns static channel backups for all existing
+   * channels known to lnd. A set of regular singular static channel backups for
+   * each channel are returned. Additionally, a multi-channel backup is returned
+   * as well, which contains a single encrypted blob containing the backups of
+   * each channel.
+   */
+  public exportAllChannelBackups(args?: {}): Promise<ChanBackupSnapshot>;
+
+  /**
+   * VerifyChanBackup allows a caller to verify the integrity of a channel backup
+   * snapshot. This method will accept either a packed Single or a packed Multi.
+   * Specifying both will result in an error.
+   */
+  public verifyChanBackup(args: ChanBackupSnapshot): Promise<{}>;
+
+  /**
+   * RestoreChannelBackups accepts a set of singular channel backups, or a
+   * single encrypted multi-chan backup and attempts to recover any funds
+   * remaining within the channel. If we are able to unpack the backup, then the
+   * new channel will be shown under listchannels, as well as pending channels.
+   */
+  public restoreChannelBackups(args: RestoreChanBackupRequest): Promise<{}>;
+
+  /**
+   * SubscribeChannelBackups allows a client to sub-subscribe to the most up to
+   * date information concerning the state of all channel backups. Each time a
+   * new channel is added, we return the new set of channels, along with a
+   * multi-chan backup containing the backup info for all channels. Each time a
+   * channel is closed, we send a new update, which contains new new chan back
+   * ups, but the updated set of encrypted multi-chan backups with the closed
+   * channel(s) removed.
+   */
+  public subscribeChannelBackups(args?: {}): Promise<Readable<ChanBackupSnapshot>>;
 
   /**
    * debugLevel allows a caller to programmatically set the logging verbosity of lnd. The logging can be targeted
