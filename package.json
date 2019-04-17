@@ -1,6 +1,6 @@
 {
   "name": "@radar/lnrpc",
-  "version": "0.6-beta",
+  "version": "0.6.0-beta",
   "description": "typed gRPC client for lightningnetwork/lnd",
   "main": "index.js",
   "types": "types/index.d.ts",
