@@ -39,6 +39,16 @@ yarn generate
 ```
 Newly generated type definitions will be available in `./generated`.
 
+### Configure typescript
+
+You should set 
+
+```json
+"esModuleInterop": true
+```
+
+in your tsconfig.json
+
 ### Usage
 
 Connecting to an lnd instance at `localhost:10001`.
