@@ -282,8 +282,8 @@ export interface ChannelBackups {
 }
 
 export interface ChanBackupSnapshot {
-  singleChanBackups?: ChannelBackups;
-  multiChanBackup?: MultiChanBackup;
+  singleChanBackups: ChannelBackups;
+  multiChanBackup: MultiChanBackup;
 }
 
 export interface EstimateFeeResponse {
