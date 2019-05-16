@@ -711,8 +711,8 @@ export interface QueryRoutesRequest {
   numRoutes?: number;
   finalCltvDelta?: number;
   feeLimit?: FeeLimit;
-  ignoredNodes: Buffer[] | string[];
-  ignoredEdges: EdgeLocator[];
+  ignoredNodes?: Buffer[] | string[];
+  ignoredEdges?: EdgeLocator[];
   sourcePubKey: string;
 }
 
