@@ -34,10 +34,10 @@
     "ts-protoc-gen": "^0.8.0"
   },
   "devDependencies": {
-    "eslint": "^4.7.1",
+    "eslint": "^5.16.0",
     "eslint-config-google": "^0.9.1",
     "mocha": "^5.2.0",
-    "tslint": "^5.12.1",
+    "tslint": "^5.17.0",
     "typescript": "^3.2.4"
   },
   "engines": {
