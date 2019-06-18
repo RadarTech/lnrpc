@@ -50,6 +50,13 @@ export enum BackupCase {
   MULTI_CHAN_BACKUP = 2,
 }
 
+export enum PaymentStatus {
+  UNKNOWN = 0,
+  IN_FLIGHT = 1,
+  SUCCEEDED = 2,
+  FAILED = 3,
+}
+
 export interface Transaction {
   txHash: string;
   amount: string;
@@ -59,6 +66,7 @@ export interface Transaction {
   timeStamp: string;
   totalFees: string;
   destAddresses: string[];
+  rawTxHex: string;
 }
 
 export interface LightningAddress {
@@ -211,6 +219,8 @@ export interface Payment {
   paymentPreimage: string;
   valueSat: string;
   valueMsat: string;
+  paymentRequest: string;
+  status: PaymentStatus;
 }
 
 export interface NodeAddress {
@@ -419,6 +429,7 @@ export interface GetInfoResponse {
   bestHeaderTimestamp: string;
   version: string;
   numInactiveChannels: number;
+  color: string;
 }
 
 export interface PendingChannelsResponse {
@@ -531,7 +542,6 @@ export interface SendResponse {
 export interface SendToRouteRequest {
   paymentHash?: Buffer | string;
   paymentHashString?: string;
-  routes?: Route[];
   route?: Route;
 }
 
@@ -703,12 +713,12 @@ export interface NodeInfo {
   node?: LightningNode;
   numChannels: number;
   totalCapacity: string;
+  channels: ChannelEdge[];
 }
 
 export interface QueryRoutesRequest {
   pubKey: string;
   amt?: string;
-  numRoutes?: number;
   finalCltvDelta?: number;
   feeLimit?: FeeLimit;
   ignoredNodes?: Buffer[] | string[];

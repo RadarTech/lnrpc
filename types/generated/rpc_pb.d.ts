@@ -281,6 +281,9 @@ export class Transaction extends jspb.Message {
   setDestAddressesList(value: Array<string>): void;
   addDestAddresses(value: string, index?: number): string;
 
+  getRawTxHex(): string;
+  setRawTxHex(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Transaction.AsObject;
   static toObject(includeInstance: boolean, msg: Transaction): Transaction.AsObject;
@@ -301,6 +304,7 @@ export namespace Transaction {
     timeStamp: string,
     totalFees: string,
     destAddresses: Array<string>,
+    rawTxHex: string,
   }
 }
 
@@ -486,11 +490,6 @@ export class SendToRouteRequest extends jspb.Message {
   getPaymentHashString(): string;
   setPaymentHashString(value: string): void;
 
-  clearRoutesList(): void;
-  getRoutesList(): Array<Route>;
-  setRoutesList(value: Array<Route>): void;
-  addRoutes(value?: Route, index?: number): Route;
-
   hasRoute(): boolean;
   clearRoute(): void;
   getRoute(): Route | undefined;
@@ -510,7 +509,6 @@ export namespace SendToRouteRequest {
   export type AsObject = {
     paymentHash: Uint8Array | string,
     paymentHashString: string,
-    routes: Array<Route.AsObject>,
     route?: Route.AsObject,
   }
 }
@@ -1484,6 +1482,9 @@ export class GetInfoResponse extends jspb.Message {
   setChainsList(value: Array<Chain>): void;
   addChains(value?: Chain, index?: number): Chain;
 
+  getColor(): string;
+  setColor(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetInfoResponse.AsObject;
   static toObject(includeInstance: boolean, msg: GetInfoResponse): GetInfoResponse.AsObject;
@@ -1510,6 +1511,7 @@ export namespace GetInfoResponse {
     version: string,
     numInactiveChannels: number,
     chains: Array<Chain.AsObject>,
+    color: string,
   }
 }
 
@@ -2248,9 +2250,6 @@ export class QueryRoutesRequest extends jspb.Message {
   getAmt(): string;
   setAmt(value: string): void;
 
-  getNumRoutes(): number;
-  setNumRoutes(value: number): void;
-
   getFinalCltvDelta(): number;
   setFinalCltvDelta(value: number): void;
 
@@ -2288,7 +2287,6 @@ export namespace QueryRoutesRequest {
   export type AsObject = {
     pubKey: string,
     amt: string,
-    numRoutes: number,
     finalCltvDelta: number,
     feeLimit?: FeeLimit.AsObject,
     ignoredNodes: Array<Uint8Array | string>,
@@ -2465,6 +2463,11 @@ export class NodeInfo extends jspb.Message {
   getTotalCapacity(): string;
   setTotalCapacity(value: string): void;
 
+  clearChannelsList(): void;
+  getChannelsList(): Array<ChannelEdge>;
+  setChannelsList(value: Array<ChannelEdge>): void;
+  addChannels(value?: ChannelEdge, index?: number): ChannelEdge;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): NodeInfo.AsObject;
   static toObject(includeInstance: boolean, msg: NodeInfo): NodeInfo.AsObject;
@@ -2480,6 +2483,7 @@ export namespace NodeInfo {
     node?: LightningNode.AsObject,
     numChannels: number,
     totalCapacity: string,
+    channels: Array<ChannelEdge.AsObject>,
   }
 }
 
@@ -2876,6 +2880,9 @@ export class NodeUpdate extends jspb.Message {
   getAlias(): string;
   setAlias(value: string): void;
 
+  getColor(): string;
+  setColor(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): NodeUpdate.AsObject;
   static toObject(includeInstance: boolean, msg: NodeUpdate): NodeUpdate.AsObject;
@@ -2892,6 +2899,7 @@ export namespace NodeUpdate {
     identityKey: string,
     globalFeatures: Uint8Array | string,
     alias: string,
+    color: string,
   }
 }
 
@@ -3317,6 +3325,12 @@ export class Payment extends jspb.Message {
   getValueMsat(): string;
   setValueMsat(value: string): void;
 
+  getPaymentRequest(): string;
+  setPaymentRequest(value: string): void;
+
+  getStatus(): Payment.PaymentStatus;
+  setStatus(value: Payment.PaymentStatus): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Payment.AsObject;
   static toObject(includeInstance: boolean, msg: Payment): Payment.AsObject;
@@ -3337,10 +3351,22 @@ export namespace Payment {
     paymentPreimage: string,
     valueSat: string,
     valueMsat: string,
+    paymentRequest: string,
+    status: Payment.PaymentStatus,
+  }
+
+  export enum PaymentStatus {
+    UNKNOWN = 0,
+    IN_FLIGHT = 1,
+    SUCCEEDED = 2,
+    FAILED = 3,
   }
 }
 
 export class ListPaymentsRequest extends jspb.Message {
+  getIncludeIncomplete(): boolean;
+  setIncludeIncomplete(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ListPaymentsRequest.AsObject;
   static toObject(includeInstance: boolean, msg: ListPaymentsRequest): ListPaymentsRequest.AsObject;
@@ -3353,6 +3379,7 @@ export class ListPaymentsRequest extends jspb.Message {
 
 export namespace ListPaymentsRequest {
   export type AsObject = {
+    includeIncomplete: boolean,
   }
 }
 
