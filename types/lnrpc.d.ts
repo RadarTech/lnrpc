@@ -620,6 +620,10 @@ export interface PayReq {
   routeHints?: RouteHint[];
 }
 
+export interface ListPaymentsRequest {
+  includeIncomplete?: boolean;
+}
+
 export interface ListPaymentsResponse {
   payments: Payment[];
 }
@@ -629,6 +633,7 @@ export interface NodeUpdate {
   identityKey: string;
   globalFeatures: string;
   alias: string;
+  color: string;
 }
 
 export interface ChannelUpdate {
@@ -1018,7 +1023,7 @@ export class LnRpc {
   /**
    * listPayments returns a list of all outgoing payments.
    */
-  public listPayments(args?: {}): Promise<ListPaymentsResponse>;
+  public listPayments(args?: ListPaymentsRequest): Promise<ListPaymentsResponse>;
 
   /**
    * deleteAllPayments deletes all outgoing payments from DB.
