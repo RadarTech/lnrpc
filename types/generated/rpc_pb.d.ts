@@ -2435,6 +2435,9 @@ export class NodeInfoRequest extends jspb.Message {
   getPubKey(): string;
   setPubKey(value: string): void;
 
+  getIncludeChannels(): boolean;
+  setIncludeChannels(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): NodeInfoRequest.AsObject;
   static toObject(includeInstance: boolean, msg: NodeInfoRequest): NodeInfoRequest.AsObject;
@@ -2448,6 +2451,7 @@ export class NodeInfoRequest extends jspb.Message {
 export namespace NodeInfoRequest {
   export type AsObject = {
     pubKey: string,
+    includeChannels: boolean,
   }
 }
 

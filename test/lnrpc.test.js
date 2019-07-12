@@ -80,6 +80,27 @@ describe('Lnrpc Factory', () => {
         .catch(() => done());
     });
 
+    it('should allow opting out of certificate pinning', (done) => {
+      createLnrpc({
+        tls: false, // opt out
+        grpc: grpcStub({
+          credentials: {
+            createSsl: (cert) => {
+              assert(
+                typeof cert === 'undefined',
+                'opted out of SSL cert pinning'
+              );
+            },
+          },
+          loadPackageDefinition: () => {
+            throw new Error('force error');
+          },
+        }),
+      })
+        .then(fail)
+        .catch(() => done());
+    });
+
     it('should combine credentials when macaroon present', async () => {
       let tests = 0;
       const expSslCreds = {};

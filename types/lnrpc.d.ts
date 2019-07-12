@@ -712,6 +712,7 @@ export interface ChannelEdge {
 
 export interface NodeInfoRequest {
   pubKey: string;
+  includeChannels?: boolean;
 }
 
 export interface NodeInfo {
