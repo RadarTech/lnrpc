@@ -166,8 +166,8 @@ export interface ChannelCloseSummary {
 }
 
 export interface FeeLimit {
-  fixed: string;
-  percent: string;
+  fixed?: string;
+  percent?: string;
 }
 
 export interface Hop {
