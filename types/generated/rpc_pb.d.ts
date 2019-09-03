@@ -1108,6 +1108,12 @@ export class Channel extends jspb.Message {
   getChanStatusFlags(): string;
   setChanStatusFlags(value: string): void;
 
+  getLocalChanReserveSat(): string;
+  setLocalChanReserveSat(value: string): void;
+
+  getRemoteChanReserveSat(): string;
+  setRemoteChanReserveSat(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Channel.AsObject;
   static toObject(includeInstance: boolean, msg: Channel): Channel.AsObject;
@@ -1139,6 +1145,8 @@ export namespace Channel {
     pb_private: boolean,
     initiator: boolean,
     chanStatusFlags: string,
+    localChanReserveSat: string,
+    remoteChanReserveSat: string,
   }
 }
 
@@ -1924,6 +1932,12 @@ export namespace PendingChannelsResponse {
     getRemoteBalance(): string;
     setRemoteBalance(value: string): void;
 
+    getLocalChanReserveSat(): string;
+    setLocalChanReserveSat(value: string): void;
+
+    getRemoteChanReserveSat(): string;
+    setRemoteChanReserveSat(value: string): void;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PendingChannel.AsObject;
     static toObject(includeInstance: boolean, msg: PendingChannel): PendingChannel.AsObject;
@@ -1941,6 +1955,8 @@ export namespace PendingChannelsResponse {
       capacity: string,
       localBalance: string,
       remoteBalance: string,
+      localChanReserveSat: string,
+      remoteChanReserveSat: string,
     }
   }
 
@@ -2273,6 +2289,9 @@ export class QueryRoutesRequest extends jspb.Message {
   getSourcePubKey(): string;
   setSourcePubKey(value: string): void;
 
+  getUseMissionControl(): boolean;
+  setUseMissionControl(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): QueryRoutesRequest.AsObject;
   static toObject(includeInstance: boolean, msg: QueryRoutesRequest): QueryRoutesRequest.AsObject;
@@ -2292,6 +2311,7 @@ export namespace QueryRoutesRequest {
     ignoredNodes: Array<Uint8Array | string>,
     ignoredEdges: Array<EdgeLocator.AsObject>,
     sourcePubKey: string,
+    useMissionControl: boolean,
   }
 }
 
@@ -2572,6 +2592,9 @@ export class RoutingPolicy extends jspb.Message {
   getMaxHtlcMsat(): string;
   setMaxHtlcMsat(value: string): void;
 
+  getLastUpdate(): number;
+  setLastUpdate(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): RoutingPolicy.AsObject;
   static toObject(includeInstance: boolean, msg: RoutingPolicy): RoutingPolicy.AsObject;
@@ -2590,6 +2613,7 @@ export namespace RoutingPolicy {
     feeRateMilliMsat: string,
     disabled: boolean,
     maxHtlcMsat: string,
+    lastUpdate: number,
   }
 }
 
@@ -2760,6 +2784,9 @@ export class NetworkInfo extends jspb.Message {
   getMedianChannelSizeSat(): string;
   setMedianChannelSizeSat(value: string): void;
 
+  getNumZombieChans(): string;
+  setNumZombieChans(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): NetworkInfo.AsObject;
   static toObject(includeInstance: boolean, msg: NetworkInfo): NetworkInfo.AsObject;
@@ -2782,6 +2809,7 @@ export namespace NetworkInfo {
     minChannelSize: string,
     maxChannelSize: string,
     medianChannelSizeSat: string,
+    numZombieChans: string,
   }
 }
 
@@ -3335,6 +3363,12 @@ export class Payment extends jspb.Message {
   getStatus(): Payment.PaymentStatus;
   setStatus(value: Payment.PaymentStatus): void;
 
+  getFeeSat(): string;
+  setFeeSat(value: string): void;
+
+  getFeeMsat(): string;
+  setFeeMsat(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Payment.AsObject;
   static toObject(includeInstance: boolean, msg: Payment): Payment.AsObject;
@@ -3357,6 +3391,8 @@ export namespace Payment {
     valueMsat: string,
     paymentRequest: string,
     status: Payment.PaymentStatus,
+    feeSat: string,
+    feeMsat: string,
   }
 
   export enum PaymentStatus {

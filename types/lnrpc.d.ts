@@ -108,6 +108,8 @@ export interface PendingChannel {
   capacity: string;
   localBalance: string;
   remoteBalance: string;
+  localChanReserveSat: string;
+  remoteChanReserveSat: string;
 }
 
 export interface PendingOpenChannel {
@@ -158,6 +160,8 @@ export interface Channel {
   private: boolean;
   initiator: boolean;
   chanStatusFlags: string;
+  localChanReserveSat: string;
+  remoteChanReserveSat: string;
 }
 
 export interface ChannelCloseSummary {
@@ -221,6 +225,8 @@ export interface Payment {
   valueMsat: string;
   paymentRequest: string;
   status: PaymentStatus;
+  feeSat: string;
+  feeMsat: string;
 }
 
 export interface NodeAddress {
@@ -243,6 +249,7 @@ export interface RoutingPolicy {
   feeRateMilliMsat: string;
   disabled: boolean;
   maxHtlcMsat: string;
+  lastUpdate: number;
 }
 
 export interface ChannelFeeReport {
@@ -730,6 +737,7 @@ export interface QueryRoutesRequest {
   ignoredNodes?: Buffer[] | string[];
   ignoredEdges?: EdgeLocator[];
   sourcePubKey?: string;
+  useMissionControl?: boolean;
 }
 
 export interface QueryRoutesResponse {
@@ -748,6 +756,7 @@ export interface NetworkInfo {
   maxChannelSize: string;
   medianChannelSize: string;
   medianChannelSizeSat: string;
+  numZombieChans: string;
 }
 
 export interface DebugLevelRequest {
