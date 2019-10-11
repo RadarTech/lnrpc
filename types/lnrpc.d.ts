@@ -563,19 +563,19 @@ export interface SendToRouteRequest {
 }
 
 export interface ChannelAcceptRequest {
-  nodePubkey?: Buffer | string;
-  chainHash?: Buffer | string;
-  pendingChanId?: Buffer | string;
-  fundingAmt?: string;
-  pushAmt?: string;
-  dustLimit?: string;
-  maxValueInFlight?: string;
-  channelReserve?: string;
-  minHtlc?: string;
-  feePerKw?: string;
-  csvDelay?: number;
-  maxAcceptedHtlcs?: number;
-  channelFlags?: number;
+  nodePubkey: Buffer | string;
+  chainHash: Buffer | string;
+  pendingChanId: Buffer | string;
+  fundingAmt: string;
+  pushAmt: string;
+  dustLimit: string;
+  maxValueInFlight: string;
+  channelReserve: string;
+  minHtlc: string;
+  feePerKw: string;
+  csvDelay: number;
+  maxAcceptedHtlcs: number;
+  channelFlags: number;
 }
 
 export interface ChannelAcceptResponse {
