@@ -57,6 +57,12 @@ export enum PaymentStatus {
   FAILED = 3,
 }
 
+export enum InvoiceHTLCState {
+  ACCEPTED = 0,
+  SETTLED = 1,
+  CANCELED = 2,
+}
+
 export interface Transaction {
   txHash: string;
   amount: string;
@@ -162,6 +168,7 @@ export interface Channel {
   chanStatusFlags: string;
   localChanReserveSat: string;
   remoteChanReserveSat: string;
+  staticRemoteKey: boolean;
 }
 
 export interface ChannelCloseSummary {
@@ -191,6 +198,7 @@ export interface Hop {
   amtToForwardMsat: string;
   feeMsat: string;
   pubKey: string;
+  tlvPayload: boolean;
 }
 
 export interface Route {
@@ -437,6 +445,7 @@ export interface GetInfoResponse {
   version: string;
   numInactiveChannels: number;
   color: string;
+  syncedToGraph: boolean;
 }
 
 export interface PendingChannelsResponse {
@@ -537,6 +546,7 @@ export interface SendRequest {
   feeLimit?: FeeLimit;
   outgoingChanId?: string;
   cltvLimit?: number;
+  destTlvMap?: Array<[number, Buffer | string]>;
 }
 
 export interface SendResponse {
@@ -550,6 +560,27 @@ export interface SendToRouteRequest {
   paymentHash?: Buffer | string;
   paymentHashString?: string;
   route?: Route;
+}
+
+export interface ChannelAcceptRequest {
+  nodePubkey: Buffer | string;
+  chainHash: Buffer | string;
+  pendingChanId: Buffer | string;
+  fundingAmt: string;
+  pushAmt: string;
+  dustLimit: string;
+  maxValueInFlight: string;
+  channelReserve: string;
+  minHtlc: string;
+  feePerKw: string;
+  csvDelay: number;
+  maxAcceptedHtlcs: number;
+  channelFlags: number;
+}
+
+export interface ChannelAcceptResponse {
+  accept: boolean;
+  pendingChanId: Buffer | string;
 }
 
 export interface Chain {
@@ -579,6 +610,18 @@ export interface Invoice {
   amtPaidSat?: string;
   amtPaidMsat?: string;
   state?: InvoiceState;
+  htlcs?: InvoiceHTLC[];
+}
+
+export interface InvoiceHTLC {
+  chanId: string;
+  htlcIndex: string;
+  amtMsat: string;
+  acceptHeight: number;
+  acceptTime: string;
+  resolveTime: string;
+  expiryHeight: number;
+  state: InvoiceHTLCState;
 }
 
 export interface AddInvoiceResponse {
@@ -738,10 +781,17 @@ export interface QueryRoutesRequest {
   ignoredEdges?: EdgeLocator[];
   sourcePubKey?: string;
   useMissionControl?: boolean;
+  ignoredPairs: NodePair[];
+}
+
+export interface NodePair {
+  from: Buffer | string;
+  to: Buffer | string;
 }
 
 export interface QueryRoutesResponse {
   routes: Route[];
+  successProb: number;
 }
 
 export interface NetworkInfo {
@@ -781,6 +831,7 @@ export interface PolicyUpdateRequest {
   baseFeeMsat: string;
   feeRate: number;
   timeLockDelta: number;
+  maxHtlcMsat?: string;
 }
 
 export interface ForwardingHistoryRequest {
@@ -991,6 +1042,15 @@ export class LnRpc {
    * sendToRouteSync is a synchronous version of sendToRoute. It Will block until the payment either fails or succeeds.
    */
   public sendToRouteSync(args: SendToRouteRequest): Promise<SendResponse>;
+
+  /**
+   * ChannelAcceptor dispatches a bi-directional streaming RPC in which
+   * OpenChannel requests are sent to the client and the client responds with
+   * a boolean that tells LND whether or not to accept the channel. This allows
+   * node operators to specify their own criteria for accepting inbound channels
+   * through a single persistent connection.
+   */
+  public channelAcceptor(args: ChannelAcceptResponse): Duplex<ChannelAcceptRequest>;
 
   /**
    * addInvoice attempts to add a new invoice to the invoice database. Any duplicated invoices are rejected, therefore
