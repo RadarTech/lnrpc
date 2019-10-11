@@ -53,18 +53,18 @@ import createLnRpc, {
   WalletBalanceResponse
 } from '@radar/lnrpc';
 
-(async function() {
+(async () => {
   const lnRpcClient = await createLnRpc();
 
   // All requests are promisified and typed
-  const balanceResponse: WalletBalanceResponse = await lnRpcClient.walletBalance();
+  const { confirmedBalance } = await lnRpcClient.walletBalance();
 
   // ...and you're off!
-  console.log(balanceResponse.confirmedBalance);
+  console.log(confirmedBalance);
 
   // subscribe to LND server events
   const subscriber = await lnRpcClient.subscribeInvoices();
-  subscriber.on('data', (invoice: Invoice) => {
+  subscriber.on('data', invoice => {
     console.log(invoice); // do something with invoice event
   });
 })();
@@ -77,7 +77,7 @@ import createLnRpc, {
   GetInfoResponse
 } from '@radar/lnrpc';
 
-(async function() {
+(async () => {
   const lnRpcClient = await createLnRpc({
     /*
      By default lnrpc connects to `localhost:10001`,
@@ -116,7 +116,7 @@ import createLnRpc, {
   });
 
   try {
-    const getInfoResponse: GetInfoResponse = await lnRpcClient.getInfo();
+    const getInfoResponse = await lnRpcClient.getInfo();
     console.log(getInfoResponse);
   } catch (error) {
     console.error(error);
@@ -127,6 +127,24 @@ import createLnRpc, {
 ### API Reference
 
 [All lnrpc methods documentation can be found here](http://api.lightning.community).
+
+### Usage With Typescript
+
+You must enable the `esModuleInterop` Typescript compiler option if you would like to use a default import.
+
+This can be accomplished by setting `"esModuleInterop": true` in your `tsconfig.json`.
+
+Import Example:
+```typescript
+import createLnRpc from '@radar/lnrpc';
+```
+
+Otherwise, you can import `createLnRpc` using the `as *` syntax.
+
+Import Example:
+```typescript
+import * as createLnRpc from '@radar/lnrpc';
+```
 
 ### Usage With BTCPayServer
 
