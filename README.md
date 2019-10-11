@@ -38,6 +38,9 @@ npm run generate
 yarn generate
 ```
 Newly generated type definitions will be available in `./generated`.
+You can now delete the old proto file inside the lnd directory.
+Use the generated type definitions to update the types in `lnrpc.d.ts`.
+
 
 ### Usage
 
