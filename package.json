@@ -13,8 +13,8 @@
     "test": "./node_modules/.bin/eslint . && ./node_modules/.bin/mocha ./test/**/*.test.js",
     "start": "node ./index.js",
     "lint": "tslint -c tslint.json '{lib,test,types}/**/*.ts'",
-    "generate": "sh ./generate_types.sh ${npm_package_config_lnd_release_tag} ${npm_package_config_protoc_version} && node lib/clean-repeated.js",
-    "update-proto": "mkdir -p lnd/${npm_package_config_lnd_release_tag} && curl -o lnd/${npm_package_config_lnd_release_tag}/rpc.proto ${npm_package_config_lnd_url}/${npm_package_config_lnd_release_tag}/lnrpc/rpc.proto"
+    "generate": "sh scripts/generate_types.sh ${npm_package_config_lnd_release_tag} ${npm_package_config_protoc_version}",
+    "update-protos": "sh scripts/update_protos.sh"
   },
   "repository": "https://github.com/RadarTech/lnrpc",
   "keywords": [
