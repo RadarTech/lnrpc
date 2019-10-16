@@ -781,7 +781,8 @@ export interface QueryRoutesRequest {
   ignoredEdges?: EdgeLocator[];
   sourcePubKey?: string;
   useMissionControl?: boolean;
-  ignoredPairs: NodePair[];
+  ignoredPairs?: NodePair[];
+  cltvLimit?: number;
 }
 
 export interface NodePair {
