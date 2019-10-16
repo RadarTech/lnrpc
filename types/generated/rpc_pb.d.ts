@@ -2408,6 +2408,9 @@ export class QueryRoutesRequest extends jspb.Message {
   setIgnoredPairsList(value: Array<NodePair>): void;
   addIgnoredPairs(value?: NodePair, index?: number): NodePair;
 
+  getCltvLimit(): number;
+  setCltvLimit(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): QueryRoutesRequest.AsObject;
   static toObject(includeInstance: boolean, msg: QueryRoutesRequest): QueryRoutesRequest.AsObject;
@@ -2429,6 +2432,7 @@ export namespace QueryRoutesRequest {
     sourcePubKey: string,
     useMissionControl: boolean,
     ignoredPairs: Array<NodePair.AsObject>,
+    cltvLimit: number,
   }
 }
 
