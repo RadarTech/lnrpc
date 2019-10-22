@@ -509,8 +509,8 @@ export interface OpenStatusUpdate {
 }
 
 export interface ChannelPoint {
-  fundingTxidBytes: Buffer | string;
-  fundingTxidStr: string;
+  fundingTxidBytes?: Buffer | string;
+  fundingTxidStr?: string;
   outputIndex: number;
 }
 
