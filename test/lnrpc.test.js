@@ -7,10 +7,9 @@ const createLnrpc = require('../lib/lnrpc');
 const grpcStub = require('./helpers/grpc-stub');
 const {equal, fail} = assert;
 const {LightningStub} = grpcStub;
-const stat = promisify(fs.stat);
 const unlink = promisify(fs.unlink);
-const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
+const packageJson = require('../package.json');
 
 describe('Lnrpc Factory', () => {
   const certStub = 'cert';
@@ -205,48 +204,13 @@ describe('Lnrpc Factory', () => {
   });
 
   describe('grpc lnd/proto instantiation', () => {
-    it('should generate an `rpc.proto` file in root', async () => {
-      let protoDest = '';
-
-      try {
-        const root = await pkgDir(__dirname);
-        protoDest = join(root, 'rpc.proto');
-        await unlink(protoDest);
-      } catch (e) {
-        // ensure rpc.proto file gets removed
-      }
-
-      await createLnrpc({
-        grpc: grpcStub(),
-        cert: certStub,
-      });
-
-      try {
-        await stat(protoDest);
-      } catch (e) {
-        fail('failed to generate `rpc.proto` file');
-      }
-    });
-
-    it('should generate a `rpc.proto` without google annotations', async () => {
-      await createLnrpc({
-        grpc: grpcStub(),
-        cert: certStub,
-      });
-
+    // eslint-disable-next-line max-len
+    it('should load `./lnd/lnd_version/rpc.proto` filename via `grpc.load()`', async () => {
       const root = await pkgDir(__dirname);
-      const rpcProto = await readFile(join(root, 'rpc.proto'), 'utf-8');
-
-      equal(
-        rpcProto.search('google/api/annotations.proto'),
-        -1,
-        'rpc.proto contains no google annotations'
+      const expected = join(
+        root,
+        `lnd/${packageJson.config['lnd-release-tag']}/rpc.proto`,
       );
-    });
-
-    it('should load `./rpc.proto` filename via `grpc.load()`', async () => {
-      const root = await pkgDir(__dirname);
-      const expected = join(root, 'rpc.proto');
 
       return createLnrpc({
         grpcLoader: {
