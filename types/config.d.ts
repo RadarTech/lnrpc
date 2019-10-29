@@ -1,6 +1,6 @@
 export interface LnRpcClientConfig {
   server: string; // URL for the lightning node to connect to ie. localhost:10009
-  tls?: string; // /path/to/tls.cert
+  tls?: string | false; // /path/to/tls.cert or false to disable certificate pinning
   cert?: string; // string representation of tls.cert
   macaroonPath?: string;
   macaroon?: string; // hex-encoded string of macaroon file
