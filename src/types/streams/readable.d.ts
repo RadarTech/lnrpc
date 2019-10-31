@@ -1,4 +1,4 @@
-import { Stream } from "stream";
+import { Stream } from 'stream';
 
 declare class Readable<RES = any> extends Stream implements NodeJS.ReadableStream {
   public readable: boolean;
@@ -27,42 +27,42 @@ declare class Readable<RES = any> extends Stream implements NodeJS.ReadableStrea
    * 4. readable
    * 5. error
    */
-  public addListener(event: "close" | "end" | "readable", listener: () => void): this;
-  public addListener(event: "data", listener: (chunk: RES) => void): this;
-  public addListener(event: "error", listener: (err: Error) => void): this;
+  public addListener(event: 'close' | 'end' | 'readable', listener: () => void): this;
+  public addListener(event: 'data', listener: (chunk: RES) => void): this;
+  public addListener(event: 'error', listener: (err: Error) => void): this;
   public addListener(event: string | symbol, listener: (...args: any[]) => void): this;
 
-  public emit(event: "close" | "end" | "readable"): boolean;
-  public emit(event: "data", chunk: RES): boolean;
-  public emit(event: "error", err: Error): boolean;
+  public emit(event: 'close' | 'end' | 'readable'): boolean;
+  public emit(event: 'data', chunk: RES): boolean;
+  public emit(event: 'error', err: Error): boolean;
   public emit(event: string | symbol, ...args: any[]): boolean;
 
-  public on(event: "close" | "end" | "readable", listener: () => void): this;
-  public on(event: "data", listener: (chunk: RES) => void): this;
-  public on(event: "error", listener: (err: Error) => void): this;
+  public on(event: 'close' | 'end' | 'readable', listener: () => void): this;
+  public on(event: 'data', listener: (chunk: RES) => void): this;
+  public on(event: 'error', listener: (err: Error) => void): this;
   public on(event: string | symbol, listener: (...args: any[]) => void): this;
 
-  public once(event: "close" | "end" | "readable", listener: () => void): this;
-  public once(event: "data", listener: (chunk: RES) => void): this;
-  public once(event: "error", listener: (err: Error) => void): this;
+  public once(event: 'close' | 'end' | 'readable', listener: () => void): this;
+  public once(event: 'data', listener: (chunk: RES) => void): this;
+  public once(event: 'error', listener: (err: Error) => void): this;
   public once(event: string | symbol, listener: (...args: any[]) => void): this;
 
-  public prependListener(event: "close" | "end" | "readable", listener: () => void): this;
-  public prependListener(event: "data", listener: (chunk: RES) => void): this;
-  public prependListener(event: "error", listener: (err: Error) => void): this;
+  public prependListener(event: 'close' | 'end' | 'readable', listener: () => void): this;
+  public prependListener(event: 'data', listener: (chunk: RES) => void): this;
+  public prependListener(event: 'error', listener: (err: Error) => void): this;
   public prependListener(event: string | symbol, listener: (...args: any[]) => void): this;
 
-  public prependOnceListener(event: "close" | "end" | "readable", listener: () => void): this;
-  public prependOnceListener(event: "data", listener: (chunk: RES) => void): this;
-  public prependOnceListener(event: "error", listener: (err: Error) => void): this;
+  public prependOnceListener(event: 'close' | 'end' | 'readable', listener: () => void): this;
+  public prependOnceListener(event: 'data', listener: (chunk: RES) => void): this;
+  public prependOnceListener(event: 'error', listener: (err: Error) => void): this;
   public prependOnceListener(event: string | symbol, listener: (...args: any[]) => void): this;
 
-  public removeListener(event: "close" | "end" | "readable", listener: () => void): this;
-  public removeListener(event: "data", listener: (chunk: RES) => void): this;
-  public removeListener(event: "error", listener: (err: Error) => void): this;
+  public removeListener(event: 'close' | 'end' | 'readable', listener: () => void): this;
+  public removeListener(event: 'data', listener: (chunk: RES) => void): this;
+  public removeListener(event: 'error', listener: (err: Error) => void): this;
   public removeListener(event: string | symbol, listener: (...args: any[]) => void): this;
 
-  public [Symbol.asyncIterator](): AsyncIterableIterator<RES>;
+  public [Symbol.asyncIterator](): AsyncIterableIterator<string | Buffer>;
 }
 
 export interface ReadableOptions<RES> {

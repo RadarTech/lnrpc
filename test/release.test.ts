@@ -1,15 +1,14 @@
-const assert = require('assert');
-const createLnrpc = require('../index');
-const grpcStub = require('./helpers/grpc-stub');
-const {LightningStub} = grpcStub;
+import assert from 'assert';
+import createLnRpc from '../src';
+import { grpcStub, LightningStub } from './helpers/grpc-stub';
 
-const {equal} = assert;
+const { equal } = assert;
 
 describe('Release API', () => {
   const certStub = 'cert';
 
   it('should expose a lnrpc factory function as default', () => {
-    equal(typeof createLnrpc, 'function');
+    equal(typeof createLnRpc, 'function');
   });
 
   it('should create instance exposing top-level lighting methods', () => {
@@ -17,10 +16,10 @@ describe('Release API', () => {
      * Custom LightningCustomStub
      * @constructor
      */
-    function LightningCustomStub() {}
-    LightningCustomStub.prototype.walletBalance = () => {};
+    function LightningCustomStub() { /* noop */ }
+    LightningCustomStub.prototype.walletBalance = () => { /* noop */ };
 
-    return createLnrpc({
+    return createLnRpc({
       grpc: grpcStub({}, LightningCustomStub),
       cert: certStub,
     }).then((lnrpc) => {
@@ -33,10 +32,10 @@ describe('Release API', () => {
      * Custom WalletUnlockerStub
      * @constructor
      */
-    function WalletUnlockerStub() {}
-    WalletUnlockerStub.prototype.initWallet = () => {};
+    function WalletUnlockerStub() { /* noop */ }
+    WalletUnlockerStub.prototype.initWallet = () => { /* noop */ };
 
-    return createLnrpc({
+    return createLnRpc({
       grpc: grpcStub({}, LightningStub, WalletUnlockerStub),
       cert: certStub,
     }).then((lnrpc) => {

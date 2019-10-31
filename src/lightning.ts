@@ -1,5 +1,5 @@
-const {promisify} = require('util');
-const defaultEmptyArg = require('./default-empty-arg');
+import { promisify } from 'util';
+import { defaultEmptyArg } from './default-empty-arg';
 
 const DEFAULTS = {
   subscriptionMethods: [
@@ -28,11 +28,11 @@ const DEFAULTS = {
  * @param  {Object}                   config
  * @return {Proxy}
  */
-module.exports = function createLightningProxy(
+export function createLightningProxy(
   lnrpcDescriptor,
   server,
   credentials,
-  config = {}
+  config = {},
 ) {
   // Configuration options
   const {subscriptionMethods} = Object.assign({}, DEFAULTS, config);
@@ -60,7 +60,7 @@ module.exports = function createLightningProxy(
      * @param  {String}          key
      * @return {Any}
      */
-    get(target, key) {
+    get(target, key: string) {
       const method = target[key];
 
       if (typeof method !== 'function') {
@@ -78,4 +78,4 @@ module.exports = function createLightningProxy(
       }
     },
   });
-};
+}

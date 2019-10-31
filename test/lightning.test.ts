@@ -1,6 +1,6 @@
-const assert = require('assert');
-const createLightning = require('../lib/lightning');
-const grpcStub = require('./helpers/grpc-stub');
+import assert from 'assert';
+import { createLightningProxy } from '../src/lightning';
+import { grpcStub } from './helpers/grpc-stub';
 const {equal} = assert;
 
 const {stringify} = JSON;
@@ -16,7 +16,7 @@ describe('Lightning Service', () => {
     const config = {subscriptionMethods: ['subscribeInvoices']};
     const expConfig = stringify(config);
 
-    createLightning(descriptor, server, credentials, config);
+    createLightningProxy(descriptor, server, credentials, config);
 
     equal(stringify(descriptor), expDescriptor, 'has expected descriptor');
     equal(server, expServer, 'has expected server');
@@ -32,28 +32,28 @@ describe('Lightning Service', () => {
        * Custom LightningStub
        * @constructor
        */
-      const LightningCustomStub = function() {
+      const LightningCustomStub = () => {
         throw new Error();
       };
 
       const descriptor = grpcStub(
         {},
-        LightningCustomStub
+        LightningCustomStub,
       ).loadPackageDefinition();
       assert.throws(
-        () => createLightning(descriptor, 'localhost:1', {}),
+        () => createLightningProxy(descriptor, 'localhost:1', {}),
         (e) => {
           expectedErr = e;
           return true;
-        }
+        },
       );
-    } catch (_) {} // eslint-disable-line
+    } catch (_) { /* noop */ }
 
     return new Promise((resolve) => {
       equal(
         expectedErr && expectedErr.code,
         'GRPC_LIGHTNING_SERVICE_ERR',
-        'has expected error'
+        'has expected error',
       );
       resolve();
     });
@@ -72,16 +72,16 @@ describe('Lightning Service', () => {
 
     const descriptor = grpcStub(
       {},
-      LightningCustomStub
+      LightningCustomStub,
     ).loadPackageDefinition();
-    const instance = createLightning(descriptor, 'localhost:1', {});
+    const instance = createLightningProxy(descriptor, 'localhost:1', {});
     equal(instance.name, expected, 'proxy forwards to target props');
   });
 
   it('should allow setting on proxy target', () => {
     const expected = 'test';
     const descriptor = grpcStub().loadPackageDefinition();
-    const instance = createLightning(descriptor, 'localhost:1', {});
+    const instance = createLightningProxy(descriptor, 'localhost:1', {});
 
     instance.name = expected;
     equal(instance.name, expected, 'proxy sets target properties');
@@ -94,15 +94,15 @@ describe('Lightning Service', () => {
      * Custom LightningStub
      * @constructor
      */
-    function LightningCustomStub() {}
+    function LightningCustomStub() { /* noop */ }
     LightningCustomStub.prototype.getInfo = (_, cb) => {
       cb(null, expected);
     };
     const descriptor = grpcStub(
       {},
-      LightningCustomStub
+      LightningCustomStub,
     ).loadPackageDefinition();
-    const instance = createLightning(descriptor, 'localhost:1', {});
+    const instance = createLightningProxy(descriptor, 'localhost:1', {});
 
     const actual = await instance.getInfo({});
     equal(actual, expected, 'promisified `getInfo` target method');
@@ -111,8 +111,8 @@ describe('Lightning Service', () => {
   it('should forward streaming methods unmodified', () => {
     // RPC streaming response interface
     const expected = {
-      on() {},
-      write() {},
+      on() { /* noop */ },
+      write() { /* noop */ },
     };
 
     // Custom subscription methods
@@ -122,19 +122,19 @@ describe('Lightning Service', () => {
      * Custom LightningStub
      * @constructor
      */
-    function LightningCustomStub() {}
+    function LightningCustomStub() { /* noop */ }
     LightningCustomStub.prototype.stream1 = () => expected;
     LightningCustomStub.prototype.stream2 = () => expected;
 
     const descriptor = grpcStub(
       {},
-      LightningCustomStub
+      LightningCustomStub,
     ).loadPackageDefinition();
-    const instance = createLightning(
+    const instance = createLightningProxy(
       descriptor,
       'localhost:1',
       {},
-      {subscriptionMethods: expSubscriptionMethods}
+      {subscriptionMethods: expSubscriptionMethods},
     );
 
     expSubscriptionMethods.forEach((method) => {

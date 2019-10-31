@@ -1,67 +1,5 @@
-import { Duplex, Readable } from "./streams";
-
-export enum AddressType {
-  WITNESS_PUBKEY_HASH = 0,
-  NESTED_PUBKEY_HASH = 1,
-  UNUSED_WITNESS_PUBKEY_HASH = 2,
-  UNUSED_NESTED_PUBKEY_HASH = 3,
-}
-
-export enum ClosureType {
-  COOPERATIVE_CLOSE = 0,
-  LOCAL_FORCE_CLOSE = 1,
-  REMOTE_FORCE_CLOSE = 2,
-  BREACH_CLOSE = 3,
-  FUNDING_CANCELED = 4,
-  ABANDONED = 5,
-}
-
-export enum SyncType {
-  UNKNOWN_SYNC = 0,
-  ACTIVE_SYNC = 1,
-  PASSIVE_SYNC = 2,
-}
-
-export enum UpdateType {
-  OPEN_CHANNEL = 0,
-  CLOSED_CHANNEL = 1,
-  ACTIVE_CHANNEL = 2,
-  INACTIVE_CHANNEL = 3,
-}
-
-export enum ChannelCase {
-  CHANNEL_NOT_SET = 0,
-  OPEN_CHANNEL = 1,
-  CLOSED_CHANNEL = 2,
-  ACTIVE_CHANNEL = 3,
-  INACTIVE_CHANNEL = 4,
-}
-
-export enum InvoiceState {
-  OPEN = 0,
-  SETTLED = 1,
-  CANCELED = 2,
-  ACCEPTED = 3,
-}
-
-export enum BackupCase {
-  BACKUP_NOT_SET = 0,
-  CHAN_BACKUPS = 1,
-  MULTI_CHAN_BACKUP = 2,
-}
-
-export enum PaymentStatus {
-  UNKNOWN = 0,
-  IN_FLIGHT = 1,
-  SUCCEEDED = 2,
-  FAILED = 3,
-}
-
-export enum InvoiceHTLCState {
-  ACCEPTED = 0,
-  SETTLED = 1,
-  CANCELED = 2,
-}
+import { AddressType, ClosureType, InvoiceState, PaymentStatus, SyncType } from './constants';
+import { Duplex, Readable } from './streams';
 
 export interface Transaction {
   txHash: string;
@@ -168,7 +106,6 @@ export interface Channel {
   chanStatusFlags: string;
   localChanReserveSat: string;
   remoteChanReserveSat: string;
-  staticRemoteKey: boolean;
 }
 
 export interface ChannelCloseSummary {
@@ -198,7 +135,6 @@ export interface Hop {
   amtToForwardMsat: string;
   feeMsat: string;
   pubKey: string;
-  tlvPayload: boolean;
 }
 
 export interface Route {
@@ -445,7 +381,6 @@ export interface GetInfoResponse {
   version: string;
   numInactiveChannels: number;
   color: string;
-  syncedToGraph: boolean;
 }
 
 export interface PendingChannelsResponse {
@@ -546,7 +481,6 @@ export interface SendRequest {
   feeLimit?: FeeLimit;
   outgoingChanId?: string;
   cltvLimit?: number;
-  destTlvMap?: Array<[number, Buffer | string]>;
 }
 
 export interface SendResponse {
@@ -560,27 +494,6 @@ export interface SendToRouteRequest {
   paymentHash?: Buffer | string;
   paymentHashString?: string;
   route?: Route;
-}
-
-export interface ChannelAcceptRequest {
-  nodePubkey: Buffer | string;
-  chainHash: Buffer | string;
-  pendingChanId: Buffer | string;
-  fundingAmt: string;
-  pushAmt: string;
-  dustLimit: string;
-  maxValueInFlight: string;
-  channelReserve: string;
-  minHtlc: string;
-  feePerKw: string;
-  csvDelay: number;
-  maxAcceptedHtlcs: number;
-  channelFlags: number;
-}
-
-export interface ChannelAcceptResponse {
-  accept: boolean;
-  pendingChanId: Buffer | string;
 }
 
 export interface Chain {
@@ -610,18 +523,6 @@ export interface Invoice {
   amtPaidSat?: string;
   amtPaidMsat?: string;
   state?: InvoiceState;
-  htlcs?: InvoiceHTLC[];
-}
-
-export interface InvoiceHTLC {
-  chanId: string;
-  htlcIndex: string;
-  amtMsat: string;
-  acceptHeight: number;
-  acceptTime: string;
-  resolveTime: string;
-  expiryHeight: number;
-  state: InvoiceHTLCState;
 }
 
 export interface AddInvoiceResponse {
@@ -781,18 +682,10 @@ export interface QueryRoutesRequest {
   ignoredEdges?: EdgeLocator[];
   sourcePubKey?: string;
   useMissionControl?: boolean;
-  ignoredPairs?: NodePair[];
-  cltvLimit?: number;
-}
-
-export interface NodePair {
-  from: Buffer | string;
-  to: Buffer | string;
 }
 
 export interface QueryRoutesResponse {
   routes: Route[];
-  successProb: number;
 }
 
 export interface NetworkInfo {
@@ -832,7 +725,6 @@ export interface PolicyUpdateRequest {
   baseFeeMsat: string;
   feeRate: number;
   timeLockDelta: number;
-  maxHtlcMsat?: string;
 }
 
 export interface ForwardingHistoryRequest {
@@ -1043,15 +935,6 @@ export class LnRpc {
    * sendToRouteSync is a synchronous version of sendToRoute. It Will block until the payment either fails or succeeds.
    */
   public sendToRouteSync(args: SendToRouteRequest): Promise<SendResponse>;
-
-  /**
-   * ChannelAcceptor dispatches a bi-directional streaming RPC in which
-   * OpenChannel requests are sent to the client and the client responds with
-   * a boolean that tells LND whether or not to accept the channel. This allows
-   * node operators to specify their own criteria for accepting inbound channels
-   * through a single persistent connection.
-   */
-  public channelAcceptor(args: ChannelAcceptResponse): Duplex<ChannelAcceptRequest>;
 
   /**
    * addInvoice attempts to add a new invoice to the invoice database. Any duplicated invoices are rejected, therefore

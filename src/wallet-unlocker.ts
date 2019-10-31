@@ -1,5 +1,5 @@
-const {promisify} = require('util');
-const defaultEmptyArg = require('./default-empty-arg');
+import { promisify } from 'util';
+import { defaultEmptyArg } from './default-empty-arg';
 
 /**
  * Factory for wallet unlocker instance
@@ -13,10 +13,10 @@ const defaultEmptyArg = require('./default-empty-arg');
  * @param  {Object}                   credentials
  * @return {Proxy}
  */
-module.exports = function createWalletUnlocker(
+export function createWalletUnlocker(
   lnrpcDescriptor,
   server,
-  credentials
+  credentials,
 ) {
   /**
    * GRPC Lightning Service
@@ -27,7 +27,7 @@ module.exports = function createWalletUnlocker(
   try {
     walletUnlocker = new lnrpcDescriptor.lnrpc.WalletUnlocker(
       server,
-      credentials
+      credentials,
     );
   } catch (e) {
     if (!e.code) e.code = 'GRPC_WALLET_UNLOCKER_SERVICE_ERR';
@@ -51,4 +51,4 @@ module.exports = function createWalletUnlocker(
       }
     },
   });
-};
+}

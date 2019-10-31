@@ -1,17 +1,19 @@
-const fs = require('fs');
-const pkgDir = require('pkg-dir');
-const {join} = require('path');
-const {promisify} = require('util');
-const protoLoader = require('@grpc/proto-loader');
-const GRPC = require('grpc');
-const createLightning = require('./lightning');
-const createWalletUnlocker = require('./wallet-unlocker');
-const readFile = promisify(fs.readFile);
-const protobufjs = require('protobufjs');
-const path = require('path');
-const packageJson = require('../package.json');
+import * as protoLoader from '@grpc/proto-loader';
+import fs from 'fs';
+import GRPC from 'grpc';
+import os from 'os';
+import { join } from 'path';
+import path from 'path';
+import pkgDir from 'pkg-dir';
+import protobufjs from 'protobufjs';
+import { promisify } from 'util';
+import packageJson from '../package.json';
+import { createLightningProxy } from './lightning';
+import { createWalletUnlocker } from './wallet-unlocker';
 
-const HOME_DIR = require('os').homedir();
+const readFile = promisify(fs.readFile);
+
+const HOME_DIR = os.homedir();
 const DEFAULTS = {
   grpc: GRPC,
   grpcLoader: protoLoader,
@@ -35,7 +37,7 @@ const DEFAULTS = {
  * @param  {Object} config
  * @return {Promise} - Returns proxy to lnrpc instance
  */
-module.exports = async function createLnRpc(config = {}) {
+export async function createLnRpc(config: any = {}) {
   const rootPath = await pkgDir(__dirname);
   const protoFile = join(
     rootPath,
@@ -60,7 +62,8 @@ module.exports = async function createLnRpc(config = {}) {
 
   try {
     // Use any SSL cert
-    let {cert, certEncoding} = config;
+    let { cert } = config;
+    const { certEncoding } = config;
 
     // Fallback optional .tls file path
     if (!cert && tlsPath) {
@@ -100,14 +103,14 @@ module.exports = async function createLnRpc(config = {}) {
     // to gRPC metadata
     metadata.add(
       'macaroon',
-      Buffer.isBuffer(macaroon) ? macaroon.toString('hex') : macaroon
+      Buffer.isBuffer(macaroon) ? macaroon.toString('hex') : macaroon,
     );
 
     // Create macaroon credentials
     const macaroonCredentials = grpc.credentials.createFromMetadataGenerator(
       (_, callback) => {
         callback(null, metadata);
-      }
+      },
     );
 
     // Update existing cert credentials by combining macaroon auth
@@ -115,7 +118,7 @@ module.exports = async function createLnRpc(config = {}) {
     // authenticated
     credentials = grpc.credentials.combineChannelCredentials(
       credentials,
-      macaroonCredentials
+      macaroonCredentials,
     );
   }
 
@@ -149,7 +152,7 @@ module.exports = async function createLnRpc(config = {}) {
     description: {value: grpcPkgObj},
     lightning: {
       value:
-        lightning || createLightning(grpcPkgObj, server, credentials, config),
+        lightning || createLightningProxy(grpcPkgObj, server, credentials, config),
     },
     walletUnlocker: {
       value:
@@ -175,4 +178,4 @@ module.exports = async function createLnRpc(config = {}) {
       }
     },
   });
-};
+}

@@ -9,9 +9,9 @@ PROTOC_VERSION=$2
 # Clone LND release and extract rpc.proto
 yarn
 rm -f ./rpc.proto
-node lib/proto-sanitizer.js "./lnd/${LND_RELEASE_TAG}/rpc.proto" "./rpc.proto"
+ts-node src/proto-sanitizer.ts "./lnd/${LND_RELEASE_TAG}/rpc.proto" "./rpc.proto"
 
-GENERATED_TYPES_DIR=types/generated
+GENERATED_TYPES_DIR=src/types/generated
 if [ -d "$GENERATED_TYPES_DIR" ]
 then
     rm -rf "$GENERATED_TYPES_DIR"

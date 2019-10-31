@@ -3,18 +3,20 @@
     "extends": [
         "tslint:recommended"
     ],
-    "jsRules": {},
     "linterOptions": {
       "exclude": [
           "node_modules",
-          "types/generated/**"
+          "src/types/generated/**"
       ]
     },
     "rules": {
       "interface-name": [
         true,
         "never-prefix"
-      ]
+      ],
+      "quotemark": [true, "single"],
+      "curly": false,
+      "object-literal-sort-keys": false
     },
     "rulesDirectory": []
 }

@@ -1,5 +1,6 @@
-const fs = require('fs');
-const os = require('os');
+import fs from 'fs';
+import os from 'os';
+import readline from 'readline';
 
 /**
  * The intended use of this program is to
@@ -10,13 +11,13 @@ const os = require('os');
  */
 
 if (!(process.argv[2] && process.argv[3])) {
-  throw new Error('Usage: node lib/proto-sanitizer.js' +
+  throw new Error('Usage: ts-node src/proto-sanitizer.ts' +
     './file.proto ./file.sanitized.proto');
 }
 const readFile = process.argv[2];
 const writeFile = process.argv[3];
 
-const reader = require('readline').createInterface({
+const reader = readline.createInterface({
   input: fs.createReadStream(readFile),
 });
 const writer = fs.createWriteStream(writeFile, {

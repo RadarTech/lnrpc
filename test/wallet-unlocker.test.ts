@@ -1,9 +1,8 @@
-const assert = require('assert');
-const createWalletUnlocker = require('../lib/wallet-unlocker');
-const grpcStub = require('./helpers/grpc-stub');
-const {equal} = assert;
+import assert, { equal } from 'assert';
+import { createWalletUnlocker } from '../src/wallet-unlocker';
+import { grpcStub, LightningStub } from './helpers/grpc-stub';
 
-const {stringify} = JSON;
+const { stringify } = JSON;
 
 describe('Wallet Unlocker Service', () => {
   it('should not modify arguments', () => {
@@ -29,14 +28,14 @@ describe('Wallet Unlocker Service', () => {
        * Custom WalletUnlockerStub
        * @constructor
        */
-      const WalletUnlockerCustomStub = function() {
+      const WalletUnlockerCustomStub = () => {
         throw new Error();
       };
 
       const descriptor = grpcStub(
         {},
-        grpcStub.LightningStub,
-        WalletUnlockerCustomStub
+        LightningStub,
+        WalletUnlockerCustomStub,
       ).loadPackageDefinition();
 
       assert.throws(
@@ -44,15 +43,17 @@ describe('Wallet Unlocker Service', () => {
         (e) => {
           expectedErr = e;
           return true;
-        }
+        },
       );
-    } catch (_) {} // eslint-disable-line
+    } catch (_) {
+      // noop
+    }
 
     return new Promise((resolve) => {
       equal(
         expectedErr && expectedErr.code,
         'GRPC_WALLET_UNLOCKER_SERVICE_ERR',
-        'has expected error'
+        'has expected error',
       );
       resolve();
     });
@@ -71,8 +72,8 @@ describe('Wallet Unlocker Service', () => {
 
     const descriptor = grpcStub(
       {},
-      grpcStub.LightningStub,
-      WalletUnlockerCustomStub
+      LightningStub,
+      WalletUnlockerCustomStub,
     ).loadPackageDefinition();
     const instance = createWalletUnlocker(descriptor, 'localhost:1', {});
     equal(instance.name, expected, 'proxy forwards to target props');
@@ -94,14 +95,16 @@ describe('Wallet Unlocker Service', () => {
      * Custom WalletUnlockerStub
      * @constructor
      */
-    function WalletUnlockerCustomStub() {}
+    function WalletUnlockerCustomStub() {
+      // noop
+    }
     WalletUnlockerCustomStub.prototype.initWallet = (_, cb) => {
       cb(null, expected);
     };
     const descriptor = grpcStub(
       {},
-      grpcStub.LightningStub,
-      WalletUnlockerCustomStub
+      LightningStub,
+      WalletUnlockerCustomStub,
     ).loadPackageDefinition();
     const instance = createWalletUnlocker(descriptor, 'localhost:1', {});
 

@@ -1,15 +1,15 @@
-const fs = require('fs');
-const assert = require('assert');
-const pkgDir = require('pkg-dir');
-const {join} = require('path');
-const {promisify} = require('util');
-const createLnrpc = require('../lib/lnrpc');
-const grpcStub = require('./helpers/grpc-stub');
+import assert from 'assert';
+import fs from 'fs';
+import {join} from 'path';
+import pkgDir from 'pkg-dir';
+import {promisify} from 'util';
+import packageJson from '../package.json';
+import createLnrpc from '../src';
+import {grpcStub, LightningStub} from './helpers/grpc-stub';
+
 const {equal, fail} = assert;
-const {LightningStub} = grpcStub;
 const unlink = promisify(fs.unlink);
 const writeFile = promisify(fs.writeFile);
-const packageJson = require('../package.json');
 
 describe('Lnrpc Factory', () => {
   const certStub = 'cert';
@@ -34,7 +34,7 @@ describe('Lnrpc Factory', () => {
               equal(
                 actual.toString(),
                 expected.toString(),
-                'configures bufferized `cert` value'
+                'configures bufferized `cert` value',
               );
             },
           },
@@ -87,7 +87,7 @@ describe('Lnrpc Factory', () => {
             createSsl: (cert) => {
               assert(
                 typeof cert === 'undefined',
-                'opted out of SSL cert pinning'
+                'opted out of SSL cert pinning',
               );
             },
           },
@@ -113,7 +113,7 @@ describe('Lnrpc Factory', () => {
             credentials: {
               createSsl: () => expSslCreds,
               createFromMetadataGenerator: (cb) => {
-                cb({}, () => {});
+                cb({}, () => { /* noop */ });
                 return expMacaroonCreds;
               },
               combineChannelCredentials: (sslCreds, macaroonCreds) => {
@@ -121,7 +121,7 @@ describe('Lnrpc Factory', () => {
                 equal(
                   macaroonCreds,
                   expMacaroonCreds,
-                  'has expected macaroon credentials'
+                  'has expected macaroon credentials',
                 );
                 tests++;
               },
@@ -131,7 +131,7 @@ describe('Lnrpc Factory', () => {
             },
           }),
         });
-      } catch (e) {} // eslint-disable-line
+      } catch (e) { /* noop */ }
 
       equal(tests, 1, 'called `combineChannelCredentials`');
     });
@@ -155,7 +155,7 @@ describe('Lnrpc Factory', () => {
     it('should set hex encoded macaroon from `macaroonPath`', async () => {
       let tests = 0;
 
-      const CustomMetadataStub = function() {};
+      const CustomMetadataStub = () => { /* noop */ };
       CustomMetadataStub.prototype.add = (_, macaroon) => {
         tests++;
         equal(macaroon, macaroonHex);
@@ -172,7 +172,7 @@ describe('Lnrpc Factory', () => {
             },
           }),
         });
-      } catch (e) {} // eslint-disable-line
+      } catch (e) { /* noop */ }
 
       equal(tests, 1, 'called Metadata.add with macaroon');
     });
@@ -180,7 +180,7 @@ describe('Lnrpc Factory', () => {
     it('should set macaroon from `macaroon` hex string', async () => {
       let tests = 0;
 
-      const CustomMetadataStub = function() {};
+      const CustomMetadataStub = () => { /* noop */ };
       CustomMetadataStub.prototype.add = (_, macaroon) => {
         tests++;
         equal(macaroon, macaroonHex);
@@ -197,7 +197,7 @@ describe('Lnrpc Factory', () => {
             },
           }),
         });
-      } catch (e) {} // eslint-disable-line
+      } catch (e) { /* noop */ }
 
       equal(tests, 1, 'called Metadata.add with macaroon');
     });
@@ -228,7 +228,7 @@ describe('Lnrpc Factory', () => {
       const expected = 'localhost:10001';
 
       return createLnrpc({
-        grpc: grpcStub({}, function(actual) {
+        grpc: grpcStub({}, (actual) => {
           equal(actual, expected, 'defaults to expected server');
           return new LightningStub();
         }),
@@ -241,7 +241,7 @@ describe('Lnrpc Factory', () => {
 
       return createLnrpc({
         server: expected,
-        grpc: grpcStub({}, function(actual) {
+        grpc: grpcStub({}, (actual) => {
           equal(actual, expected, 'recieved configured server');
           return new LightningStub();
         }),
@@ -265,11 +265,11 @@ describe('Lnrpc Factory', () => {
       return createLnrpc({
         grpc: grpcStub(),
         lightning: expected,
-        cert: certStub}
+        cert: certStub},
       ).then(
         (lnrpc) => {
           equal(lnrpc.lightning, expected);
-        }
+        },
       );
     });
 
@@ -287,7 +287,7 @@ describe('Lnrpc Factory', () => {
     it('should provide all lightning methods top-level', () => {
       return createLnrpc({
         grpc: grpcStub(),
-        lightning: {test: () => {}},
+        lightning: {test: () => { /* noop */ }},
         cert: certStub,
       }).then((lnrpc) => {
         equal(typeof lnrpc.test, 'function');
@@ -297,7 +297,7 @@ describe('Lnrpc Factory', () => {
     it('should provide all wallet unlocker methods top-level', () => {
       return createLnrpc({
         grpc: grpcStub(),
-        walletUnlocker: {test: () => {}},
+        walletUnlocker: {test: () => { /* noop */ }},
         cert: certStub,
       }).then((lnrpc) => {
         equal(typeof lnrpc.test, 'function');
@@ -306,4 +306,4 @@ describe('Lnrpc Factory', () => {
   });
 });
 
-process.on('unhandledRejection', () => {});
+process.on('unhandledRejection', () => { /* noop */ });

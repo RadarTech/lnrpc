@@ -2,20 +2,20 @@
  * Lightning RPC Stub
  * @constructor
  */
-const LightningStub = function LightningStub() {};
+export const LightningStub = () => { /* noop */ };
 
 /**
  * Wallet Unlocker RPC Stub
  * @constructor
  */
-const WalletUnlockerStub = function WalletUnlockerStub() {};
+export const WalletUnlockerStub = () => { /* noop */ };
 
 /**
  * Metadata
  * @constructor
  */
-function Metadata() {}
-Metadata.prototype.add = () => {};
+function Metadata() { /* noop */ }
+Metadata.prototype.add = () => { /* noop */ };
 
 /**
  * Create a grpc stub
@@ -24,10 +24,10 @@ Metadata.prototype.add = () => {};
  * @param  {WalletUnlockerStub?}  walletUnlocker
  * @return {Object}
  */
-module.exports = function grpcStub(
+export function grpcStub(
   options = {},
-  lightning = LightningStub,
-  walletUnlocker = WalletUnlockerStub
+  lightning: (value?: unknown) => void = LightningStub,
+  walletUnlocker: (value?: unknown) => void = WalletUnlockerStub,
 ) {
   return Object.assign(
     {
@@ -35,7 +35,7 @@ module.exports = function grpcStub(
       credentials: {
         createSsl: () => ({}),
         createFromMetadataGenerator: (cb) => {
-          cb({}, () => {});
+          cb({}, () => { /* noop */ });
           return {};
         },
         combineChannelCredentials: () => ({}),
@@ -47,9 +47,6 @@ module.exports = function grpcStub(
         },
       }),
     },
-    options
+    options,
   );
-};
-
-module.exports.LightningStub = LightningStub;
-module.exports.WalletUnlockerStub = WalletUnlockerStub;
+}

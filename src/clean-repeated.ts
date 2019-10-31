@@ -1,5 +1,6 @@
-const fs = require('fs');
-const os = require('os');
+import fs from 'fs';
+import os from 'os';
+import readline from 'readline';
 
 /**
  * Read the generated lnrpc types and remove
@@ -9,10 +10,10 @@ const os = require('os');
  * https://github.com/protocolbuffers/protobuf/issues/4518
  */
 
-const file = 'types/generated/rpc_pb.d.ts';
-const tempFile = 'types/generated/rpc_pb_temp.d.ts';
+const file = 'src/types/generated/rpc_pb.d.ts';
+const tempFile = 'src/types/generated/rpc_pb_temp.d.ts';
 
-const reader = require('readline').createInterface({
+const reader = readline.createInterface({
   input: fs.createReadStream(file),
 });
 const writer = fs.createWriteStream(tempFile, {
