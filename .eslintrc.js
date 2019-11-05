@@ -18,5 +18,6 @@ module.exports = {
   },
   rules: {
     'no-invalid-this': 0,
+    'linebreak-style': 0,
   }
 };
