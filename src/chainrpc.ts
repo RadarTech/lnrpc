@@ -6,7 +6,7 @@ import { join } from 'path';
 import pkgDir from 'pkg-dir';
 import { promisify } from 'util';
 import packageJson from '../package.json';
-import { createChainNotifier, createLightning, createWalletUnlocker } from './servers';
+import { createChainNotifier, createLightning, createWalletUnlocker } from './services';
 
 const readFile = promisify(fs.readFile);
 

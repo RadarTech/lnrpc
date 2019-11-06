@@ -6,7 +6,7 @@ import { join } from 'path';
 import pkgDir from 'pkg-dir';
 import { promisify } from 'util';
 import packageJson from '../package.json';
-import { createChainNotifier, createLightning, createWalletUnlocker } from './servers';
+import { createLightning, createWalletUnlocker } from './services';
 
 const readFile = promisify(fs.readFile);
 
@@ -51,7 +51,6 @@ export async function createLnRpc(config: any = {}) {
     tls: tlsPath,
     lightning,
     walletUnlocker,
-    chainNotifier,
     macaroonPath,
   } = Object.assign({}, DEFAULTS, config);
 
@@ -127,7 +126,7 @@ export async function createLnRpc(config: any = {}) {
   let grpcPkgObj;
 
   try {
-    const packageDefinition = protoLoader.loadSync(protoFile, {
+    const packageDefinition = grpcLoader.loadSync(protoFile, {
       longs: String,
     });
     // console.log('DEF', packageDefinition);
@@ -145,11 +144,19 @@ export async function createLnRpc(config: any = {}) {
     description: {value: grpcPkgObj},
     lightning: {
       value:
-        lightning || createLightning(grpcPkgObj, server, credentials, config),
+        lightning || createLightning({
+          grpcPkgObj,
+          server,
+          credentials,
+        }),
     },
     walletUnlocker: {
       value:
-        walletUnlocker || createWalletUnlocker(grpcPkgObj, server, credentials),
+        walletUnlocker || createWalletUnlocker({
+          grpcPkgObj,
+          server,
+          credentials,
+        }),
     },
   });
 
