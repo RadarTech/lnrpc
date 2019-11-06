@@ -205,7 +205,7 @@ describe('Lnrpc Factory', () => {
 
   describe('grpc lnd/proto instantiation', () => {
     // eslint-disable-next-line max-len
-    it('should load `./lnd/lnd_version/rpc.proto` filename via `grpc.load()`', async () => {
+    it('should load `./lnd/lnd_version/rpc.proto` filename via `grpc.loadSync()`', async () => {
       const root = await pkgDir(__dirname);
       const expected = join(
         root,
@@ -214,7 +214,7 @@ describe('Lnrpc Factory', () => {
 
       return createLnrpc({
         grpcLoader: {
-          load(actual) {
+          loadSync(actual) {
             equal(actual, expected, 'loaded generated `rpc.proto` via load');
             return {};
           },

@@ -3,9 +3,7 @@ import fs from 'fs';
 import GRPC from 'grpc';
 import os from 'os';
 import { join } from 'path';
-import path from 'path';
 import pkgDir from 'pkg-dir';
-import protobufjs from 'protobufjs';
 import { promisify } from 'util';
 import packageJson from '../package.json';
 import { createLightningProxy } from './lightning';
@@ -129,13 +127,7 @@ export async function createLnRpc(config: any = {}) {
   let grpcPkgObj;
 
   try {
-    // Prevent google annotations from causing parse error on `grpc.load()`
-    protobufjs.common(
-      `${path.dirname(protoFile)}/google/api/annotations.proto`,
-      {},
-    );
-
-    const packageDefinition = await grpcLoader.load(protoFile, {
+    const packageDefinition = grpcLoader.loadSync(protoFile, {
       longs: String,
     });
     grpcPkgObj = grpc.loadPackageDefinition(packageDefinition);
