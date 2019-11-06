@@ -4,3 +4,4 @@ yarn-error.log
 /rpc.proto
 *.macaroon
 dist
+.DS_Store

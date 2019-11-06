@@ -14,8 +14,8 @@
     "start": "ts-node ./src/index.ts",
     "build": "tsc -p tsconfig.build.json",
     "lint": "tslint -c tslint.json '{src,test}/**/*.ts' -e 'src/types/generated/**/*.ts' --fix",
-    "generate": "sh ./generate_types.sh ${npm_package_config_lnd_release_tag} ${npm_package_config_protoc_version} && ts-node src/clean-repeated.ts",
-    "update-proto": "mkdir -p lnd/${npm_package_config_lnd_release_tag} && curl -o lnd/${npm_package_config_lnd_release_tag}/rpc.proto ${npm_package_config_lnd_url}/${npm_package_config_lnd_release_tag}/lnrpc/rpc.proto"
+    "generate": "sh scripts/generate_types.sh ${npm_package_config_lnd_release_tag} ${npm_package_config_protoc_version} && ts-node src/clean-repeated.ts",
+    "update-protos": "sh scripts/update_protos.sh"
   },
   "repository": "https://github.com/RadarTech/lnrpc",
   "keywords": [
