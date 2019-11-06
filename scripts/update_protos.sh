@@ -1,7 +1,3 @@
-# Google Definitions
-curl ${npm_package_config_googleapis_url}/annotations.proto --create-dirs -o lnd/${npm_package_config_lnd_release_tag}/google/api/annotations.proto
-curl ${npm_package_config_googleapis_url}/http.proto --create-dirs -o lnd/${npm_package_config_lnd_release_tag}/google/api/http.proto
-
 # RPC Servers
 curl ${npm_package_config_lnd_url}/${npm_package_config_lnd_release_tag}/lnrpc/rpc.proto --create-dirs -o lnd/${npm_package_config_lnd_release_tag}/rpc.proto
 curl ${npm_package_config_lnd_url}/${npm_package_config_lnd_release_tag}/lnrpc/autopilotrpc/autopilot.proto --create-dirs -o lnd/${npm_package_config_lnd_release_tag}/autopilotrpc/autopilot.proto

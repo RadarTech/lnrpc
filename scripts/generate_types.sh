@@ -10,6 +10,9 @@ PROTOC_VERSION=$2
 rm -f *.proto
 ts-node src/proto-sanitizer.ts "lnd/${LND_RELEASE_TAG}/**/*.proto"
 
+# Copy google definitions
+cp -r google/. lnd/${npm_package_config_lnd_release_tag}/google
+
 GENERATED_TYPES_DIR=src/types/generated
 if [ -d "$GENERATED_TYPES_DIR" ]
 then
@@ -45,6 +48,8 @@ protoc/bin/protoc \
   --proto_path=lnd/${LND_RELEASE_TAG} \
   --plugin=protoc-gen-ts=node_modules/.bin/protoc-gen-ts \
   --ts_out=$GENERATED_TYPES_DIR \
+  google/api/annotations.proto \
+  google/api/http.proto \
   rpc.proto \
   autopilotrpc/autopilot.proto \
   chainrpc/chainnotifier.proto \
@@ -55,8 +60,8 @@ protoc/bin/protoc \
   watchtowerrpc/watchtower.proto \
   wtclientrpc/wtclient.proto
 
-# Cleanup downloaded proto directory/files
-rm -rf *.proto protoc
+# Cleanup proto directory/files
+rm -rf *.proto protoc lnd/${npm_package_config_lnd_release_tag}/google
 
 # Remove 'List' from all generated Array type names
 ts-node src/clean-repeated.ts
