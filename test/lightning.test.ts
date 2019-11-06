@@ -51,7 +51,7 @@ describe('Lightning Service', () => {
 
     return new Promise((resolve) => {
       equal(
-        expectedErr && expectedErr.code,
+        expectedErr?.code,
         'GRPC_LIGHTNING_SERVICE_ERR',
         'has expected error',
       );

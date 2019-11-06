@@ -14,7 +14,7 @@
     "start": "ts-node ./src/index.ts",
     "build": "tsc -p tsconfig.build.json",
     "lint": "tslint -c tslint.json '{src,test}/**/*.ts' -e 'src/types/generated/**/*.ts' --fix",
-    "generate": "sh scripts/generate_types.sh ${npm_package_config_lnd_release_tag} ${npm_package_config_protoc_version} && ts-node src/clean-repeated.ts",
+    "generate": "sh scripts/generate_types.sh ${npm_package_config_lnd_release_tag} ${npm_package_config_protoc_version}",
     "update-protos": "sh scripts/update_protos.sh"
   },
   "repository": "https://github.com/RadarTech/lnrpc",
@@ -35,13 +35,15 @@
     "ts-protoc-gen": "^0.8.0"
   },
   "devDependencies": {
+    "@types/glob": "^7.1.1",
     "@types/node": "^10.14.19",
     "@types/pkg-dir": "^2.0.1",
+    "glob": "^7.1.5",
     "mocha": "^5.2.0",
     "mocha-typescript": "^1.1.17",
     "ts-node": "^8.4.1",
-    "tslint": "^5.17.0",
-    "typescript": "^3.6.3"
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.0"
   },
   "engines": {
     "node": ">= 8.*"

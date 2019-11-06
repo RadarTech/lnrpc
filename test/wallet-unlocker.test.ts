@@ -51,7 +51,7 @@ describe('Wallet Unlocker Service', () => {
 
     return new Promise((resolve) => {
       equal(
-        expectedErr && expectedErr.code,
+        expectedErr?.code,
         'GRPC_WALLET_UNLOCKER_SERVICE_ERR',
         'has expected error',
       );
