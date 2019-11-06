@@ -8,7 +8,7 @@ PROTOC_VERSION=$2
 
 # Sanitize all proto files prior to type generation
 rm -f *.proto
-ts-node src/proto-sanitizer.ts "lnd/${LND_RELEASE_TAG}/*.proto"
+ts-node src/proto-sanitizer.ts "lnd/${LND_RELEASE_TAG}/**/*.proto"
 
 GENERATED_TYPES_DIR=src/types/generated
 if [ -d "$GENERATED_TYPES_DIR" ]
@@ -42,10 +42,18 @@ rm "protoc-${PROTOC_VERSION}.zip"
 # Run protoc
 echo "running protoc..."
 protoc/bin/protoc \
+  --proto_path=lnd/${LND_RELEASE_TAG} \
   --plugin=protoc-gen-ts=node_modules/.bin/protoc-gen-ts \
   --ts_out=$GENERATED_TYPES_DIR \
-  google/api/*.proto \
-  *.proto
+  rpc.proto \
+  autopilotrpc/autopilot.proto \
+  chainrpc/chainnotifier.proto \
+  invoicesrpc/invoices.proto \
+  routerrpc/router.proto \
+  signrpc/signer.proto \
+  walletrpc/walletkit.proto \
+  watchtowerrpc/watchtower.proto \
+  wtclientrpc/wtclient.proto
 
 # Cleanup downloaded proto directory/files
 rm -rf *.proto protoc
