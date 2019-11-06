@@ -1,5 +1,5 @@
 import { promisify } from 'util';
-import { defaultEmptyArg } from './default-empty-arg';
+import { defaultEmptyArg } from '../default-empty-arg';
 
 /**
  * Factory for wallet unlocker instance

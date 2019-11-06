@@ -1,5 +1,5 @@
 import assert, { equal } from 'assert';
-import { createWalletUnlocker } from '../src/wallet-unlocker';
+import { createWalletUnlocker } from '../src/servers';
 import { grpcStub, LightningStub } from './helpers/grpc-stub';
 
 const { stringify } = JSON;

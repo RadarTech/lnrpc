@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { createLightningProxy } from '../src/lightning';
+import { createLightning } from '../src/servers';
 import { grpcStub } from './helpers/grpc-stub';
 const {equal} = assert;
 
@@ -16,7 +16,7 @@ describe('Lightning Service', () => {
     const config = {subscriptionMethods: ['subscribeInvoices']};
     const expConfig = stringify(config);
 
-    createLightningProxy(descriptor, server, credentials, config);
+    createLightning(descriptor, server, credentials, config);
 
     equal(stringify(descriptor), expDescriptor, 'has expected descriptor');
     equal(server, expServer, 'has expected server');
@@ -41,7 +41,7 @@ describe('Lightning Service', () => {
         LightningCustomStub,
       ).loadPackageDefinition();
       assert.throws(
-        () => createLightningProxy(descriptor, 'localhost:1', {}),
+        () => createLightning(descriptor, 'localhost:1', {}),
         (e) => {
           expectedErr = e;
           return true;
@@ -74,14 +74,14 @@ describe('Lightning Service', () => {
       {},
       LightningCustomStub,
     ).loadPackageDefinition();
-    const instance = createLightningProxy(descriptor, 'localhost:1', {});
+    const instance = createLightning(descriptor, 'localhost:1', {});
     equal(instance.name, expected, 'proxy forwards to target props');
   });
 
   it('should allow setting on proxy target', () => {
     const expected = 'test';
     const descriptor = grpcStub().loadPackageDefinition();
-    const instance = createLightningProxy(descriptor, 'localhost:1', {});
+    const instance = createLightning(descriptor, 'localhost:1', {});
 
     instance.name = expected;
     equal(instance.name, expected, 'proxy sets target properties');
@@ -102,7 +102,7 @@ describe('Lightning Service', () => {
       {},
       LightningCustomStub,
     ).loadPackageDefinition();
-    const instance = createLightningProxy(descriptor, 'localhost:1', {});
+    const instance = createLightning(descriptor, 'localhost:1', {});
 
     const actual = await instance.getInfo({});
     equal(actual, expected, 'promisified `getInfo` target method');
@@ -130,7 +130,7 @@ describe('Lightning Service', () => {
       {},
       LightningCustomStub,
     ).loadPackageDefinition();
-    const instance = createLightningProxy(
+    const instance = createLightning(
       descriptor,
       'localhost:1',
       {},

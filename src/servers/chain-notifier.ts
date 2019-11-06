@@ -1,22 +1,15 @@
 import { promisify } from 'util';
-import { defaultEmptyArg } from './default-empty-arg';
+import { defaultEmptyArg } from '../default-empty-arg';
 
 const DEFAULTS = {
   subscriptionMethods: [
-    'subscribeInvoices',
-    'subscribeTransactions',
-    'subscribeChannelGraph',
-    'subscribeChannelEvents',
-    'subscribeChannelBackups',
-    'sendToRoute',
-    'sendPayment',
-    'openChannel',
-    'closeChannel',
+    'registerConfirmationsNtfn',
+    'registerBlockEpochNtfn',
   ],
 };
 
 /**
- * Factory for a Lightning GRPC service proxy
+ * Factory for a Chain Notifier GRPC service proxy
  *
  * Proxy serves two purposes:
  *  - Wrap non-subscription methods in promises
@@ -28,7 +21,7 @@ const DEFAULTS = {
  * @param  {Object}                   config
  * @return {Proxy}
  */
-export function createLightningProxy(
+export function createChainNotifier(
   lnrpcDescriptor,
   server,
   credentials,
@@ -38,22 +31,19 @@ export function createLightningProxy(
   const {subscriptionMethods} = Object.assign({}, DEFAULTS, config);
 
   /**
-   * GRPC Lightning Service
-   * @type {lnrpc.Lightning}
+   * GRPC ChainNotifier Service
+   * @type {lnrpc.ChainNotifier}
    */
-  let lightning;
+  let chainNotifier;
 
   try {
-    lightning = new lnrpcDescriptor.lnrpc.Lightning(server, credentials, {
-      // Increase max receive message size for describegraph
-      'grpc.max_receive_message_length': 50 * 1024 * 1024,
-    });
+    chainNotifier = new lnrpcDescriptor.chainrpc.ChainNotifier(server, credentials);
   } catch (e) {
-    if (!e.code) e.code = 'GRPC_LIGHTNING_SERVICE_ERR';
+    if (!e.code) e.code = 'GRPC_CHAIN_NOTIFIER_SERVICE_ERR';
     throw e;
   }
 
-  return new Proxy(lightning, {
+  return new Proxy(chainNotifier, {
     /**
      * Promisify any requested (non-subscription) lightning RPC method
      * @param  {lnrpc.Lightning} target
@@ -67,12 +57,7 @@ export function createLightningProxy(
         return target[key]; // forward
       } else {
         if (subscriptionMethods.includes(key)) {
-          switch (method.originalName) {
-            case 'closeChannel':
-              return method;
-            default:
-              return defaultEmptyArg(method);
-          }
+          return defaultEmptyArg(method);
         }
         return promisify(defaultEmptyArg(method));
       }

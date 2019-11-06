@@ -11,6 +11,12 @@ export const LightningStub = () => { /* noop */ };
 export const WalletUnlockerStub = () => { /* noop */ };
 
 /**
+ * Chain Notifier RPC Stub
+ * @constructor
+ */
+export const ChainNotifierStub = () => { /* noop */ };
+
+/**
  * Metadata
  * @constructor
  */
@@ -22,12 +28,14 @@ Metadata.prototype.add = () => { /* noop */ };
  * @param  {Object?}              options
  * @param  {LightningStub?}       lightning
  * @param  {WalletUnlockerStub?}  walletUnlocker
+ * @param  {ChainNotifierStub?}   chainNotifier
  * @return {Object}
  */
 export function grpcStub(
   options = {},
   lightning: (value?: unknown) => void = LightningStub,
   walletUnlocker: (value?: unknown) => void = WalletUnlockerStub,
+  chainNotifier: (value?: unknown) => void = ChainNotifierStub,
 ) {
   return Object.assign(
     {
@@ -44,6 +52,7 @@ export function grpcStub(
         lnrpc: {
           Lightning: lightning,
           WalletUnlocker: walletUnlocker,
+          ChainNotifier: chainNotifier,
         },
       }),
     },

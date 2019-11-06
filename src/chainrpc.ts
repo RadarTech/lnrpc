@@ -34,11 +34,11 @@ const DEFAULTS = {
  * @param  {Object} config
  * @return {Promise} - Returns proxy to lnrpc instance
  */
-export async function createLnRpc(config: any = {}) {
+export async function createChainRpc(config: any = {}) {
   const rootPath = await pkgDir(__dirname);
   const protoFile = join(
     rootPath,
-    `lnd/${packageJson.config['lnd-release-tag']}/rpc.proto`,
+    `lnd/${packageJson.config['lnd-release-tag']}/chainrpc/chainnotifier.proto`,
   );
 
   /*
@@ -138,34 +138,28 @@ export async function createLnRpc(config: any = {}) {
   }
 
   /**
-   * Lnrpc instance
-   * @type {lnrpc}
+   * Chainrpc instance
+   * @type {chainrpc}
    */
-  const lnrpc = Object.create(null, {
+  const chainrpc = Object.create(null, {
     description: {value: grpcPkgObj},
-    lightning: {
+    chainNotifier: {
       value:
-        lightning || createLightning(grpcPkgObj, server, credentials, config),
-    },
-    walletUnlocker: {
-      value:
-        walletUnlocker || createWalletUnlocker(grpcPkgObj, server, credentials),
+        chainNotifier || createChainNotifier(grpcPkgObj, server, credentials, config),
     },
   });
 
-  return new Proxy(lnrpc, {
+  return new Proxy(chainrpc, {
     /**
-     * Provide lop-level access to any lightning/walletUnlocker
+     * Provide lop-level access to any chainnotifier
      * methods, otherwise provide user with fallback value
-     * @param  {lnrpc.Lightning} target
+     * @param  {chainrpc.ChainNotifier} target
      * @param  {String}          key
      * @return {Any}
      */
     get(target, key) {
-      if (typeof target.lightning[key] === 'function') {
-        return target.lightning[key].bind(target.lightning);
-      } else if (typeof target.walletUnlocker[key] === 'function') {
-        return target.walletUnlocker[key].bind(target.walletUnlocker);
+      if (typeof target.chainNotifier[key] === 'function') {
+        return target.chainNotifier[key].bind(target.chainNotifier);
       } else {
         return target[key]; // forward
       }
