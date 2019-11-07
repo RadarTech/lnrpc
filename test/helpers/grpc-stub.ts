@@ -115,7 +115,7 @@ export function grpcStub(
         routerrpc: {
           Router: router,
         },
-        signerrpc: {
+        signrpc: {
           Signer: signer,
         },
         walletrpc: {

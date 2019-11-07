@@ -6,7 +6,7 @@ export {
   createInvoicesRpc,
   createLnRpc,
   createRouterRpc,
-  createSignerRpc,
+  createSignRpc,
   createWalletRpc,
   createWatchtowerRpc,
   createWtClientRpc,

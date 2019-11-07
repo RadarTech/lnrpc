@@ -31,7 +31,7 @@ export async function createWtClientRpc(userConfig: WtClientRpcConfig) {
     ...defaults,
     ...userConfig,
   };
-  const { wtClient, server, grpcLoader, grpc } = config;
+  const { watchtowerClient, server, grpcLoader, grpc } = config;
 
   // Generate grpc SSL credentials
   const credentials = await createCredentials(config);
@@ -48,9 +48,9 @@ export async function createWtClientRpc(userConfig: WtClientRpcConfig) {
    */
   const wtclientrpc = Object.create(null, {
     description: {value: grpcPkgObj},
-      wtClient: {
+      watchtowerClient: {
       value:
-        wtClient || createWatchtowerClient({
+        watchtowerClient || createWatchtowerClient({
           grpcPkgObj,
           server,
           credentials,
@@ -66,8 +66,8 @@ export async function createWtClientRpc(userConfig: WtClientRpcConfig) {
      * @param key
      */
     get(target: any, key: string): any {
-      if (typeof target.wtClient[key] === 'function') {
-        return target.wtClient[key].bind(target.wtClient);
+      if (typeof target.watchtowerClient[key] === 'function') {
+        return target.watchtowerClient[key].bind(target.watchtowerClient);
       } else {
         return target[key]; // forward
       }

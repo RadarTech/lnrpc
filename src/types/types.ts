@@ -55,7 +55,7 @@ export interface RouterRpcConfig extends RpcClientConfig {
   router?: any;
 }
 
-export interface SignerRpcConfig extends RpcClientConfig {
+export interface SignRpcConfig extends RpcClientConfig {
   signer?: any;
 }
 
@@ -68,7 +68,7 @@ export interface WatchtowerRpcConfig extends RpcClientConfig {
 }
 
 export interface WtClientRpcConfig extends RpcClientConfig {
-  wtClient?: any;
+  watchtowerClient?: any;
 }
 
 export interface LnRpcConfig extends RpcClientConfig {

@@ -2,13 +2,13 @@ import { join } from 'path';
 import pkgDir from 'pkg-dir';
 import packageJson from '../../package.json';
 import { createSigner } from '../services';
-import { SignerRpcConfig } from '../types';
+import { SignRpcConfig } from '../types';
 import { createCredentials } from './create-credentials';
 import { createGrpcObject } from './create-grpc-object';
 import { defaults } from './defaults';
 
 /**
- * Factory for a signerrpc instance & proxy responsible for:
+ * Factory for a signrpc instance & proxy responsible for:
  *  - Generating a GRPC Descriptor from user's config
  *  - Instantiating/exposing all GRPC Services
  *  - Resolving a proxy that:
@@ -17,13 +17,13 @@ import { defaults } from './defaults';
  *    2)  Allow basic user property requests to all GRPC Services
  *
  * @param userConfig The user provided configuration details
- * @return Returns proxy to signerrpc instance
+ * @return Returns proxy to signrpc instance
  */
-export async function createSignerRpc(userConfig: SignerRpcConfig) {
+export async function createSignRpc(userConfig: SignRpcConfig) {
   const rootPath = await pkgDir(__dirname);
   const protoFilePath = join(
     rootPath,
-    `lnd/${packageJson.config['lnd-release-tag']}/signerrpc/signer.proto`,
+    `lnd/${packageJson.config['lnd-release-tag']}/signrpc/signer.proto`,
   );
 
   // Configuration options
@@ -44,9 +44,9 @@ export async function createSignerRpc(userConfig: SignerRpcConfig) {
   });
 
   /**
-   * Signerrpc instance
+   * Signrpc instance
    */
-  const signerrpc = Object.create(null, {
+  const signrpc = Object.create(null, {
     description: {value: grpcPkgObj},
     signer: {
       value:
@@ -58,7 +58,7 @@ export async function createSignerRpc(userConfig: SignerRpcConfig) {
     },
   });
 
-  return new Proxy(signerrpc, {
+  return new Proxy(signrpc, {
     /**
      * Provide lop-level access to any signer
      * methods, otherwise provide user with fallback value
