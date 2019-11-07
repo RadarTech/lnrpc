@@ -1,6 +1,5 @@
 import fs from 'fs';
 import { ChannelCredentials } from 'grpc';
-import grpc from 'grpc';
 import { promisify } from 'util';
 import { RpcClientConfig } from '../types';
 
@@ -13,15 +12,16 @@ const readFile = promisify(fs.readFile);
  */
 export async function createCredentials(config: RpcClientConfig): Promise<ChannelCredentials> {
   let credentials: ChannelCredentials;
+  const { grpc } = config;
 
   try {
     // Use any SSL cert
     let { cert } = config;
-    const { certEncoding, tlsPath } = config;
+    const { certEncoding, tls } = config;
 
       // Fallback optional .tls file path
-    if (!cert && tlsPath) {
-        cert = await readFile(tlsPath);
+    if (!cert && tls) {
+        cert = await readFile(tls);
       }
 
       // Convert `cert` string to Buffer

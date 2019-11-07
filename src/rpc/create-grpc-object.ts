@@ -1,13 +1,13 @@
-import * as protoLoader from '@grpc/proto-loader';
-import grpc from 'grpc';
+import { GrpcObjectConfig } from '../types';
 
 /**
  * Create RPC from proto and return the GRPC package object
- * @param protoFilePath The path to the proto file
+ * @param config The configuration necessary to create the grpc object
  */
-export function createGrpcObject(protoFilePath: string) {
+export function createGrpcObject(config: GrpcObjectConfig) {
   try {
-    const packageDefinition = protoLoader.loadSync(protoFilePath, {
+    const { protoFilePath, grpcLoader, grpc } = config;
+    const packageDefinition = grpcLoader.loadSync(protoFilePath, {
       longs: String,
     });
     return grpc.loadPackageDefinition(packageDefinition);

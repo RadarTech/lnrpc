@@ -1,5 +1,4 @@
-import { createLnRpc } from './lnrpc';
-import { createChainRpc } from './rpc/chain-rpc';
+import { createChainRpc, createLnRpc } from './rpc';
 
-export { createChainRpc };
+export { createChainRpc, createLnRpc };
 export default createLnRpc;

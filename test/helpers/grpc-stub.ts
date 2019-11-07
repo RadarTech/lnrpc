@@ -57,5 +57,5 @@ export function grpcStub(
       }),
     },
     options,
-  );
+  ) as any;
 }
