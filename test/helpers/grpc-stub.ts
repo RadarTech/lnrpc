@@ -72,6 +72,12 @@ Metadata.prototype.add = () => { /* noop */ };
  * @param  {WalletUnlockerStub?}  walletUnlocker
  * @param  {AutopilotStub?}       autopilot
  * @param  {ChainNotifierStub?}   chainNotifier
+ * @param  {InvoicesStub?}   invoices
+ * @param  {RouterStub?}   router
+ * @param  {SignerStub?}   signer
+ * @param  {WalletKitStub?}   walletKit
+ * @param  {WatchtowerStub?}   watchtower
+ * @param  {WatchtowerClientStub?}   watchtowerClient
  * @return {Object}
  */
 export function grpcStub(

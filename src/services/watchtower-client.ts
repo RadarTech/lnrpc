@@ -8,7 +8,7 @@ import { createServiceClient } from './create-service-client';
 export function createWatchtowerClient(config: ConnectionConfig): any {
   try {
     const { grpcPkgObj, server, credentials } = config;
-    const watchtowerClient = new grpcPkgObj.wtclient.WatchtowerClient(
+    const watchtowerClient = new grpcPkgObj.wtclientrpc.WatchtowerClient(
       server,
       credentials,
     );
