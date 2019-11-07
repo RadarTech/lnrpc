@@ -1,5 +1,61 @@
-import { AddressType, ClosureType, InvoiceState, PaymentStatus, SyncType } from './constants';
 import { Duplex, Readable } from './streams';
+
+export enum AddressType {
+  WITNESS_PUBKEY_HASH = 0,
+  NESTED_PUBKEY_HASH = 1,
+  UNUSED_WITNESS_PUBKEY_HASH = 2,
+  UNUSED_NESTED_PUBKEY_HASH = 3,
+}
+
+export enum ClosureType {
+  COOPERATIVE_CLOSE = 0,
+  LOCAL_FORCE_CLOSE = 1,
+  REMOTE_FORCE_CLOSE = 2,
+  BREACH_CLOSE = 3,
+  FUNDING_CANCELED = 4,
+  ABANDONED = 5,
+}
+
+export enum SyncType {
+  UNKNOWN_SYNC = 0,
+  ACTIVE_SYNC = 1,
+  PASSIVE_SYNC = 2,
+}
+
+export enum UpdateType {
+  OPEN_CHANNEL = 0,
+  CLOSED_CHANNEL = 1,
+  ACTIVE_CHANNEL = 2,
+  INACTIVE_CHANNEL = 3,
+}
+
+export enum ChannelCase {
+  CHANNEL_NOT_SET = 0,
+  OPEN_CHANNEL = 1,
+  CLOSED_CHANNEL = 2,
+  ACTIVE_CHANNEL = 3,
+  INACTIVE_CHANNEL = 4,
+}
+
+export enum InvoiceState {
+  OPEN = 0,
+  SETTLED = 1,
+  CANCELED = 2,
+  ACCEPTED = 3,
+}
+
+export enum BackupCase {
+  BACKUP_NOT_SET = 0,
+  CHAN_BACKUPS = 1,
+  MULTI_CHAN_BACKUP = 2,
+}
+
+export enum PaymentStatus {
+  UNKNOWN = 0,
+  IN_FLIGHT = 1,
+  SUCCEEDED = 2,
+  FAILED = 3,
+}
 
 export interface Transaction {
   txHash: string;
@@ -742,7 +798,7 @@ export interface ForwardingHistoryResponse {
 /**
  * LND gRPC API Client
  */
-export class LnRpc {
+export interface LnRpc {
   /**
    * genSeed is the first method that should be used to instantiate a new lnd instance. This method allows a caller
    * to generate a new aezeed cipher seed given an optional passphrase. If provided, the passphrase will be
@@ -750,7 +806,7 @@ export class LnRpc {
    * verified by the user, the initWallet method should be used to commit the newly generated seed, and create the
    * wallet.
    */
-  public genSeed(args: GenSeedRequest): Promise<GenSeedResponse>;
+  genSeed(args: GenSeedRequest): Promise<GenSeedResponse>;
 
   /**
    *
@@ -761,138 +817,138 @@ export class LnRpc {
    * be used along with the genSeed RPC to obtain a seed, then present it to the user. Once it has been verified by
    * the user, the seed can be fed into this RPC in order to commit the new wallet.
    */
-  public initWallet(args: InitWalletRequest): Promise<{}>;
+  initWallet(args: InitWalletRequest): Promise<{}>;
 
   /**
    * unlockWallet is used at startup of lnd to provide a password to unlock the wallet database.
    */
-  public unlockWallet(args: UnlockWalletRequest): Promise<{}>;
+  unlockWallet(args: UnlockWalletRequest): Promise<{}>;
 
   /**
    * changePassword changes the password of the encrypted wallet. This will automatically unlock the wallet
    * database if successful.
    */
-  public changePassword(args: ChangePasswordRequest): Promise<{}>;
+  changePassword(args: ChangePasswordRequest): Promise<{}>;
 
   /**
    * walletBalance returns total unspent outputs(confirmed and unconfirmed), all confirmed unspent outputs and all
    * unconfirmed unspent outputs under control of the wallet.
    */
-  public walletBalance(args?: {}): Promise<WalletBalanceResponse>;
+  walletBalance(args?: {}): Promise<WalletBalanceResponse>;
 
   /**
    * channelBalance returns the total funds available across all open channels in satoshis.
    */
-  public channelBalance(args?: {}): Promise<ChannelBalanceResponse>;
+  channelBalance(args?: {}): Promise<ChannelBalanceResponse>;
 
   /**
    * getTransactions returns a list describing all the known transactions relevant to the wallet.
    */
-  public getTransactions(args?: {}): Promise<TransactionDetails>;
+  getTransactions(args?: {}): Promise<TransactionDetails>;
 
   /**
    * EstimateFee asks the chain backend to estimate the fee rate and total fees for a transaction
    * that pays to multiple specified outputs.
    */
-  public estimateFee(args?: EstimateFeeRequest): Promise <EstimateFeeResponse>;
+  estimateFee(args?: EstimateFeeRequest): Promise <EstimateFeeResponse>;
 
   /**
    * ListUnspent returns a list of all utxos spendable by the wallet with a number of confirmations
    * between the specified minimum and maximum.
    */
-  public listUnspent(args?: ListUnspentRequest): Promise<ListUnspentResponse>;
+  listUnspent(args?: ListUnspentRequest): Promise<ListUnspentResponse>;
 
   /**
    * sendCoins executes a request to send coins to a particular address. Unlike sendMany, this RPC call only allows
    * creating a single output at a time. If neither targetConf, or satPerByte are set, then the internal wallet
    * will consult its fee model to determine a fee for the default confirmation target.
    */
-  public sendCoins(args: SendCoinsRequest): Promise<SendCoinsResponse>;
+  sendCoins(args: SendCoinsRequest): Promise<SendCoinsResponse>;
 
   /**
    * subscribeTransactions creates a uni-directional stream from the server to the client in which any newly
    * discovered transactions relevant to the wallet are sent over.
    */
-  public subscribeTransactions(args?: {}): Readable<Transaction>;
+  subscribeTransactions(args?: {}): Readable<Transaction>;
 
   /**
    * sendMany handles a request for a transaction that creates multiple specified outputs in parallel. If neither
    * targetConf, or satPerByte are set, then the internal wallet will consult its fee model to determine a fee
    * for the default confirmation target.
    */
-  public sendMany(args: SendManyRequest): Promise<SendManyResponse>;
+  sendMany(args: SendManyRequest): Promise<SendManyResponse>;
 
   /**
    * newAddress creates a new address under control of the local wallet.
    */
-  public newAddress(args?: NewAddressRequest): Promise<NewAddressResponse>;
+  newAddress(args?: NewAddressRequest): Promise<NewAddressResponse>;
 
   /**
    * signMessage signs a message with this node’s private key. The returned signature string is zbase32 encoded and
    * pubkey recoverable, meaning that only the message digest and signature are needed for verification.
    */
-  public signMessage(args: SignMessageRequest): Promise<SignMessageResponse>;
+  signMessage(args: SignMessageRequest): Promise<SignMessageResponse>;
 
   /**
    * verifyMessage verifies a signature over a msg. The signature must be zbase32 encoded and signed by an active
    * node in the resident node’s channel database. In addition to returning the validity of the signature,
    * verifyMessage also returns the recovered pubkey from the signature.
    */
-  public verifyMessage(args: VerifyMessageRequest): Promise<VerifyMessageResponse>;
+  verifyMessage(args: VerifyMessageRequest): Promise<VerifyMessageResponse>;
 
   /**
    * connectPeer attempts to establish a connection to a remote peer. This is at the networking level, and is used
    * for communication between nodes. This is distinct from establishing a channel with a peer.
    */
-  public connectPeer(args: ConnectPeerRequest): Promise<{}>;
+  connectPeer(args: ConnectPeerRequest): Promise<{}>;
 
   /**
    * disconnectPeer attempts to disconnect one peer from another identified by a given pubKey. In the case that we
    * currently have a pending or active channel with the target peer, then this action will be not be allowed.
    */
-  public disconnectPeer(args: DisconnectPeerRequest): Promise<{}>;
+  disconnectPeer(args: DisconnectPeerRequest): Promise<{}>;
 
   /**
    * listPeers returns a verbose listing of all currently active peers.
    */
-  public listPeers(args?: {}): Promise<ListPeersResponse>;
+  listPeers(args?: {}): Promise<ListPeersResponse>;
 
   /**
    * getInfo returns general information concerning the lightning node including it’s identity pubkey, alias, the
    * chains it is connected to, and information concerning the number of open+pending channels.
    */
-  public getInfo(args?: {}): Promise<GetInfoResponse>;
+  getInfo(args?: {}): Promise<GetInfoResponse>;
 
   /**
    * pendingChannels returns a list of all the channels that are currently considered “pending”. A channel is
    * pending if it has finished the funding workflow and is waiting for confirmations for the funding txn, or is in
    * the process of closure, either initiated cooperatively or non-cooperatively.
    */
-  public pendingChannels(args?: {}): Promise<PendingChannelsResponse>;
+  pendingChannels(args?: {}): Promise<PendingChannelsResponse>;
 
   /**
    * listChannels returns a description of all the open channels that this node is a participant in.
    */
-  public listChannels(args?: ListChannelsRequest): Promise<ListChannelsResponse>;
+  listChannels(args?: ListChannelsRequest): Promise<ListChannelsResponse>;
 
   /**
    * closedChannels returns a description of all the closed channels that this node was a participant in.
    */
-  public closedChannels(args?: ClosedChannelsRequest): Promise<ClosedChannelsResponse>;
+  closedChannels(args?: ClosedChannelsRequest): Promise<ClosedChannelsResponse>;
 
   /**
    * openChannelSync is a synchronous version of the openChannel RPC call. This call is meant to be consumed by
    * clients to the REST proxy. As with all other sync calls, all byte slices are intended to be populated as hex
    * encoded strings.
    */
-  public openChannelSync(args: OpenChannelRequest): Promise<ChannelPoint>;
+  openChannelSync(args: OpenChannelRequest): Promise<ChannelPoint>;
 
   /**
    * openChannel attempts to open a singly funded channel specified in the request to a remote peer. Users are able
    * to specify a target number of blocks that the funding transaction should be confirmed in, or a manual fee rate
    * to us for the funding transaction. If neither are specified, then a lax block confirmation target is used.
    */
-  public openChannel(args: OpenChannelRequest): Readable<OpenStatusUpdate>;
+  openChannel(args: OpenChannelRequest): Readable<OpenStatusUpdate>;
 
   /**
    * closeChannel attempts to close an active channel identified by its channel outpoint (ChannelPoint). The
@@ -901,46 +957,46 @@ export class LnRpc {
    * either a target number of blocks until the closure transaction is confirmed, or a manual fee rate. If neither
    * are specified, then a default lax, block confirmation target is used.
    */
-  public closeChannel(args: CloseChannelRequest): Readable<CloseStatusUpdate>;
+  closeChannel(args: CloseChannelRequest): Readable<CloseStatusUpdate>;
 
   /**
    * abandonChannel removes all channel state from the database except for a close summary. This method can be used
    * to get rid of permanently unusable channels due to bugs fixed in newer versions of lnd. Only available when in
    * debug builds of lnd.
    */
-  public abandonChannel(args: AbandonChannelRequest): Promise<{}>;
+  abandonChannel(args: AbandonChannelRequest): Promise<{}>;
 
   /**
    * sendPayment dispatches a bi-directional streaming RPC for sending payments through the Lightning Network. A
    * single RPC invocation creates a persistent bi-directional stream allowing clients to rapidly send payments
    * through the Lightning Network with a single persistent connection.
    */
-  public sendPayment(args: SendRequest): Duplex<SendRequest, SendResponse>;
+  sendPayment(args: SendRequest): Duplex<SendRequest, SendResponse>;
 
   /**
    * sendPaymentSync is the synchronous non-streaming version of sendPayment. This RPC is intended to be consumed
-   * by clients of the REST proxy. Additionally, this RPC expects the destination’s public key and the payment hash
+   * by clients of the REST proxy. Additionally, this RPC expects the destination’s key and the payment hash
    * (if any) to be encoded as hex strings.
    */
-  public sendPaymentSync(args: SendRequest): Promise<SendResponse>;
+  sendPaymentSync(args: SendRequest): Promise<SendResponse>;
 
   /**
    * sendToRoute is a bi-directional streaming RPC for sending payment through the Lightning Network. This method
    * differs from SendPayment in that it allows users to specify a full route manually. This can be used for things
    * like rebalancing, and atomic swaps.
    */
-  public sendToRoute(args: SendToRouteRequest): Duplex<SendToRouteRequest, SendResponse>;
+  sendToRoute(args: SendToRouteRequest): Duplex<SendToRouteRequest, SendResponse>;
 
   /**
    * sendToRouteSync is a synchronous version of sendToRoute. It Will block until the payment either fails or succeeds.
    */
-  public sendToRouteSync(args: SendToRouteRequest): Promise<SendResponse>;
+  sendToRouteSync(args: SendToRouteRequest): Promise<SendResponse>;
 
   /**
    * addInvoice attempts to add a new invoice to the invoice database. Any duplicated invoices are rejected, therefore
    * all invoices must have a unique payment preimage.
    */
-  public addInvoice(args: Invoice): Promise<AddInvoiceResponse>;
+  addInvoice(args: Invoice): Promise<AddInvoiceResponse>;
 
   /**
    * listInvoices returns a list of all the invoices currently stored within the database. Any active debug
@@ -950,13 +1006,13 @@ export class LnRpc {
    * in order to paginate backwards. If you wish to paginate forwards, you must explicitly set the flag to false.
    * If none of the parameters are specified, then the last 100 invoices will be returned.
    */
-  public listInvoices(args?: ListInvoiceRequest): Promise<ListInvoiceResponse>;
+  listInvoices(args?: ListInvoiceRequest): Promise<ListInvoiceResponse>;
 
   /**
    * lookupInvoice attempts to look up an invoice according to its payment hash. The passed payment hash must
    * be exactly 32 bytes, if not, an error is returned.
    */
-  public lookupInvoice(args: PaymentHash): Promise<Invoice>;
+  lookupInvoice(args: PaymentHash): Promise<Invoice>;
 
   /**
    * subscribeInvoices returns a uni-directional stream (server -> client) for notifying the client of newly
@@ -966,23 +1022,23 @@ export class LnRpc {
    * settle events for invoices with a settleIndex greater than the specified value. One or both of these fields
    * can be set. If no fields are set, then we’ll only send out the latest add/settle events.
    */
-  public subscribeInvoices(args?: InvoiceSubscription): Readable<Invoice>;
+  subscribeInvoices(args?: InvoiceSubscription): Readable<Invoice>;
 
   /**
    * decodePayReq takes an encoded payment request string and attempts to decode it, returning a full description
    * of the conditions encoded within the payment request.
    */
-  public decodePayReq(args: PayReqString): Promise<PayReq>;
+  decodePayReq(args: PayReqString): Promise<PayReq>;
 
   /**
    * listPayments returns a list of all outgoing payments.
    */
-  public listPayments(args?: ListPaymentsRequest): Promise<ListPaymentsResponse>;
+  listPayments(args?: ListPaymentsRequest): Promise<ListPaymentsResponse>;
 
   /**
    * deleteAllPayments deletes all outgoing payments from DB.
    */
-  public deleteAllPayments(args?: {}): Promise<{}>;
+  deleteAllPayments(args?: {}): Promise<{}>;
 
   /**
    * describeGraph returns a description of the latest graph state from the point of view of the node. The graph
@@ -990,20 +1046,20 @@ export class LnRpc {
    * vertexes themselves. As this is a directed graph, the edges also contain the node directional specific routing
    * policy which includes: the time lock delta, fee information, etc.
    */
-  public describeGraph(args?: ChannelGraphRequest): Promise<ChannelGraph>;
+  describeGraph(args?: ChannelGraphRequest): Promise<ChannelGraph>;
 
   /**
    * getChanInfo returns the latest authenticated network announcement for the given channel identified by its
    * channel ID: an 8-byte integer which uniquely identifies the location of transaction’s funding output within
    * the blockchain.
    */
-  public getChanInfo(args: ChanInfoRequest): Promise<ChannelEdge>;
+  getChanInfo(args: ChanInfoRequest): Promise<ChannelEdge>;
 
   /**
    * getNodeInfo returns the latest advertised, aggregated, and authenticated channel information for the specified
-   * node identified by its public key.
+   * node identified by its key.
    */
-  public getNodeInfo(args: NodeInfoRequest): Promise<NodeInfo>;
+  getNodeInfo(args: NodeInfoRequest): Promise<NodeInfo>;
 
   /**
    * queryRoutes attempts to query the daemon’s Channel Router for a possible route to a target destination capable
@@ -1011,17 +1067,17 @@ export class LnRpc {
    * send an HTLC, also including the necessary information that should be present within the Sphinx packet
    * encapsulated within the HTLC.
    */
-  public queryRoutes(args: QueryRoutesRequest): Promise<QueryRoutesResponse>;
+  queryRoutes(args: QueryRoutesRequest): Promise<QueryRoutesResponse>;
 
   /**
    * getNetworkInfo returns some basic stats about the known channel graph from the point of view of the node.
    */
-  public getNetworkInfo(args?: {}): Promise<NetworkInfo>;
+  getNetworkInfo(args?: {}): Promise<NetworkInfo>;
 
   /**
    * stopDaemon will send a shutdown request to the interrupt handler, triggering a graceful shutdown of the daemon.
    */
-  public stopDaemon(args?: {}): Promise<{}>;
+  stopDaemon(args?: {}): Promise<{}>;
 
   /**
    * subscribeChannelGraph launches a streaming RPC that allows the caller to receive notifications upon any
@@ -1029,7 +1085,7 @@ export class LnRpc {
    * new nodes coming online, nodes updating their authenticated attributes, new channels being advertised, updates
    * in the routing policy for a directional channel edge, and when channels are closed on-chain.
    */
-  public subscribeChannelGraph(args?: {}): Readable<GraphTopologyUpdate>;
+  subscribeChannelGraph(args?: {}): Readable<GraphTopologyUpdate>;
 
   /**
    * SubscribeChannelEvents creates a uni-directional stream from the server to
@@ -1037,7 +1093,7 @@ export class LnRpc {
    * sent over. Events include new active channels, inactive channels, and closed
    * channels.
    */
-  public subscribeChannelEvents(args?: {}): Readable<ChannelEventUpdate>;
+  subscribeChannelEvents(args?: {}): Readable<ChannelEventUpdate>;
 
   /**
    * ExportChannelBackup attempts to return an encrypted static channel backup
@@ -1047,7 +1103,7 @@ export class LnRpc {
    * method once lnd is running, or via the InitWallet and UnlockWallet methods
    * from the WalletUnlocker service.
    */
-  public exportChannelBackup(args?: ExportChannelBackupRequest): Promise<ChannelBackup>;
+  exportChannelBackup(args?: ExportChannelBackupRequest): Promise<ChannelBackup>;
 
   /**
    * ExportAllChannelBackups returns static channel backups for all existing
@@ -1056,14 +1112,14 @@ export class LnRpc {
    * as well, which contains a single encrypted blob containing the backups of
    * each channel.
    */
-  public exportAllChannelBackups(args?: {}): Promise<ChanBackupSnapshot>;
+  exportAllChannelBackups(args?: {}): Promise<ChanBackupSnapshot>;
 
   /**
    * VerifyChanBackup allows a caller to verify the integrity of a channel backup
    * snapshot. This method will accept either a packed Single or a packed Multi.
    * Specifying both will result in an error.
    */
-  public verifyChanBackup(args: ChanBackupSnapshot): Promise<{}>;
+  verifyChanBackup(args: ChanBackupSnapshot): Promise<{}>;
 
   /**
    * RestoreChannelBackups accepts a set of singular channel backups, or a
@@ -1071,7 +1127,7 @@ export class LnRpc {
    * remaining within the channel. If we are able to unpack the backup, then the
    * new channel will be shown under listchannels, as well as pending channels.
    */
-  public restoreChannelBackups(args: RestoreChanBackupRequest): Promise<{}>;
+  restoreChannelBackups(args: RestoreChanBackupRequest): Promise<{}>;
 
   /**
    * SubscribeChannelBackups allows a client to sub-subscribe to the most up to
@@ -1082,26 +1138,26 @@ export class LnRpc {
    * ups, but the updated set of encrypted multi-chan backups with the closed
    * channel(s) removed.
    */
-  public subscribeChannelBackups(args?: {}): Readable<ChanBackupSnapshot>;
+  subscribeChannelBackups(args?: {}): Readable<ChanBackupSnapshot>;
 
   /**
    * debugLevel allows a caller to programmatically set the logging verbosity of lnd. The logging can be targeted
    * according to a coarse daemon-wide logging level, or in a granular fashion to specify the logging for a target
    * sub-system.
    */
-  public debugLevel(args: DebugLevelRequest): Promise<DebugLevelResponse>;
+  debugLevel(args: DebugLevelRequest): Promise<DebugLevelResponse>;
 
   /**
    * feeReport allows the caller to obtain a report detailing the current fee schedule enforced by the node globally
    * for each channel.
    */
-  public feeReport(args?: {}): Promise<FeeReportResponse>;
+  feeReport(args?: {}): Promise<FeeReportResponse>;
 
   /**
    * updateChannelPolicy allows the caller to update the fee schedule and channel policies for all channels globally,
    * or a particular channel.
    */
-  public updateChannelPolicy(args: PolicyUpdateRequest): Promise<{}>;
+  updateChannelPolicy(args: PolicyUpdateRequest): Promise<{}>;
 
   /**
    * forwardingHistory allows the caller to query the htlcswitch for a record of all HTLC’s forwarded within the
@@ -1111,5 +1167,5 @@ export class LnRpc {
    * result each message can only contain 50k entries. Each response has the index offset of the last entry. The
    * index offset can be provided to the request to allow the caller to skip a series of records.
    */
-  public forwardingHistory(args?: ForwardingHistoryRequest): Promise<ForwardingHistoryResponse>;
+  forwardingHistory(args?: ForwardingHistoryRequest): Promise<ForwardingHistoryResponse>;
 }

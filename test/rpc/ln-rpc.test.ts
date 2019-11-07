@@ -46,7 +46,7 @@ describe('Lnrpc Factory', () => {
     it('should use configured `tls` when provided', (done) => {
       const expected = 'test-tls.cert';
 
-      createLnrpc({
+      createLnrpc<any>({
         tls: expected,
         grpc: grpcStub({
           credentials: {
@@ -64,7 +64,7 @@ describe('Lnrpc Factory', () => {
     });
 
     it('should default to a system lnd SSL cert when unconfigured', (done) => {
-      createLnrpc({
+      createLnrpc<any>({
         grpc: grpcStub({
           credentials: {
             createSsl: (cert) => {
@@ -81,7 +81,7 @@ describe('Lnrpc Factory', () => {
     });
 
     it('should allow opting out of certificate pinning', (done) => {
-      createLnrpc({
+      createLnrpc<any>({
         tls: false, // opt out
         grpc: grpcStub({
           credentials: {
@@ -253,7 +253,7 @@ describe('Lnrpc Factory', () => {
 
   describe('proxy instance', () => {
     it('should provide access to GRPC Package Definition', () => {
-      return createLnrpc({
+      return createLnrpc<{ description: object }>({
         grpc: grpcStub(),
         cert: certStub,
       }).then((lnrpc) => {
@@ -263,7 +263,7 @@ describe('Lnrpc Factory', () => {
 
     it('should provide access to the lightning instance', () => {
       const expected = {};
-      return createLnrpc({
+      return createLnrpc<{ lightning: object }>({
         grpc: grpcStub(),
         lightning: expected,
         cert: certStub},
@@ -276,7 +276,7 @@ describe('Lnrpc Factory', () => {
 
     it('should provide access to the wallet unlocker instance', () => {
       const expected = {};
-      return createLnrpc({
+      return createLnrpc<{ walletUnlocker: object }>({
         grpc: grpcStub(),
         walletUnlocker: expected,
         cert: certStub,
@@ -286,7 +286,7 @@ describe('Lnrpc Factory', () => {
     });
 
     it('should provide all lightning methods top-level', () => {
-      return createLnrpc({
+      return createLnrpc<{ test: () => void }>({
         grpc: grpcStub(),
         lightning: {test: () => { /* noop */ }},
         cert: certStub,
@@ -296,7 +296,7 @@ describe('Lnrpc Factory', () => {
     });
 
     it('should provide all wallet unlocker methods top-level', () => {
-      return createLnrpc({
+      return createLnrpc<{ test: () => void }>({
         grpc: grpcStub(),
         walletUnlocker: {test: () => { /* noop */ }},
         cert: certStub,

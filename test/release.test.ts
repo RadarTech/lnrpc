@@ -35,7 +35,7 @@ describe('Release API', () => {
     function WalletUnlockerStub() { /* noop */ }
     WalletUnlockerStub.prototype.initWallet = () => { /* noop */ };
 
-    return createLnRpc({
+    return createLnRpc<{ walletUnlocker: { initWallet: () => void } }>({
       grpc: grpcStub({}, LightningStub, WalletUnlockerStub),
       cert: certStub,
     }).then((lnrpc) => {

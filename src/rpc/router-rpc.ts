@@ -2,7 +2,7 @@ import { join } from 'path';
 import pkgDir from 'pkg-dir';
 import packageJson from '../../package.json';
 import { createRouter } from '../services';
-import { RouterRpcConfig } from '../types';
+import { RouterRpcClientConfig } from '../types';
 import { createCredentials } from './create-credentials';
 import { createGrpcObject } from './create-grpc-object';
 import { defaults } from './defaults';
@@ -12,14 +12,14 @@ import { defaults } from './defaults';
  *  - Generating a GRPC Descriptor from user's config
  *  - Instantiating/exposing all GRPC Services
  *  - Resolving a proxy that:
- *    1)  Invokes all top-level method calls to the lightning
+ *    1.  Invokes all top-level method calls to the lightning
  *        proxy for user convience
- *    2)  Allow basic user property requests to all GRPC Services
+ *    2.  Allow basic user property requests to all GRPC Services
  *
  * @param userConfig The user provided configuration details
  * @return Returns proxy to routerrpc instance
  */
-export async function createRouterRpc(userConfig: RouterRpcConfig) {
+export async function createRouterRpc(userConfig: RouterRpcClientConfig) {
   const rootPath = await pkgDir(__dirname);
   const lndProtosRootPath = join(
     rootPath,

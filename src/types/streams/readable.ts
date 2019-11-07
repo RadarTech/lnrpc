@@ -1,6 +1,6 @@
 import { Stream } from 'stream';
 
-declare class Readable<RES = any> extends Stream implements NodeJS.ReadableStream {
+export declare class Readable<RES = any> extends Stream implements NodeJS.ReadableStream {
   public readable: boolean;
   public readonly readableHighWaterMark: number;
   public readonly readableLength: number;

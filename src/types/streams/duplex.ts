@@ -1,7 +1,7 @@
 import { Writable, WritableOptions } from 'stream';
 import { Readable, ReadableOptions } from './readable';
 
-declare class Duplex<REQ = any, RES = any> extends Readable<RES> implements Writable {
+export declare class Duplex<REQ = any, RES = any> extends Readable<RES> implements Writable {
   public writable: boolean;
   public readonly writableHighWaterMark: number;
   public readonly writableLength: number;
