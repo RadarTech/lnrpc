@@ -3,28 +3,28 @@ import fs from 'fs';
 import {join} from 'path';
 import pkgDir from 'pkg-dir';
 import {promisify} from 'util';
-import packageJson from '../package.json';
-import { createAutopilotRpc } from '../src';
-import { GrpcLoader } from '../src/types';
-import {AutopilotStub, grpcStub} from './helpers/grpc-stub';
+import packageJson from '../../package.json';
+import { createRouterRpc } from '../../src';
+import { GrpcLoader } from '../../src/types';
+import {grpcStub, RouterStub} from '../helpers/grpc-stub';
 
 const {equal, fail} = assert;
 const unlink = promisify(fs.unlink);
 const writeFile = promisify(fs.writeFile);
 
-describe('AutopilotRpc Factory', () => {
+describe('RouterRpc Factory', () => {
   const certStub = 'cert';
 
   describe('TLS settings', () => {
     it('should throw an error when tls file not found', () =>
-      createAutopilotRpc({tls: './not-a-file.cert'})
+      createRouterRpc({tls: './not-a-file.cert'})
         .then(() => fail('failed to reject invalid SSL cert'))
         .catch((e) => assert(e, 'SSL cert not found')));
 
     it('should use configured `cert` over `tls` when provided', () => {
       const expected = Buffer.from('cert');
 
-      return createAutopilotRpc({
+      return createRouterRpc({
         cert: expected.toString(),
         tls: 'not-expected',
         grpc: grpcStub({
@@ -46,7 +46,7 @@ describe('AutopilotRpc Factory', () => {
     it('should use configured `tls` when provided', (done) => {
       const expected = 'test-tls.cert';
 
-      createAutopilotRpc({
+      createRouterRpc({
         tls: expected,
         grpc: grpcStub({
           credentials: {
@@ -64,7 +64,7 @@ describe('AutopilotRpc Factory', () => {
     });
 
     it('should default to a system lnd SSL cert when unconfigured', (done) => {
-      createAutopilotRpc({
+      createRouterRpc({
         grpc: grpcStub({
           credentials: {
             createSsl: (cert) => {
@@ -81,7 +81,7 @@ describe('AutopilotRpc Factory', () => {
     });
 
     it('should allow opting out of certificate pinning', (done) => {
-      createAutopilotRpc({
+      createRouterRpc({
         tls: false, // opt out
         grpc: grpcStub({
           credentials: {
@@ -107,7 +107,7 @@ describe('AutopilotRpc Factory', () => {
       const expMacaroonCreds = {};
 
       try {
-        await createAutopilotRpc({
+        await createRouterRpc({
           cert: '123',
           macaroon: '746573740a',
           grpc: grpcStub({
@@ -163,7 +163,7 @@ describe('AutopilotRpc Factory', () => {
       };
 
       try {
-        await createAutopilotRpc({
+        await createRouterRpc({
           cert: '123',
           macaroonPath: macaroonDest,
           grpc: grpcStub({
@@ -188,7 +188,7 @@ describe('AutopilotRpc Factory', () => {
       };
 
       try {
-        await createAutopilotRpc({
+        await createRouterRpc({
           cert: '123',
           macaroon: macaroonHex,
           grpc: grpcStub({
@@ -206,17 +206,17 @@ describe('AutopilotRpc Factory', () => {
 
   describe('grpc lnd/proto instantiation', () => {
     // eslint-disable-next-line max-len
-    it('should load `./lnd/lnd_version/autopilotrpc/autopilot.proto` filename via `grpc.loadSync()`', async () => {
+    it('should load `./lnd/lnd_version/routerrpc/router.proto` filename via `grpc.loadSync()`', async () => {
       const root = await pkgDir(__dirname);
       const expected = join(
         root,
-        `lnd/${packageJson.config['lnd-release-tag']}/autopilotrpc/autopilot.proto`,
+        `lnd/${packageJson.config['lnd-release-tag']}/routerrpc/router.proto`,
       );
 
-      return createAutopilotRpc({
+      return createRouterRpc({
         grpcLoader: {
           loadSync(actual) {
-            equal(actual, expected, 'loaded generated `autopilot.proto` via load');
+            equal(actual, expected, 'loaded generated `router.proto` via load');
             return {};
           },
         } as unknown as GrpcLoader,
@@ -228,10 +228,10 @@ describe('AutopilotRpc Factory', () => {
     it('should default to server `localhost:10001`', () => {
       const expected = 'localhost:10001';
 
-      return createAutopilotRpc({
+      return createRouterRpc({
         grpc: grpcStub({}, (actual) => {
           equal(actual, expected, 'defaults to expected server');
-          return new AutopilotStub();
+          return new RouterStub();
         }),
         cert: certStub,
       });
@@ -240,11 +240,11 @@ describe('AutopilotRpc Factory', () => {
     it('should connect to a configured server address', () => {
       const expected = 'localhost:30001';
 
-      return createAutopilotRpc({
+      return createRouterRpc({
         server: expected,
         grpc: grpcStub({}, (actual) => {
           equal(actual, expected, 'recieved configured server');
-          return new AutopilotStub();
+          return new RouterStub();
         }),
         cert: certStub,
       });
@@ -253,34 +253,34 @@ describe('AutopilotRpc Factory', () => {
 
   describe('proxy instance', () => {
     it('should provide access to GRPC Package Definition', () => {
-      return createAutopilotRpc({
+      return createRouterRpc({
         grpc: grpcStub(),
         cert: certStub,
-      }).then((autopilotrpc) => {
-        equal(typeof autopilotrpc.description, 'object');
+      }).then((routerrpc) => {
+        equal(typeof routerrpc.description, 'object');
       });
     });
 
-    it('should provide access to the autopilot instance', () => {
+    it('should provide access to the router instance', () => {
       const expected = {};
-      return createAutopilotRpc({
+      return createRouterRpc({
         grpc: grpcStub(),
-        autopilot: expected,
+        router: expected,
         cert: certStub},
       ).then(
-        (autopilotrpc) => {
-          equal(autopilotrpc.autopilot, expected);
+        (routerrpc) => {
+          equal(routerrpc.router, expected);
         },
       );
     });
 
-    it('should provide all autopilot methods top-level', () => {
-      return createAutopilotRpc({
+    it('should provide all router methods top-level', () => {
+      return createRouterRpc({
         grpc: grpcStub(),
-        autopilot: {test: () => { /* noop */ }},
+        router: {test: () => { /* noop */ }},
         cert: certStub,
-      }).then((autopilotrpc) => {
-        equal(typeof autopilotrpc.test, 'function');
+      }).then((routerrpc) => {
+        equal(typeof routerrpc.test, 'function');
       });
     });
   });

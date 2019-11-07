@@ -6,9 +6,10 @@ import { GrpcObjectConfig } from '../types';
  */
 export function createGrpcObject(config: GrpcObjectConfig) {
   try {
-    const { protoFilePath, grpcLoader, grpc } = config;
+    const { protoFilePath, includeDirs, grpcLoader, grpc } = config;
     const packageDefinition = grpcLoader.loadSync(protoFilePath, {
       longs: String,
+      includeDirs,
     });
     return grpc.loadPackageDefinition(packageDefinition);
   } catch (e) {

@@ -1,7 +1,7 @@
 import assert, { equal } from 'assert';
 import { ChannelCredentials } from 'grpc';
-import { createWalletUnlocker } from '../src/services';
-import { grpcStub, LightningStub } from './helpers/grpc-stub';
+import { createWalletUnlocker } from '../../src/services';
+import { grpcStub, LightningStub } from '../helpers/grpc-stub';
 
 const { stringify } = JSON;
 

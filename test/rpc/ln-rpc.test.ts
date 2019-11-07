@@ -3,10 +3,10 @@ import fs from 'fs';
 import {join} from 'path';
 import pkgDir from 'pkg-dir';
 import {promisify} from 'util';
-import packageJson from '../package.json';
-import createLnrpc from '../src';
-import { GrpcLoader } from '../src/types';
-import {grpcStub, LightningStub} from './helpers/grpc-stub';
+import packageJson from '../../package.json';
+import createLnrpc from '../../src';
+import { GrpcLoader } from '../../src/types';
+import {grpcStub, LightningStub} from '../helpers/grpc-stub';
 
 const {equal, fail} = assert;
 const unlink = promisify(fs.unlink);

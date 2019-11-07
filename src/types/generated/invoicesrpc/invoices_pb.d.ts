@@ -2,7 +2,6 @@
 // file: invoicesrpc/invoices.proto
 
 import * as jspb from "google-protobuf";
-import * as google_api_annotations_pb from "../google/api/annotations_pb";
 import * as rpc_pb from "../rpc_pb";
 
 export class CancelInvoiceMsg extends jspb.Message {

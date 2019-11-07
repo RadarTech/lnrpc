@@ -8,3 +8,6 @@ curl ${npm_package_config_lnd_url}/${npm_package_config_lnd_release_tag}/lnrpc/s
 curl ${npm_package_config_lnd_url}/${npm_package_config_lnd_release_tag}/lnrpc/walletrpc/walletkit.proto --create-dirs -o lnd/${npm_package_config_lnd_release_tag}/walletrpc/walletkit.proto
 curl ${npm_package_config_lnd_url}/${npm_package_config_lnd_release_tag}/lnrpc/watchtowerrpc/watchtower.proto --create-dirs -o lnd/${npm_package_config_lnd_release_tag}/watchtowerrpc/watchtower.proto
 curl ${npm_package_config_lnd_url}/${npm_package_config_lnd_release_tag}/lnrpc/wtclientrpc/wtclient.proto --create-dirs -o lnd/${npm_package_config_lnd_release_tag}/wtclientrpc/wtclient.proto
+
+# Clean Invoices RPC Server
+sed -i '' 's/import "google\/api\/annotations\.proto";//g' lnd/${npm_package_config_lnd_release_tag}/invoicesrpc/invoices.proto

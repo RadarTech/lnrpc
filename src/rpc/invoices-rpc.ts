@@ -21,9 +21,13 @@ import { defaults } from './defaults';
  */
 export async function createInvoicesRpc(userConfig: InvoicesRpcConfig) {
   const rootPath = await pkgDir(__dirname);
-  const protoFilePath = join(
+  const lndProtosRootPath = join(
     rootPath,
-    `lnd/${packageJson.config['lnd-release-tag']}/invoicesrpc/invoices.proto`,
+    `lnd/${packageJson.config['lnd-release-tag']}`,
+  );
+  const protoFilePath = join(
+    lndProtosRootPath,
+    '/invoicesrpc/invoices.proto',
   );
 
   // Configuration options
@@ -41,6 +45,7 @@ export async function createInvoicesRpc(userConfig: InvoicesRpcConfig) {
     protoFilePath,
     grpcLoader,
     grpc,
+    includeDirs: [lndProtosRootPath],
   });
 
   /**

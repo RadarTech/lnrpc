@@ -21,9 +21,13 @@ import { defaults } from './defaults';
  */
 export async function createRouterRpc(userConfig: RouterRpcConfig) {
   const rootPath = await pkgDir(__dirname);
-  const protoFilePath = join(
+  const lndProtosRootPath = join(
     rootPath,
-    `lnd/${packageJson.config['lnd-release-tag']}/routerrpc/router.proto`,
+    `lnd/${packageJson.config['lnd-release-tag']}`,
+  );
+  const protoFilePath = join(
+    lndProtosRootPath,
+    '/routerrpc/router.proto',
   );
 
   // Configuration options
@@ -41,6 +45,7 @@ export async function createRouterRpc(userConfig: RouterRpcConfig) {
     protoFilePath,
     grpcLoader,
     grpc,
+    includeDirs: [lndProtosRootPath],
   });
 
   /**

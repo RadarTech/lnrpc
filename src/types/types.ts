@@ -23,6 +23,7 @@ export interface GrpcServiceConfig extends ConnectionConfig {
 
 export interface GrpcObjectConfig {
   protoFilePath: string;
+  includeDirs?: string[];
   grpcLoader: GrpcLoader;
   grpc: Grpc;
 }

@@ -23,6 +23,42 @@ export const AutopilotStub = () => { /* noop */ };
 export const ChainNotifierStub = () => { /* noop */ };
 
 /**
+ * Invoices RPC Stub
+ * @constructor
+ */
+export const InvoicesStub = () => { /* noop */ };
+
+/**
+ * Router RPC Stub
+ * @constructor
+ */
+export const RouterStub = () => { /* noop */ };
+
+/**
+ * Signer RPC Stub
+ * @constructor
+ */
+export const SignerStub = () => { /* noop */ };
+
+/**
+ * Wallet Kit RPC Stub
+ * @constructor
+ */
+export const WalletKitStub = () => { /* noop */ };
+
+/**
+ * Watchtower RPC Stub
+ * @constructor
+ */
+export const WatchtowerStub = () => { /* noop */ };
+
+/**
+ * Watchtower Client RPC Stub
+ * @constructor
+ */
+export const WatchtowerClientStub = () => { /* noop */ };
+
+/**
  * Metadata
  * @constructor
  */
@@ -44,6 +80,12 @@ export function grpcStub(
   walletUnlocker: (value?: unknown) => void = WalletUnlockerStub,
   autopilot: (value?: unknown) => void = AutopilotStub,
   chainNotifier: (value?: unknown) => void = ChainNotifierStub,
+  invoices: (value?: unknown) => void = InvoicesStub,
+  router: (value?: unknown) => void = RouterStub,
+  signer: (value?: unknown) => void = SignerStub,
+  walletKit: (value?: unknown) => void = WalletKitStub,
+  watchtower: (value?: unknown) => void = WatchtowerStub,
+  watchtowerClient: (value?: unknown) => void = WatchtowerClientStub,
 ) {
   return Object.assign(
     {
@@ -66,6 +108,24 @@ export function grpcStub(
         },
         chainrpc: {
           ChainNotifier: chainNotifier,
+        },
+        invoicesrpc: {
+          Invoices: invoices,
+        },
+        routerrpc: {
+          Router: router,
+        },
+        signerrpc: {
+          Signer: signer,
+        },
+        walletrpc: {
+          WalletKit: walletKit,
+        },
+        watchtowerrpc: {
+          Watchtower: watchtower,
+        },
+        wtclientrpc: {
+          WatchtowerClient: watchtowerClient,
         },
       }),
     },
