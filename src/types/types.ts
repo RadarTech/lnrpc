@@ -38,8 +38,36 @@ export interface RpcClientConfig {
   grpc?: Grpc;
 }
 
+export interface AutopilotRpcConfig extends RpcClientConfig {
+  autopilot?: any;
+}
+
 export interface ChainRpcConfig extends RpcClientConfig {
   chainNotifier?: any;
+}
+
+export interface InvoicesRpcConfig extends RpcClientConfig {
+  invoices?: any;
+}
+
+export interface RouterRpcConfig extends RpcClientConfig {
+  router?: any;
+}
+
+export interface SignerRpcConfig extends RpcClientConfig {
+  signer?: any;
+}
+
+export interface WalletRpcConfig extends RpcClientConfig {
+  walletKit?: any;
+}
+
+export interface WatchtowerRpcConfig extends RpcClientConfig {
+  watchtower?: any;
+}
+
+export interface WtClientRpcConfig extends RpcClientConfig {
+  wtClient?: any;
 }
 
 export interface LnRpcConfig extends RpcClientConfig {

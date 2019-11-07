@@ -1,4 +1,14 @@
-import { createChainRpc, createLnRpc } from './rpc';
+import { createLnRpc } from './rpc';
 
-export { createChainRpc, createLnRpc };
+export {
+  createAutopilotRpc,
+  createChainRpc,
+  createInvoicesRpc,
+  createLnRpc,
+  createRouterRpc,
+  createSignerRpc,
+  createWalletRpc,
+  createWatchtowerRpc,
+  createWtClientRpc,
+} from './rpc';
 export default createLnRpc;
