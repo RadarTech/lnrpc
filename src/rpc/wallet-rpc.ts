@@ -21,9 +21,13 @@ import { defaults } from './defaults';
  */
 export async function createWalletRpc(userConfig: WalletRpcConfig) {
   const rootPath = await pkgDir(__dirname);
-  const protoFilePath = join(
+  const lndProtosRootPath = join(
     rootPath,
-    `lnd/${packageJson.config['lnd-release-tag']}/walletrpc/walletkit.proto`,
+    `lnd/${packageJson.config['lnd-release-tag']}`,
+  );
+  const protoFilePath = join(
+    lndProtosRootPath,
+    '/walletrpc/walletkit.proto',
   );
 
   // Configuration options
@@ -41,6 +45,7 @@ export async function createWalletRpc(userConfig: WalletRpcConfig) {
     protoFilePath,
     grpcLoader,
     grpc,
+    includeDirs: [lndProtosRootPath],
   });
 
   /**
