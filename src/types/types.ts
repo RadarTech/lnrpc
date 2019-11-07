@@ -1,4 +1,4 @@
-import { ChannelCredentials, GrpcObject } from 'grpc';
+import grpc, { ChannelCredentials, GrpcObject } from 'grpc';
 
 export interface SubscriptionMethod {
   name: string;
@@ -14,4 +14,16 @@ export interface ConnectionConfig {
 export interface GrpcServiceConfig extends ConnectionConfig {
   service: any;
   subscriptionMethods?: SubscriptionMethod[];
+}
+
+export interface RpcClientConfig {
+  cert?: Buffer | string;
+  certEncoding?: string;
+  tlsPath?: string;
+  macaroon?: Buffer | string;
+  macaroonPath?: string;
+}
+
+export interface ChainRpcConfig extends RpcClientConfig {
+  chainNotifier?: any;
 }
