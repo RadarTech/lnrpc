@@ -1,4 +1,4 @@
-## LNRPC
+## @radar/lnrpc
 
 [![CircleCI](https://img.shields.io/circleci/project/github/RadarTech/lnrpc/master.svg?style=flat)](https://circleci.com/gh/RadarTech/lnrpc)
 [![Known Vulnerabilities](https://snyk.io/test/github/RadarTech/lnrpc/badge.svg?targetFile=package.json)](https://snyk.io/test/github/RadarTech/lnrpc?targetFile=package.json)
