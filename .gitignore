@@ -3,3 +3,5 @@ yarn-error.log
 .esm-cache
 /rpc.proto
 *.macaroon
+dist
+.DS_Store

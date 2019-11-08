@@ -1,0 +1,5 @@
+--ui mocha-typescript
+--require ts-node/register/type-check
+--require source-map-support/register
+--exit
+--timeout=30000
