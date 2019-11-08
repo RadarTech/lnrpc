@@ -1,36 +1,39 @@
 import fs from 'fs';
+import glob from 'glob';
 import os from 'os';
 import readline from 'readline';
 
 /**
- * Read the generated lnrpc types and remove
+ * Read the generated rpc types and remove
  * 'List' from all Array type names.
  * More info:
  * https://github.com/improbable-eng/ts-protoc-gen/issues/86
  * https://github.com/protocolbuffers/protobuf/issues/4518
  */
 
-const file = 'src/types/generated/rpc_pb.d.ts';
-const tempFile = 'src/types/generated/rpc_pb_temp.d.ts';
+const files = glob.sync('src/types/generated/**/*.ts');
+files.forEach((file, i) => {
+  const tempFile = `src/types/generated/temp-${i}.d.ts`;
 
-const reader = readline.createInterface({
-  input: fs.createReadStream(file),
-});
-const writer = fs.createWriteStream(tempFile, {
-  flags: 'a',
-});
+  const reader = readline.createInterface({
+    input: fs.createReadStream(file),
+  });
+  const writer = fs.createWriteStream(tempFile, {
+    flags: 'a',
+  });
 
-reader.on('line', (line) => {
-  if (/List.*Array<.*>,/.test(line)) {
-    writer.write(line.replace('List', ''));
-  } else {
-    writer.write(line);
-  }
-  writer.write(os.EOL);
-});
+  reader.on('line', (line) => {
+    if (/List.*Array<.*>,/.test(line)) {
+      writer.write(line.replace('List', ''));
+    } else {
+      writer.write(line);
+    }
+    writer.write(os.EOL);
+  });
 
-reader.on('close', () => {
-  writer.end();
+  reader.on('close', () => {
+    writer.end();
 
-  fs.renameSync(tempFile, file);
+    fs.renameSync(tempFile, file);
+  });
 });

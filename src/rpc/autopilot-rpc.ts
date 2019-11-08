@@ -2,7 +2,7 @@ import { join } from 'path';
 import pkgDir from 'pkg-dir';
 import packageJson from '../../package.json';
 import { createAutopilot } from '../services';
-import { AutopilotRpcClientConfig } from '../types';
+import { AutopilotRpc, AutopilotRpcClientConfig } from '../types';
 import { createCredentials } from './create-credentials';
 import { createGrpcObject } from './create-grpc-object';
 import { defaults } from './defaults';
@@ -19,7 +19,7 @@ import { defaults } from './defaults';
  * @param userConfig The user provided configuration details
  * @return Returns proxy to autopilotrpc instance
  */
-export async function createAutopilotRpc(userConfig: AutopilotRpcClientConfig) {
+export async function createAutopilotRpc<T = unknown>(userConfig: AutopilotRpcClientConfig): Promise<T & AutopilotRpc> {
   const rootPath = await pkgDir(__dirname);
   const protoFilePath = join(
     rootPath,

@@ -95,7 +95,7 @@ export namespace AddHoldInvoiceRequest {
     expiry: number,
     fallbackAddr: string,
     cltvExpiry: number,
-    routeHintsList: Array<rpc_pb.RouteHint.AsObject>,
+    routeHints: Array<rpc_pb.RouteHint.AsObject>,
     pb_private: boolean,
   }
 }

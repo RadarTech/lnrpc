@@ -64,7 +64,7 @@ export namespace SendPaymentRequest {
     feeLimitSat: number,
     outgoingChanId: number,
     cltvLimit: number,
-    routeHintsList: Array<rpc_pb.RouteHint.AsObject>,
+    routeHints: Array<rpc_pb.RouteHint.AsObject>,
     destTlvMap: Array<[number, Uint8Array | string]>,
   }
 }
@@ -450,8 +450,8 @@ export class QueryMissionControlResponse extends jspb.Message {
 
 export namespace QueryMissionControlResponse {
   export type AsObject = {
-    nodesList: Array<NodeHistory.AsObject>,
-    pairsList: Array<PairHistory.AsObject>,
+    nodes: Array<NodeHistory.AsObject>,
+    pairs: Array<PairHistory.AsObject>,
   }
 }
 
@@ -561,7 +561,7 @@ export namespace BuildRouteRequest {
     amtMsat: number,
     finalCltvDelta: number,
     outgoingChanId: number,
-    hopPubkeysList: Array<Uint8Array | string>,
+    hopPubkeys: Array<Uint8Array | string>,
   }
 }
 

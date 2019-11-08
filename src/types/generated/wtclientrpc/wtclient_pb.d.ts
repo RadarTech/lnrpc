@@ -180,10 +180,10 @@ export class Tower extends jspb.Message {
 export namespace Tower {
   export type AsObject = {
     pubkey: Uint8Array | string,
-    addressesList: Array<string>,
+    addresses: Array<string>,
     activeSessionCandidate: boolean,
     numSessions: number,
-    sessionsList: Array<TowerSession.AsObject>,
+    sessions: Array<TowerSession.AsObject>,
   }
 }
 
@@ -225,7 +225,7 @@ export class ListTowersResponse extends jspb.Message {
 
 export namespace ListTowersResponse {
   export type AsObject = {
-    towersList: Array<Tower.AsObject>,
+    towers: Array<Tower.AsObject>,
   }
 }
 

@@ -129,7 +129,7 @@ export class SendOutputsRequest extends jspb.Message {
 export namespace SendOutputsRequest {
   export type AsObject = {
     satPerKw: number,
-    outputsList: Array<signrpc_signer_pb.TxOut.AsObject>,
+    outputs: Array<signrpc_signer_pb.TxOut.AsObject>,
   }
 }
 
@@ -271,7 +271,7 @@ export class PendingSweepsResponse extends jspb.Message {
 
 export namespace PendingSweepsResponse {
   export type AsObject = {
-    pendingSweepsList: Array<PendingSweep.AsObject>,
+    pendingSweeps: Array<PendingSweep.AsObject>,
   }
 }
 

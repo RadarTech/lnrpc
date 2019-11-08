@@ -96,7 +96,7 @@ export class QueryScoresRequest extends jspb.Message {
 
 export namespace QueryScoresRequest {
   export type AsObject = {
-    pubkeysList: Array<string>,
+    pubkeys: Array<string>,
     ignoreLocalState: boolean,
   }
 }
@@ -119,7 +119,7 @@ export class QueryScoresResponse extends jspb.Message {
 
 export namespace QueryScoresResponse {
   export type AsObject = {
-    resultsList: Array<QueryScoresResponse.HeuristicResult.AsObject>,
+    results: Array<QueryScoresResponse.HeuristicResult.AsObject>,
   }
 
   export class HeuristicResult extends jspb.Message {

@@ -24,7 +24,7 @@ export class Http extends jspb.Message {
 
 export namespace Http {
   export type AsObject = {
-    rulesList: Array<HttpRule.AsObject>,
+    rules: Array<HttpRule.AsObject>,
     fullyDecodeReservedExpansion: boolean,
   }
 }
@@ -96,7 +96,7 @@ export namespace HttpRule {
     custom?: CustomHttpPattern.AsObject,
     body: string,
     responseBody: string,
-    additionalBindingsList: Array<HttpRule.AsObject>,
+    additionalBindings: Array<HttpRule.AsObject>,
   }
 
   export enum PatternCase {

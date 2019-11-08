@@ -159,7 +159,7 @@ export class SignReq extends jspb.Message {
 export namespace SignReq {
   export type AsObject = {
     rawTxBytes: Uint8Array | string,
-    signDescsList: Array<SignDescriptor.AsObject>,
+    signDescs: Array<SignDescriptor.AsObject>,
   }
 }
 
@@ -183,7 +183,7 @@ export class SignResp extends jspb.Message {
 
 export namespace SignResp {
   export type AsObject = {
-    rawSigsList: Array<Uint8Array | string>,
+    rawSigs: Array<Uint8Array | string>,
   }
 }
 
@@ -212,7 +212,7 @@ export class InputScript extends jspb.Message {
 
 export namespace InputScript {
   export type AsObject = {
-    witnessList: Array<Uint8Array | string>,
+    witness: Array<Uint8Array | string>,
     sigScript: Uint8Array | string,
   }
 }
@@ -235,7 +235,7 @@ export class InputScriptResp extends jspb.Message {
 
 export namespace InputScriptResp {
   export type AsObject = {
-    inputScriptsList: Array<InputScript.AsObject>,
+    inputScripts: Array<InputScript.AsObject>,
   }
 }
 

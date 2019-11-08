@@ -46,7 +46,7 @@ describe('AutopilotRpc Factory', () => {
     it('should use configured `tls` when provided', (done) => {
       const expected = 'test-tls.cert';
 
-      createAutopilotRpc({
+      createAutopilotRpc<any>({
         tls: expected,
         grpc: grpcStub({
           credentials: {
@@ -64,7 +64,7 @@ describe('AutopilotRpc Factory', () => {
     });
 
     it('should default to a system lnd SSL cert when unconfigured', (done) => {
-      createAutopilotRpc({
+      createAutopilotRpc<any>({
         grpc: grpcStub({
           credentials: {
             createSsl: (cert) => {
@@ -81,7 +81,7 @@ describe('AutopilotRpc Factory', () => {
     });
 
     it('should allow opting out of certificate pinning', (done) => {
-      createAutopilotRpc({
+      createAutopilotRpc<any>({
         tls: false, // opt out
         grpc: grpcStub({
           credentials: {
@@ -253,7 +253,7 @@ describe('AutopilotRpc Factory', () => {
 
   describe('proxy instance', () => {
     it('should provide access to GRPC Package Definition', () => {
-      return createAutopilotRpc({
+      return createAutopilotRpc<{ description: object }>({
         grpc: grpcStub(),
         cert: certStub,
       }).then((autopilotrpc) => {
@@ -263,7 +263,7 @@ describe('AutopilotRpc Factory', () => {
 
     it('should provide access to the autopilot instance', () => {
       const expected = {};
-      return createAutopilotRpc({
+      return createAutopilotRpc<{ autopilot: object }>({
         grpc: grpcStub(),
         autopilot: expected,
         cert: certStub},
@@ -275,7 +275,7 @@ describe('AutopilotRpc Factory', () => {
     });
 
     it('should provide all autopilot methods top-level', () => {
-      return createAutopilotRpc({
+      return createAutopilotRpc<{ test: () => void }>({
         grpc: grpcStub(),
         autopilot: {test: () => { /* noop */ }},
         cert: certStub,
