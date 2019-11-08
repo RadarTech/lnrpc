@@ -2,7 +2,7 @@ import { join } from 'path';
 import pkgDir from 'pkg-dir';
 import packageJson from '../../package.json';
 import { createInvoices } from '../services';
-import { InvoicesRpcClientConfig } from '../types';
+import { InvoicesRpc, InvoicesRpcClientConfig } from '../types';
 import { createCredentials } from './create-credentials';
 import { createGrpcObject } from './create-grpc-object';
 import { defaults } from './defaults';
@@ -19,7 +19,7 @@ import { defaults } from './defaults';
  * @param userConfig The user provided configuration details
  * @return Returns proxy to invoicesrpc instance
  */
-export async function createInvoicesRpc(userConfig: InvoicesRpcClientConfig) {
+export async function createInvoicesRpc<T = unknown>(userConfig: InvoicesRpcClientConfig): Promise<T & InvoicesRpc> {
   const rootPath = await pkgDir(__dirname);
   const lndProtosRootPath = join(
     rootPath,

@@ -46,7 +46,7 @@ describe('WtClientRpc Factory', () => {
     it('should use configured `tls` when provided', (done) => {
       const expected = 'test-tls.cert';
 
-      createWtClientRpc({
+      createWtClientRpc<any>({
         tls: expected,
         grpc: grpcStub({
           credentials: {
@@ -64,7 +64,7 @@ describe('WtClientRpc Factory', () => {
     });
 
     it('should default to a system lnd SSL cert when unconfigured', (done) => {
-      createWtClientRpc({
+      createWtClientRpc<any>({
         grpc: grpcStub({
           credentials: {
             createSsl: (cert) => {
@@ -81,7 +81,7 @@ describe('WtClientRpc Factory', () => {
     });
 
     it('should allow opting out of certificate pinning', (done) => {
-      createWtClientRpc({
+      createWtClientRpc<any>({
         tls: false, // opt out
         grpc: grpcStub({
           credentials: {
@@ -253,7 +253,7 @@ describe('WtClientRpc Factory', () => {
 
   describe('proxy instance', () => {
     it('should provide access to GRPC Package Definition', () => {
-      return createWtClientRpc({
+      return createWtClientRpc<{ description: object }>({
         grpc: grpcStub(),
         cert: certStub,
       }).then((wtclientrpc) => {
@@ -263,7 +263,7 @@ describe('WtClientRpc Factory', () => {
 
     it('should provide access to the watchtowerClient instance', () => {
       const expected = {};
-      return createWtClientRpc({
+      return createWtClientRpc<{ watchtowerClient: object }>({
         grpc: grpcStub(),
         watchtowerClient: expected,
         cert: certStub},
@@ -275,7 +275,7 @@ describe('WtClientRpc Factory', () => {
     });
 
     it('should provide all watchtowerClient methods top-level', () => {
-      return createWtClientRpc({
+      return createWtClientRpc<{ test: () => void }>({
         grpc: grpcStub(),
         watchtowerClient: {test: () => { /* noop */ }},
         cert: certStub,

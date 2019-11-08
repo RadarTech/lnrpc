@@ -13,7 +13,7 @@ import readline from 'readline';
  */
 
 if (!process.argv[2]) {
-  throw new Error('Usage: ts-node src/proto-sanitizer.ts' +
+  throw new Error('Usage: ts-node scripts/proto-sanitizer.ts' +
     './file.proto (globs accepted)');
 }
 

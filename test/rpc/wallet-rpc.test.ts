@@ -46,7 +46,7 @@ describe('WalletRpc Factory', () => {
     it('should use configured `tls` when provided', (done) => {
       const expected = 'test-tls.cert';
 
-      createWalletRpc({
+      createWalletRpc<any>({
         tls: expected,
         grpc: grpcStub({
           credentials: {
@@ -64,7 +64,7 @@ describe('WalletRpc Factory', () => {
     });
 
     it('should default to a system lnd SSL cert when unconfigured', (done) => {
-      createWalletRpc({
+      createWalletRpc<any>({
         grpc: grpcStub({
           credentials: {
             createSsl: (cert) => {
@@ -81,7 +81,7 @@ describe('WalletRpc Factory', () => {
     });
 
     it('should allow opting out of certificate pinning', (done) => {
-      createWalletRpc({
+      createWalletRpc<any>({
         tls: false, // opt out
         grpc: grpcStub({
           credentials: {
@@ -253,7 +253,7 @@ describe('WalletRpc Factory', () => {
 
   describe('proxy instance', () => {
     it('should provide access to GRPC Package Definition', () => {
-      return createWalletRpc({
+      return createWalletRpc<{ description: object }>({
         grpc: grpcStub(),
         cert: certStub,
       }).then((walletrpc) => {
@@ -263,7 +263,7 @@ describe('WalletRpc Factory', () => {
 
     it('should provide access to the walletKit instance', () => {
       const expected = {};
-      return createWalletRpc({
+      return createWalletRpc<{ walletKit: object }>({
         grpc: grpcStub(),
         walletKit: expected,
         cert: certStub},
@@ -275,7 +275,7 @@ describe('WalletRpc Factory', () => {
     });
 
     it('should provide all walletKit methods top-level', () => {
-      return createWalletRpc({
+      return createWalletRpc<{ test: () => void }>({
         grpc: grpcStub(),
         walletKit: {test: () => { /* noop */ }},
         cert: certStub,

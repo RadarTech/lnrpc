@@ -2,7 +2,7 @@ import { join } from 'path';
 import pkgDir from 'pkg-dir';
 import packageJson from '../../package.json';
 import { createWatchtower } from '../services';
-import { WatchtowerRpcClientConfig } from '../types';
+import { WatchtowerRpc, WatchtowerRpcClientConfig } from '../types';
 import { createCredentials } from './create-credentials';
 import { createGrpcObject } from './create-grpc-object';
 import { defaults } from './defaults';
@@ -19,7 +19,9 @@ import { defaults } from './defaults';
  * @param userConfig The user provided configuration details
  * @return Returns proxy to watchtowerrpc instance
  */
-export async function createWatchtowerRpc(userConfig: WatchtowerRpcClientConfig) {
+export async function createWatchtowerRpc<T = unknown>(
+  userConfig: WatchtowerRpcClientConfig,
+): Promise<T & WatchtowerRpc> {
   const rootPath = await pkgDir(__dirname);
   const protoFilePath = join(
     rootPath,

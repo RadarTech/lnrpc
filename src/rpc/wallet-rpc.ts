@@ -2,7 +2,7 @@ import { join } from 'path';
 import pkgDir from 'pkg-dir';
 import packageJson from '../../package.json';
 import { createWalletKit } from '../services';
-import { WalletRpcClientConfig } from '../types';
+import { WalletRpc, WalletRpcClientConfig } from '../types';
 import { createCredentials } from './create-credentials';
 import { createGrpcObject } from './create-grpc-object';
 import { defaults } from './defaults';
@@ -19,7 +19,7 @@ import { defaults } from './defaults';
  * @param userConfig The user provided configuration details
  * @return Returns proxy to walletrpc instance
  */
-export async function createWalletRpc(userConfig: WalletRpcClientConfig) {
+export async function createWalletRpc<T = unknown>(userConfig: WalletRpcClientConfig): Promise<T & WalletRpc> {
   const rootPath = await pkgDir(__dirname);
   const lndProtosRootPath = join(
     rootPath,

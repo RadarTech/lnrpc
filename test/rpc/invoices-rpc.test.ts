@@ -46,7 +46,7 @@ describe('InvoicesRpc Factory', () => {
     it('should use configured `tls` when provided', (done) => {
       const expected = 'test-tls.cert';
 
-      createInvoicesRpc({
+      createInvoicesRpc<any>({
         tls: expected,
         grpc: grpcStub({
           credentials: {
@@ -64,7 +64,7 @@ describe('InvoicesRpc Factory', () => {
     });
 
     it('should default to a system lnd SSL cert when unconfigured', (done) => {
-      createInvoicesRpc({
+      createInvoicesRpc<any>({
         grpc: grpcStub({
           credentials: {
             createSsl: (cert) => {
@@ -81,7 +81,7 @@ describe('InvoicesRpc Factory', () => {
     });
 
     it('should allow opting out of certificate pinning', (done) => {
-      createInvoicesRpc({
+      createInvoicesRpc<any>({
         tls: false, // opt out
         grpc: grpcStub({
           credentials: {
@@ -253,7 +253,7 @@ describe('InvoicesRpc Factory', () => {
 
   describe('proxy instance', () => {
     it('should provide access to GRPC Package Definition', () => {
-      return createInvoicesRpc({
+      return createInvoicesRpc<{ description: object }>({
         grpc: grpcStub(),
         cert: certStub,
       }).then((invoicesrpc) => {
@@ -263,7 +263,7 @@ describe('InvoicesRpc Factory', () => {
 
     it('should provide access to the invoices instance', () => {
       const expected = {};
-      return createInvoicesRpc({
+      return createInvoicesRpc<{ invoices: object }>({
         grpc: grpcStub(),
         invoices: expected,
         cert: certStub},
@@ -275,7 +275,7 @@ describe('InvoicesRpc Factory', () => {
     });
 
     it('should provide all invoices methods top-level', () => {
-      return createInvoicesRpc({
+      return createInvoicesRpc<{ test: () => void }>({
         grpc: grpcStub(),
         invoices: {test: () => { /* noop */ }},
         cert: certStub,

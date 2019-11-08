@@ -46,7 +46,7 @@ describe('WatchtowerRpc Factory', () => {
     it('should use configured `tls` when provided', (done) => {
       const expected = 'test-tls.cert';
 
-      createWatchtowerRpc({
+      createWatchtowerRpc<any>({
         tls: expected,
         grpc: grpcStub({
           credentials: {
@@ -64,7 +64,7 @@ describe('WatchtowerRpc Factory', () => {
     });
 
     it('should default to a system lnd SSL cert when unconfigured', (done) => {
-      createWatchtowerRpc({
+      createWatchtowerRpc<any>({
         grpc: grpcStub({
           credentials: {
             createSsl: (cert) => {
@@ -81,7 +81,7 @@ describe('WatchtowerRpc Factory', () => {
     });
 
     it('should allow opting out of certificate pinning', (done) => {
-      createWatchtowerRpc({
+      createWatchtowerRpc<any>({
         tls: false, // opt out
         grpc: grpcStub({
           credentials: {
@@ -253,7 +253,7 @@ describe('WatchtowerRpc Factory', () => {
 
   describe('proxy instance', () => {
     it('should provide access to GRPC Package Definition', () => {
-      return createWatchtowerRpc({
+      return createWatchtowerRpc<{ description: object }>({
         grpc: grpcStub(),
         cert: certStub,
       }).then((watchtowerrpc) => {
@@ -263,7 +263,7 @@ describe('WatchtowerRpc Factory', () => {
 
     it('should provide access to the watchtower instance', () => {
       const expected = {};
-      return createWatchtowerRpc({
+      return createWatchtowerRpc<{ watchtower: object }>({
         grpc: grpcStub(),
         watchtower: expected,
         cert: certStub},
@@ -275,7 +275,7 @@ describe('WatchtowerRpc Factory', () => {
     });
 
     it('should provide all watchtower methods top-level', () => {
-      return createWatchtowerRpc({
+      return createWatchtowerRpc<{ test: () => void }>({
         grpc: grpcStub(),
         watchtower: {test: () => { /* noop */ }},
         cert: certStub,

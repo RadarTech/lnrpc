@@ -8,7 +8,7 @@ PROTOC_VERSION=$2
 
 # Sanitize all proto files prior to type generation
 rm -f *.proto
-ts-node src/proto-sanitizer.ts "lnd/${LND_RELEASE_TAG}/**/*.proto"
+ts-node scripts/proto-sanitizer.ts "lnd/${LND_RELEASE_TAG}/**/*.proto"
 
 # Copy google definitions
 cp -r google/. lnd/${npm_package_config_lnd_release_tag}/google
@@ -64,4 +64,4 @@ protoc/bin/protoc \
 rm -rf *.proto protoc lnd/${npm_package_config_lnd_release_tag}/google
 
 # Remove 'List' from all generated Array type names
-ts-node src/clean-repeated.ts
+ts-node scripts/clean-repeated.ts

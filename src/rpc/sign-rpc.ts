@@ -2,7 +2,7 @@ import { join } from 'path';
 import pkgDir from 'pkg-dir';
 import packageJson from '../../package.json';
 import { createSigner } from '../services';
-import { SignRpcClientConfig } from '../types';
+import { SignRpc, SignRpcClientConfig } from '../types';
 import { createCredentials } from './create-credentials';
 import { createGrpcObject } from './create-grpc-object';
 import { defaults } from './defaults';
@@ -19,7 +19,7 @@ import { defaults } from './defaults';
  * @param userConfig The user provided configuration details
  * @return Returns proxy to signrpc instance
  */
-export async function createSignRpc(userConfig: SignRpcClientConfig) {
+export async function createSignRpc<T = unknown>(userConfig: SignRpcClientConfig): Promise<T & SignRpc> {
   const rootPath = await pkgDir(__dirname);
   const protoFilePath = join(
     rootPath,

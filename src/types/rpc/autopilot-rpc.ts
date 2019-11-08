@@ -30,25 +30,25 @@ export interface SetScoresRequest {
  */
 export interface AutopilotRpc {
   /**
-   * Status returns whether the daemon's autopilot agent is active.
+   * status returns whether the daemon's autopilot agent is active.
    */
   status(args?: {}): Promise<StatusResponse>;
 
   /**
-   * ModifyStatus is used to modify the status of the autopilot agent, like
+   * modifyStatus is used to modify the status of the autopilot agent, like
    * enabling or disabling it.
    */
   modifyStatus(args: ModifyStatusRequest): Promise<{}>;
 
   /**
-   * QueryScores queries all available autopilot heuristics, in addition to any
+   * queryScores queries all available autopilot heuristics, in addition to any
    * active combination of these heruristics, for the scores they would give to
    * the given nodes.
    */
   queryScores(args: QueryScoresRequest): Promise<QueryScoresResponse>;
 
   /**
-   * SetScores attempts to set the scores used by the running autopilot agent,
+   * setScores attempts to set the scores used by the running autopilot agent,
    * if the external scoring heuristic is enabled.
    */
   setScores(args: SetScoresRequest): Promise<{}>;

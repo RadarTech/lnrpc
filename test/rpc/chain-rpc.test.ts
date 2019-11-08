@@ -46,7 +46,7 @@ describe('ChainRpc Factory', () => {
     it('should use configured `tls` when provided', (done) => {
       const expected = 'test-tls.cert';
 
-      createChainRpc({
+      createChainRpc<any>({
         tls: expected,
         grpc: grpcStub({
           credentials: {
@@ -64,7 +64,7 @@ describe('ChainRpc Factory', () => {
     });
 
     it('should default to a system lnd SSL cert when unconfigured', (done) => {
-      createChainRpc({
+      createChainRpc<any>({
         grpc: grpcStub({
           credentials: {
             createSsl: (cert) => {
@@ -81,7 +81,7 @@ describe('ChainRpc Factory', () => {
     });
 
     it('should allow opting out of certificate pinning', (done) => {
-      createChainRpc({
+      createChainRpc<any>({
         tls: false, // opt out
         grpc: grpcStub({
           credentials: {
@@ -253,7 +253,7 @@ describe('ChainRpc Factory', () => {
 
   describe('proxy instance', () => {
     it('should provide access to GRPC Package Definition', () => {
-      return createChainRpc({
+      return createChainRpc<{ description: object }>({
         grpc: grpcStub(),
         cert: certStub,
       }).then((chainrpc) => {
@@ -263,7 +263,7 @@ describe('ChainRpc Factory', () => {
 
     it('should provide access to the chain notifier instance', () => {
       const expected = {};
-      return createChainRpc({
+      return createChainRpc<{ chainNotifier: object }>({
         grpc: grpcStub(),
         chainNotifier: expected,
         cert: certStub},
@@ -275,7 +275,7 @@ describe('ChainRpc Factory', () => {
     });
 
     it('should provide all chain notifier methods top-level', () => {
-      return createChainRpc({
+      return createChainRpc<{ test: () => void }>({
         grpc: grpcStub(),
         chainNotifier: {test: () => { /* noop */ }},
         cert: certStub,

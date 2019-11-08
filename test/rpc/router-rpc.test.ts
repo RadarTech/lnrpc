@@ -46,7 +46,7 @@ describe('RouterRpc Factory', () => {
     it('should use configured `tls` when provided', (done) => {
       const expected = 'test-tls.cert';
 
-      createRouterRpc({
+      createRouterRpc<any>({
         tls: expected,
         grpc: grpcStub({
           credentials: {
@@ -64,7 +64,7 @@ describe('RouterRpc Factory', () => {
     });
 
     it('should default to a system lnd SSL cert when unconfigured', (done) => {
-      createRouterRpc({
+      createRouterRpc<any>({
         grpc: grpcStub({
           credentials: {
             createSsl: (cert) => {
@@ -81,7 +81,7 @@ describe('RouterRpc Factory', () => {
     });
 
     it('should allow opting out of certificate pinning', (done) => {
-      createRouterRpc({
+      createRouterRpc<any>({
         tls: false, // opt out
         grpc: grpcStub({
           credentials: {
@@ -253,7 +253,7 @@ describe('RouterRpc Factory', () => {
 
   describe('proxy instance', () => {
     it('should provide access to GRPC Package Definition', () => {
-      return createRouterRpc({
+      return createRouterRpc<{ description: object }>({
         grpc: grpcStub(),
         cert: certStub,
       }).then((routerrpc) => {
@@ -263,7 +263,7 @@ describe('RouterRpc Factory', () => {
 
     it('should provide access to the router instance', () => {
       const expected = {};
-      return createRouterRpc({
+      return createRouterRpc<{ router: object }>({
         grpc: grpcStub(),
         router: expected,
         cert: certStub},
@@ -275,7 +275,7 @@ describe('RouterRpc Factory', () => {
     });
 
     it('should provide all router methods top-level', () => {
-      return createRouterRpc({
+      return createRouterRpc<{ test: () => void }>({
         grpc: grpcStub(),
         router: {test: () => { /* noop */ }},
         cert: certStub,

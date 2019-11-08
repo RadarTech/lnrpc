@@ -2,7 +2,7 @@ import { join } from 'path';
 import pkgDir from 'pkg-dir';
 import packageJson from '../../package.json';
 import { createRouter } from '../services';
-import { RouterRpcClientConfig } from '../types';
+import { RouterRpc, RouterRpcClientConfig } from '../types';
 import { createCredentials } from './create-credentials';
 import { createGrpcObject } from './create-grpc-object';
 import { defaults } from './defaults';
@@ -19,7 +19,7 @@ import { defaults } from './defaults';
  * @param userConfig The user provided configuration details
  * @return Returns proxy to routerrpc instance
  */
-export async function createRouterRpc(userConfig: RouterRpcClientConfig) {
+export async function createRouterRpc<T = unknown>(userConfig: RouterRpcClientConfig): Promise<T & RouterRpc> {
   const rootPath = await pkgDir(__dirname);
   const lndProtosRootPath = join(
     rootPath,

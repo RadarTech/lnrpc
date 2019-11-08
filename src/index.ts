@@ -1,5 +1,6 @@
 import { createLnRpc } from './rpc';
 
+export * from './types';
 export {
   createAutopilotRpc,
   createChainRpc,

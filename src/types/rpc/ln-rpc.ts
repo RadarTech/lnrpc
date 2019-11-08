@@ -1,4 +1,4 @@
-import { Duplex, Readable } from './streams';
+import { Duplex, Readable } from '../streams';
 
 export enum AddressType {
   WITNESS_PUBKEY_HASH = 0,

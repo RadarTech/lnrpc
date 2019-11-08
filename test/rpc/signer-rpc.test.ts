@@ -46,7 +46,7 @@ describe('SignRpc Factory', () => {
     it('should use configured `tls` when provided', (done) => {
       const expected = 'test-tls.cert';
 
-      createSignRpc({
+      createSignRpc<any>({
         tls: expected,
         grpc: grpcStub({
           credentials: {
@@ -64,7 +64,7 @@ describe('SignRpc Factory', () => {
     });
 
     it('should default to a system lnd SSL cert when unconfigured', (done) => {
-      createSignRpc({
+      createSignRpc<any>({
         grpc: grpcStub({
           credentials: {
             createSsl: (cert) => {
@@ -81,7 +81,7 @@ describe('SignRpc Factory', () => {
     });
 
     it('should allow opting out of certificate pinning', (done) => {
-      createSignRpc({
+      createSignRpc<any>({
         tls: false, // opt out
         grpc: grpcStub({
           credentials: {
@@ -253,7 +253,7 @@ describe('SignRpc Factory', () => {
 
   describe('proxy instance', () => {
     it('should provide access to GRPC Package Definition', () => {
-      return createSignRpc({
+      return createSignRpc<{ description: object }>({
         grpc: grpcStub(),
         cert: certStub,
       }).then((signrpc) => {
@@ -263,7 +263,7 @@ describe('SignRpc Factory', () => {
 
     it('should provide access to the signer instance', () => {
       const expected = {};
-      return createSignRpc({
+      return createSignRpc<{ signer: object }>({
         grpc: grpcStub(),
         signer: expected,
         cert: certStub},
@@ -275,7 +275,7 @@ describe('SignRpc Factory', () => {
     });
 
     it('should provide all signer methods top-level', () => {
-      return createSignRpc({
+      return createSignRpc<{ test: () => void }>({
         grpc: grpcStub(),
         signer: {test: () => { /* noop */ }},
         cert: certStub,

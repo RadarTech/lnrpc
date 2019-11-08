@@ -2,7 +2,7 @@ import { join } from 'path';
 import pkgDir from 'pkg-dir';
 import packageJson from '../../package.json';
 import { createChainNotifier } from '../services';
-import { ChainRpcClientConfig } from '../types';
+import { ChainRpc, ChainRpcClientConfig } from '../types';
 import { createCredentials } from './create-credentials';
 import { createGrpcObject } from './create-grpc-object';
 import { defaults } from './defaults';
@@ -19,7 +19,7 @@ import { defaults } from './defaults';
  * @param userConfig The user provided configuration details
  * @return Returns proxy to chainrpc instance
  */
-export async function createChainRpc(userConfig: ChainRpcClientConfig) {
+export async function createChainRpc<T = unknown>(userConfig: ChainRpcClientConfig): Promise<T & ChainRpc> {
   const rootPath = await pkgDir(__dirname);
   const protoFilePath = join(
     rootPath,
