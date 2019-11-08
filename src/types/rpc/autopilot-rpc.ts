@@ -42,7 +42,7 @@ export interface AutopilotRpc {
 
   /**
    * queryScores queries all available autopilot heuristics, in addition to any
-   * active combination of these heruristics, for the scores they would give to
+   * active combination of these heuristics, for the scores they would give to
    * the given nodes.
    */
   queryScores(args: QueryScoresRequest): Promise<QueryScoresResponse>;
