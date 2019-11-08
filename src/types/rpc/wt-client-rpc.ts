@@ -72,7 +72,7 @@ export interface WtClientRpc {
   /**
    * listTowers returns the list of watchtowers registered with the client.
    */
-  listTowers(args: ListTowersRequest): Promise<ListTowersResponse>;
+  listTowers(args?: ListTowersRequest): Promise<ListTowersResponse>;
 
   /**
    * getTowerInfo retrieves information for a registered watchtower.
