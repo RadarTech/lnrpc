@@ -1,4 +1,4 @@
-import { ConnectionConfig, SubscriptionMethod } from '../types';
+import { ConnectionConfig, NestedGrpcObject, SubscriptionMethod } from '../types';
 import { createServiceClient } from './create-service-client';
 
 /**
@@ -8,7 +8,8 @@ import { createServiceClient } from './create-service-client';
 export function createInvoices(config: ConnectionConfig): any {
   try {
     const { grpcPkgObj, server, credentials } = config;
-    const invoices = new grpcPkgObj.invoicesrpc.Invoices(
+    const { Invoices } = grpcPkgObj.invoicesrpc as NestedGrpcObject;
+    const invoices = new Invoices(
       server,
       credentials,
     );

@@ -1,5 +1,5 @@
+import { ChannelCredentials } from '@grpc/grpc-js';
 import assert, { equal } from 'assert';
-import { ChannelCredentials } from 'grpc';
 import { createWalletUnlocker } from '../../src/services';
 import { grpcStub, LightningStub } from '../helpers/grpc-stub';
 

@@ -1,4 +1,4 @@
-import { ConnectionConfig, SubscriptionMethod } from '../types';
+import { ConnectionConfig, NestedGrpcObject, SubscriptionMethod } from '../types';
 import { createServiceClient } from './create-service-client';
 
 /**
@@ -8,7 +8,8 @@ import { createServiceClient } from './create-service-client';
 export function createRouter(config: ConnectionConfig): any {
   try {
     const { grpcPkgObj, server, credentials } = config;
-    const router = new grpcPkgObj.routerrpc.Router(
+    const { Router } = grpcPkgObj.routerrpc as NestedGrpcObject;
+    const router = new Router(
       server,
       credentials,
     );
