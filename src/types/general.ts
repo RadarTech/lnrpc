@@ -1,5 +1,5 @@
 import * as grpcLoader from '@grpc/proto-loader';
-import grpc, { ChannelCredentials, GrpcObject } from 'grpc';
+import grpc, { ChannelCredentials, Client, GrpcObject } from 'grpc';
 
 export type GrpcLoader = typeof grpcLoader;
 
@@ -10,8 +10,14 @@ export interface SubscriptionMethod {
   skipEmptyArgDefault?: boolean;
 }
 
+export interface NestedGrpcObject {
+  [index: string]: {
+    [index: string]: typeof Client;
+  };
+}
+
 export interface ConnectionConfig {
-  grpcPkgObj: GrpcObject;
+  grpcPkgObj: NestedGrpcObject;
   server: string;
   credentials: ChannelCredentials;
 }

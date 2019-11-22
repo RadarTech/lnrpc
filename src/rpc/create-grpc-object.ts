@@ -1,4 +1,4 @@
-import { GrpcObjectConfig } from '../types';
+import { GrpcObjectConfig, NestedGrpcObject } from '../types';
 
 /**
  * Create RPC from proto and return the GRPC package object
@@ -11,7 +11,7 @@ export function createGrpcObject(config: GrpcObjectConfig) {
       longs: String,
       includeDirs,
     });
-    return grpc.loadPackageDefinition(packageDefinition);
+    return grpc.loadPackageDefinition(packageDefinition) as NestedGrpcObject;
   } catch (e) {
     if (!e.code) e.code = 'GRPC_LOAD_ERR';
     throw e;
