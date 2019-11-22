@@ -1,4 +1,4 @@
-import { ConnectionConfig, NestedGrpcObject } from '../types';
+import { ConnectionConfig } from '../types';
 import { createServiceClient } from './create-service-client';
 
 /**
@@ -8,8 +8,7 @@ import { createServiceClient } from './create-service-client';
 export function createAutopilot(config: ConnectionConfig): any {
   try {
     const { grpcPkgObj, server, credentials } = config;
-    const { Autopilot } = grpcPkgObj.autopilotrpc as NestedGrpcObject;
-    const autopilot = new Autopilot(
+    const autopilot = new grpcPkgObj.autopilotrpc.Autopilot(
       server,
       credentials,
     );

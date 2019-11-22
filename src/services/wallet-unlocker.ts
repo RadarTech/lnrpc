@@ -1,4 +1,4 @@
-import { ConnectionConfig, NestedGrpcObject } from '../types';
+import { ConnectionConfig } from '../types';
 import { createServiceClient } from './create-service-client';
 
 /**
@@ -8,8 +8,7 @@ import { createServiceClient } from './create-service-client';
 export function createWalletUnlocker(config: ConnectionConfig): any {
   try {
     const { grpcPkgObj, server, credentials } = config;
-    const { WalletUnlocker } = grpcPkgObj.lnrpc as NestedGrpcObject;
-    const walletUnlocker = new WalletUnlocker(
+    const walletUnlocker = new grpcPkgObj.lnrpc.WalletUnlocker(
       server,
       credentials,
     );

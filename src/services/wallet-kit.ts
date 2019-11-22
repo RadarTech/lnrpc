@@ -1,4 +1,4 @@
-import { ConnectionConfig, NestedGrpcObject } from '../types';
+import { ConnectionConfig } from '../types';
 import { createServiceClient } from './create-service-client';
 
 /**
@@ -8,8 +8,7 @@ import { createServiceClient } from './create-service-client';
 export function createWalletKit(config: ConnectionConfig): any {
   try {
     const { grpcPkgObj, server, credentials } = config;
-    const { WalletKit } = grpcPkgObj.walletrpc as NestedGrpcObject;
-    const walletKit = new WalletKit(
+    const walletKit = new grpcPkgObj.walletrpc.WalletKit(
       server,
       credentials,
     );

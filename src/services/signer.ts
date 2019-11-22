@@ -1,4 +1,4 @@
-import { ConnectionConfig, NestedGrpcObject } from '../types';
+import { ConnectionConfig } from '../types';
 import { createServiceClient } from './create-service-client';
 
 /**
@@ -8,8 +8,7 @@ import { createServiceClient } from './create-service-client';
 export function createSigner(config: ConnectionConfig): any {
   try {
     const { grpcPkgObj, server, credentials } = config;
-    const { Signer } = grpcPkgObj.signrpc as NestedGrpcObject;
-    const signer = new Signer(
+    const signer = new grpcPkgObj.signrpc.Signer(
       server,
       credentials,
     );

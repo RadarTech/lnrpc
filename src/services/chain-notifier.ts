@@ -1,4 +1,4 @@
-import { ConnectionConfig, NestedGrpcObject, SubscriptionMethod } from '../types';
+import { ConnectionConfig, SubscriptionMethod } from '../types';
 import { createServiceClient } from './create-service-client';
 
 /**
@@ -8,8 +8,7 @@ import { createServiceClient } from './create-service-client';
 export function createChainNotifier(config: ConnectionConfig): any {
   try {
     const { grpcPkgObj, server, credentials } = config;
-    const { ChainNotifier } = grpcPkgObj.chainrpc as NestedGrpcObject;
-    const chainNotifier = new ChainNotifier(
+    const chainNotifier = new grpcPkgObj.chainrpc.ChainNotifier(
       server,
       credentials,
     );

@@ -1,4 +1,4 @@
-import { ConnectionConfig, NestedGrpcObject } from '../types';
+import { ConnectionConfig } from '../types';
 import { createServiceClient } from './create-service-client';
 
 /**
@@ -8,8 +8,7 @@ import { createServiceClient } from './create-service-client';
 export function createWatchtowerClient(config: ConnectionConfig): any {
   try {
     const { grpcPkgObj, server, credentials } = config;
-    const { WatchtowerClient } = grpcPkgObj.wtclientrpc as NestedGrpcObject;
-    const watchtowerClient = new WatchtowerClient(
+    const watchtowerClient = new grpcPkgObj.wtclientrpc.WatchtowerClient(
       server,
       credentials,
     );

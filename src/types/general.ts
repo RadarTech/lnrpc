@@ -11,11 +11,13 @@ export interface SubscriptionMethod {
 }
 
 export interface NestedGrpcObject {
-  [index: string]: typeof Client;
+  [index: string]: {
+    [index: string]: typeof Client;
+  };
 }
 
 export interface ConnectionConfig {
-  grpcPkgObj: GrpcObject;
+  grpcPkgObj: NestedGrpcObject;
   server: string;
   credentials: ChannelCredentials;
 }

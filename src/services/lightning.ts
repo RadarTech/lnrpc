@@ -1,4 +1,4 @@
-import { ConnectionConfig, NestedGrpcObject, SubscriptionMethod } from '../types';
+import { ConnectionConfig, SubscriptionMethod } from '../types';
 import { createServiceClient } from './create-service-client';
 
 /**
@@ -8,8 +8,7 @@ import { createServiceClient } from './create-service-client';
 export function createLightning(config: ConnectionConfig): any {
   try {
     const { grpcPkgObj, server, credentials } = config;
-    const { Lightning } = grpcPkgObj.lnrpc as NestedGrpcObject;
-    const lightning = new Lightning(server, credentials, {
+    const lightning = new grpcPkgObj.lnrpc.Lightning(server, credentials, {
       // Increase max receive message size for describegraph
       'grpc.max_receive_message_length': 50 * 1024 * 1024,
     });
