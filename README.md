@@ -25,6 +25,10 @@ yarn add @radar/lnrpc
 **Notes:**
   - Ensure you have an lnd instance running with `--no-macaroons`, unless you provide macaroon authentication to your lnrpc instance when created.
   - If you want to interact with the LND sub-servers, ensure that LND was compiled with the necessary sub-server build tags.
+  - If the following error is thrown in the consuming application, run `npm rebuild`:
+    ```
+    Error: Failed to load gRPC binary module because it was not installed for the current system
+    ```
 
 ### Usage
 
