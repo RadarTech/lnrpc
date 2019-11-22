@@ -12,6 +12,7 @@
   "scripts": {
     "test": "mocha \"test/**/*.test.ts\"",
     "build": "tsc -p tsconfig.build.json && cp -r lnd/. dist/lnd",
+    "clean": "rimraf dist",
     "lint": "tslint -c tslint.json '{src,test}/**/*.ts' -e 'src/types/generated/**/*.ts' --fix",
     "generate": "sh scripts/generate_types.sh ${npm_package_config_lnd_release_tag} ${npm_package_config_protoc_version}",
     "update-protos": "sh scripts/update_protos.sh"
@@ -40,6 +41,7 @@
     "glob": "^7.1.5",
     "mocha": "^5.2.0",
     "mocha-typescript": "^1.1.17",
+    "rimraf": "^3.0.0",
     "ts-node": "^8.4.1",
     "tslint": "^5.20.1",
     "typescript": "^3.7.0"
