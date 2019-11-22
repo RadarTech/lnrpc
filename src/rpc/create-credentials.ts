@@ -1,5 +1,5 @@
-import { ChannelCredentials } from '@grpc/grpc-js';
 import fs from 'fs';
+import { ChannelCredentials } from 'grpc';
 import { promisify } from 'util';
 import { RpcClientConfig } from '../types';
 

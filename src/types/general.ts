@@ -1,6 +1,5 @@
-import grpc, { ChannelCredentials, GrpcObject } from '@grpc/grpc-js';
-import { ServiceClientConstructor } from '@grpc/grpc-js/build/src/make-client';
 import * as grpcLoader from '@grpc/proto-loader';
+import grpc, { ChannelCredentials, Client, GrpcObject } from 'grpc';
 
 export type GrpcLoader = typeof grpcLoader;
 
@@ -12,7 +11,7 @@ export interface SubscriptionMethod {
 }
 
 export interface NestedGrpcObject {
-  [index: string]: ServiceClientConstructor;
+  [index: string]: typeof Client;
 }
 
 export interface ConnectionConfig {
