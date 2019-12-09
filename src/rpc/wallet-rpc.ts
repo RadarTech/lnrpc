@@ -35,13 +35,14 @@ export async function createWalletRpc<T = unknown>(userConfig: WalletRpcClientCo
     ...defaults,
     ...userConfig,
   };
-  const { walletKit, server, grpcLoader, grpc } = config;
+  const { walletKit, server, grpcLoader, grpc, includeDefaults } = config;
 
   // Generate grpc SSL credentials
   const credentials = await createCredentials(config);
 
   // Create RPC from proto and return GRPC
   const grpcPkgObj = createGrpcObject({
+    includeDefaults,
     protoFilePath,
     grpcLoader,
     grpc,

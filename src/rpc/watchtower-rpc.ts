@@ -33,13 +33,14 @@ export async function createWatchtowerRpc<T = unknown>(
     ...defaults,
     ...userConfig,
   };
-  const { watchtower, server, grpcLoader, grpc } = config;
+  const { watchtower, server, grpcLoader, grpc, includeDefaults } = config;
 
   // Generate grpc SSL credentials
   const credentials = await createCredentials(config);
 
   // Create RPC from proto and return GRPC
   const grpcPkgObj = createGrpcObject({
+    includeDefaults,
     protoFilePath,
     grpcLoader,
     grpc,

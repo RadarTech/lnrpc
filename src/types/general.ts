@@ -32,6 +32,7 @@ export interface GrpcObjectConfig {
   includeDirs?: string[];
   grpcLoader: GrpcLoader;
   grpc: Grpc;
+  includeDefaults?: boolean;
 }
 
 export interface RpcClientConfig {
@@ -43,6 +44,7 @@ export interface RpcClientConfig {
   certEncoding?: string; // Default to utf-8
   grpcLoader?: GrpcLoader;
   grpc?: Grpc;
+  includeDefaults?: boolean; // Whether default values should be included in gRPC responses. Defaults to false.
 }
 
 export interface AutopilotRpcClientConfig extends RpcClientConfig {
