@@ -1,4 +1,4 @@
-import { ConnectionConfig, SubscriptionMethod } from '../types';
+import { ConnectionConfig } from '../types';
 import { createServiceClient } from './create-service-client';
 
 /**
@@ -12,11 +12,8 @@ export function createInvoices(config: ConnectionConfig): any {
       server,
       credentials,
     );
-    const subscriptionMethods: SubscriptionMethod[] = [
-      {
-        name: 'subscribeSingleInvoice',
-        skipEmptyArgDefault: true,
-      },
+    const subscriptionMethods = [
+      'subscribeSingleInvoice',
     ];
 
     return createServiceClient({

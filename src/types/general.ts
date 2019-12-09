@@ -5,11 +5,6 @@ export type GrpcLoader = typeof grpcLoader;
 
 export type Grpc = typeof grpc;
 
-export interface SubscriptionMethod {
-  name: string;
-  skipEmptyArgDefault?: boolean;
-}
-
 export interface NestedGrpcObject {
   [index: string]: {
     [index: string]: typeof Client;
@@ -24,7 +19,7 @@ export interface ConnectionConfig {
 
 export interface GrpcServiceConfig extends ConnectionConfig {
   service: any;
-  subscriptionMethods?: SubscriptionMethod[];
+  subscriptionMethods?: string[];
 }
 
 export interface GrpcObjectConfig {

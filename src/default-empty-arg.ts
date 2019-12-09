@@ -1,12 +1,12 @@
 /**
  * Add an empty object as the first argument if no argument was passed
- * @param  {Function} func
+ * @param  {Function} func The function being called
+ * @param  {boolean} hasCallback Whether or not the passed function has a callback
  * @return {any}
  */
-export function defaultEmptyArg(func: (...args: any[]) => any): any {
+export function defaultEmptyArg(func: (...args: any[]) => any, hasCallback: boolean = true): any {
   return function(...args: any[]) {
-    // 2 is used, rather than 1, because of the callback.
-    if (args.length < 2) {
+    if (args.length < (hasCallback ? 2 : 1)) {
       args.unshift({});
     }
     return func.apply(this, args);

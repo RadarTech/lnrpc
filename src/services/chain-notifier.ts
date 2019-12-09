@@ -1,4 +1,4 @@
-import { ConnectionConfig, SubscriptionMethod } from '../types';
+import { ConnectionConfig } from '../types';
 import { createServiceClient } from './create-service-client';
 
 /**
@@ -12,16 +12,10 @@ export function createChainNotifier(config: ConnectionConfig): any {
       server,
       credentials,
     );
-    const subscriptionMethods: SubscriptionMethod[] = [
-      {
-        name: 'registerConfirmationsNtfn',
-      },
-      {
-        name: 'registerSpendNtfn',
-      },
-      {
-        name: 'registerBlockEpochNtfn',
-      },
+    const subscriptionMethods = [
+      'registerConfirmationsNtfn',
+      'registerSpendNtfn',
+      'registerBlockEpochNtfn',
     ];
 
     return createServiceClient({

@@ -22,12 +22,8 @@ export function createServiceClient(config: GrpcServiceConfig) {
       if (typeof method !== 'function') {
         return target[key]; // forward
       } else if (config.subscriptionMethods) {
-        const sm = config.subscriptionMethods.find((m) => m.name === key);
-        if (sm) {
-          if (sm.skipEmptyArgDefault) {
-            return method;
-          }
-          return defaultEmptyArg(method);
+        if (config.subscriptionMethods.includes(key)) {
+          return defaultEmptyArg(method, false);
         }
       }
       return promisify(defaultEmptyArg(method));
