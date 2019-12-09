@@ -15,6 +15,7 @@ export function createInvoices(config: ConnectionConfig): any {
     const subscriptionMethods: SubscriptionMethod[] = [
       {
         name: 'subscribeSingleInvoice',
+        skipEmptyArgDefault: true,
       },
     ];
 
