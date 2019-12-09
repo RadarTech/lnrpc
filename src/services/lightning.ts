@@ -1,4 +1,4 @@
-import { ConnectionConfig, SubscriptionMethod } from '../types';
+import { ConnectionConfig } from '../types';
 import { createServiceClient } from './create-service-client';
 
 /**
@@ -12,35 +12,16 @@ export function createLightning(config: ConnectionConfig): any {
       // Increase max receive message size for describegraph
       'grpc.max_receive_message_length': 50 * 1024 * 1024,
     });
-    const subscriptionMethods: SubscriptionMethod[] = [
-      {
-        name: 'subscribeInvoices',
-      },
-      {
-        name: 'subscribeTransactions',
-      },
-      {
-        name: 'subscribeChannelGraph',
-      },
-      {
-        name: 'subscribeChannelEvents',
-      },
-      {
-        name: 'subscribeChannelBackups',
-      },
-      {
-        name: 'sendToRoute',
-      },
-      {
-        name: 'sendPayment',
-      },
-      {
-        name: 'openChannel',
-      },
-      {
-        name: 'closeChannel',
-        skipEmptyArgDefault: true,
-      },
+    const subscriptionMethods = [
+      'subscribeInvoices',
+      'subscribeTransactions',
+      'subscribeChannelGraph',
+      'subscribeChannelEvents',
+      'subscribeChannelBackups',
+      'sendToRoute',
+      'sendPayment',
+      'openChannel',
+      'closeChannel',
     ];
 
     return createServiceClient({
