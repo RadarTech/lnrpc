@@ -1,4 +1,4 @@
-import { ConnectionConfig, SubscriptionMethod } from '../types';
+import { ConnectionConfig } from '../types';
 import { createServiceClient } from './create-service-client';
 
 /**
@@ -12,13 +12,9 @@ export function createRouter(config: ConnectionConfig): any {
       server,
       credentials,
     );
-    const subscriptionMethods: SubscriptionMethod[] = [
-      {
-        name: 'sendPayment',
-      },
-      {
-        name: 'trackPayment',
-      },
+    const subscriptionMethods = [
+      'sendPayment',
+      'trackPayment',
     ];
 
     return createServiceClient({
