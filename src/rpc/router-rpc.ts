@@ -35,13 +35,14 @@ export async function createRouterRpc<T = unknown>(userConfig: RouterRpcClientCo
     ...defaults,
     ...userConfig,
   };
-  const { router, server, grpcLoader, grpc } = config;
+  const { router, server, grpcLoader, grpc, includeDefaults } = config;
 
   // Generate grpc SSL credentials
   const credentials = await createCredentials(config);
 
   // Create RPC from proto and return GRPC
   const grpcPkgObj = createGrpcObject({
+    includeDefaults,
     protoFilePath,
     grpcLoader,
     grpc,

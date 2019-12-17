@@ -35,13 +35,14 @@ export async function createInvoicesRpc<T = unknown>(userConfig: InvoicesRpcClie
     ...defaults,
     ...userConfig,
   };
-  const { invoices, server, grpcLoader, grpc } = config;
+  const { invoices, server, grpcLoader, grpc, includeDefaults } = config;
 
   // Generate grpc SSL credentials
   const credentials = await createCredentials(config);
 
   // Create RPC from proto and return GRPC
   const grpcPkgObj = createGrpcObject({
+    includeDefaults,
     protoFilePath,
     grpcLoader,
     grpc,

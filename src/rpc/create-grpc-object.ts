@@ -6,9 +6,10 @@ import { GrpcObjectConfig, NestedGrpcObject } from '../types';
  */
 export function createGrpcObject(config: GrpcObjectConfig) {
   try {
-    const { protoFilePath, includeDirs, grpcLoader, grpc } = config;
+    const { protoFilePath, includeDirs, grpcLoader, grpc, includeDefaults } = config;
     const packageDefinition = grpcLoader.loadSync(protoFilePath, {
       longs: String,
+      defaults: includeDefaults ?? false,
       includeDirs,
     });
     return grpc.loadPackageDefinition(packageDefinition) as NestedGrpcObject;

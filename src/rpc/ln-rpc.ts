@@ -31,13 +31,14 @@ export async function createLnRpc<T extends unknown>(userConfig: LnRpcClientConf
     ...defaults,
     ...userConfig,
   };
-  const { lightning, walletUnlocker, server, grpcLoader, grpc } = config;
+  const { lightning, walletUnlocker, server, grpcLoader, grpc, includeDefaults } = config;
 
   // Generate grpc SSL credentials
   const credentials = await createCredentials(config);
 
   // Create RPC from proto and return GRPC
   const grpcPkgObj = createGrpcObject({
+    includeDefaults,
     protoFilePath,
     grpcLoader,
     grpc,

@@ -31,13 +31,14 @@ export async function createSignRpc<T = unknown>(userConfig: SignRpcClientConfig
     ...defaults,
     ...userConfig,
   };
-  const { signer, server, grpcLoader, grpc } = config;
+  const { signer, server, grpcLoader, grpc, includeDefaults } = config;
 
   // Generate grpc SSL credentials
   const credentials = await createCredentials(config);
 
   // Create RPC from proto and return GRPC
   const grpcPkgObj = createGrpcObject({
+    includeDefaults,
     protoFilePath,
     grpcLoader,
     grpc,
