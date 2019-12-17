@@ -1,11 +1,11 @@
 {
   "name": "@radar/lnrpc",
-  "version": "v0.8.1-beta",
+  "version": "v0.8.2-beta",
   "description": "typed gRPC client for lightningnetwork/lnd",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "config": {
-    "lnd-release-tag": "v0.8.1-beta",
+    "lnd-release-tag": "v0.8.2-beta",
     "lnd-url": "https://raw.githubusercontent.com/lightningnetwork/lnd",
     "protoc-version": "3.5.1"
   },
