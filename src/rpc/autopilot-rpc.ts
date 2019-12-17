@@ -31,13 +31,14 @@ export async function createAutopilotRpc<T = unknown>(userConfig: AutopilotRpcCl
     ...defaults,
     ...userConfig,
   };
-  const { autopilot, server, grpcLoader, grpc } = config;
+  const { autopilot, server, grpcLoader, grpc, includeDefaults } = config;
 
   // Generate grpc SSL credentials
   const credentials = await createCredentials(config);
 
   // Create RPC from proto and return GRPC
   const grpcPkgObj = createGrpcObject({
+    includeDefaults,
     protoFilePath,
     grpcLoader,
     grpc,
