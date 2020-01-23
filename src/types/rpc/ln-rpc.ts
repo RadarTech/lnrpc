@@ -1,4 +1,5 @@
 import { Duplex, Readable } from '../streams';
+import { KeyDescriptor } from './sign-rpc';
 
 export enum AddressType {
   WITNESS_PUBKEY_HASH = 0,
@@ -50,7 +51,7 @@ export enum BackupCase {
   MULTI_CHAN_BACKUP = 2,
 }
 
-export enum PaymentStatus {
+export enum PaymentStatusEnum {
   UNKNOWN = 0,
   IN_FLIGHT = 1,
   SUCCEEDED = 2,
@@ -106,6 +107,12 @@ export enum HTLCStatus {
   FAILED = 2,
 }
 
+export enum InvoiceHTLCState {
+  ACCEPTED = 0,
+  SETTLED = 1,
+  CANCELED = 2,
+}
+
 export interface Transaction {
   txHash: string;
   amount: string;
@@ -133,7 +140,7 @@ export interface Peer {
   inbound: boolean;
   pingTime: string;
   syncType: SyncType;
-  featuresMap?: [number, Feature][];
+  featuresMap?: Array<[number, Feature]>;
 }
 
 export interface PeerEvent {
@@ -253,7 +260,7 @@ export interface Hop {
   pubKey: string;
   tlvPayload?: boolean;
   mppRecord?: MPPRecord;
-  customRecordsMap?: [number, Buffer][] | [string][];
+  customRecordsMap?: Array<[number, Buffer]> | Array<[string]>;
 }
 
 export interface MPPRecord {
@@ -292,7 +299,7 @@ export interface Payment {
   valueSat: string;
   valueMsat: string;
   paymentRequest: string;
-  status: PaymentStatus;
+  status: PaymentStatusEnum;
   feeSat: string;
   feeMsat: string;
   creationTimeNs?: string;
@@ -317,7 +324,7 @@ export interface LightningNode {
   alias: string;
   addresses: NodeAddress[];
   color: string;
-  featuresMap?: [number, Feature][];
+  featuresMap?: Array<[number, Feature]>;
 }
 
 export interface RoutingPolicy {
@@ -518,7 +525,7 @@ export interface GetInfoResponse {
   testnet: boolean;
   chains: string[];
   uris: string[];
-  featuresMap: [number, Feature][]
+  featuresMap: Array<[number, Feature]>;
 }
 
 export interface PendingChannelsResponse {
@@ -584,16 +591,6 @@ export interface OpenStatusUpdate {
   pendingChanId?: Buffer | string;
 }
 
-export interface KeyLocator {
-  keyFamily: number;
-  keyIndex: number;
-}
-
-export interface KeyDescriptor {
-  rawKeyBytes: Buffer | string;
-  keyLoc?: KeyLocator;
-}
-
 export interface ChanPointShim {
   amt: number;
   chanPoint?: ChannelPoint;
@@ -613,10 +610,6 @@ export interface FundingShimCancel {
 export interface FundingTransitionMsg {
   shimRegister?: FundingShim;
   shimCancel?: FundingShimCancel;
-}
-
-export interface FundingStateStepResp {
-
 }
 
 export interface ChannelPoint {
@@ -660,7 +653,7 @@ export interface SendRequest {
   outgoingChanId?: string;
   lastHopPubkey?: Buffer | string;
   cltvLimit?: number;
-  destCustomRecordsMap: [number, Buffer][] | string[];
+  destCustomRecordsMap: Array<[number, Buffer]> | string[];
   allowSelfPayment?: boolean;
   destFeatures: FeatureBit[];
 }
@@ -707,8 +700,8 @@ export interface Invoice {
   amtPaidMsat?: string;
   state?: InvoiceState;
   htlcs?: InvoiceHTLC[];
-  featuresMap?: [number, Feature][];
-  isKeysend?: boolean,
+  featuresMap?: Array<[number, Feature]>;
+  isKeysend?: boolean;
 }
 
 export interface InvoiceHTLC {
@@ -720,7 +713,7 @@ export interface InvoiceHTLC {
   resolveTime: number;
   expiryHeight: number;
   state: InvoiceHTLCState;
-  customRecordsMap: [number, Buffer][] | string[];
+  customRecordsMap: Array<[number, Buffer]> | string[];
   mppTotalAmtMsat: string;
 }
 
@@ -770,7 +763,7 @@ export interface PayReq {
   routeHints?: RouteHint[];
   paymentAddr: Buffer | string;
   numMsat?: string;
-  featuresMap: [number, Feature][];
+  featuresMap: Array<[number, Feature]>;
 }
 
 export interface Feature {
@@ -915,7 +908,7 @@ export interface QueryRoutesRequest {
   useMissionControl?: boolean;
   ignoredPairs?: NodePair[];
   cltvLimit?: number;
-  destCustomRecordsMap?: [number, Uint8Array][] | string[];
+  destCustomRecordsMap?: Array<[number, Uint8Array]> | string[];
   outgoingChanId?: string;
   lastHopPubkey?: Buffer | string;
   routeHints?: RouteHint[];
