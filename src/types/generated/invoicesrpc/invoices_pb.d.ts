@@ -54,6 +54,9 @@ export class AddHoldInvoiceRequest extends jspb.Message {
   getValue(): number;
   setValue(value: number): void;
 
+  getValueMsat(): number;
+  setValueMsat(value: number): void;
+
   getDescriptionHash(): Uint8Array | string;
   getDescriptionHash_asU8(): Uint8Array;
   getDescriptionHash_asB64(): string;
@@ -91,6 +94,7 @@ export namespace AddHoldInvoiceRequest {
     memo: string,
     hash: Uint8Array | string,
     value: number,
+    valueMsat: number,
     descriptionHash: Uint8Array | string,
     expiry: number,
     fallbackAddr: string,

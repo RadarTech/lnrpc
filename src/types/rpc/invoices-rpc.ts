@@ -13,6 +13,7 @@ export interface AddHoldInvoiceRequest {
   memo?: string;
   hash?: Buffer | string;
   value?: number;
+  valueMsat?: number;
   descriptionHash?: Buffer | string;
   expiry?: number;
   fallbackAddr?: string;

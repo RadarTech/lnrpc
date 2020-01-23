@@ -1,5 +1,6 @@
 import { Readable } from '../streams';
-import { Route, RouteHint } from './ln-rpc';
+import { Route, RouteHint, FeatureBit } from './ln-rpc';
+import { HTLCAttempt } from '../generated/rpc_pb';
 
 export enum PaymentState {
   IN_FLIGHT = 0,
@@ -8,6 +9,7 @@ export enum PaymentState {
   FAILED_NO_ROUTE = 3,
   FAILED_ERROR = 4,
   FAILED_INCORRECT_PAYMENT_DETAILS = 5,
+  FAILED_INSUFFICIENT_BALANCE = 6,
 }
 
 export enum FailureCode {
@@ -34,6 +36,7 @@ export enum FailureCode {
   PERMANENT_NODE_FAILURE = 20,
   PERMANENT_CHANNEL_FAILURE = 21,
   EXPIRY_TOO_FAR = 22,
+  MPP_TIMEOUT = 23,
   UNKNOWN_FAILURE = 998,
   UNREADABLE_FAILURE = 999,
 }
@@ -41,21 +44,27 @@ export enum FailureCode {
 export interface SendPaymentRequest {
   dest?: Buffer | string;
   amt?: number;
+  amtMsat?: number;
   paymentHash?: Buffer | string;
   finalCltvDelta?: number;
   paymentRequest?: string;
   timeoutSeconds?: number;
   feeLimitSat?: number;
-  outgoingChanId?: number;
+  feeLimitMsat?: number;
+  outgoingChanId?: string;
+  lastHopPubkey?: Buffer | string;
   cltvLimit?: number;
   routeHints?: RouteHint[];
-  destTlvMap?: Array<[number, Buffer | string]>;
+  destCustomRecordsMap?: [number, Uint8Array][] | string[];
+  allowSelfPayment?: boolean;
+  destFeatures?: FeatureBit[];
 }
 
-export interface PaymentStatusUpdate {
+export interface PaymentStatus {
   state: PaymentState;
   preimage: Buffer | string;
   route?: Route;
+  htlcs?: HTLCAttempt[];
 }
 
 export interface TrackPaymentRequest {
@@ -108,30 +117,40 @@ export interface SendToRouteResponse {
   failure?: Failure;
 }
 
-export interface NodeHistory {
-  pubkey: Buffer | string;
-  lastFailTime: number;
-  otherSuccessProb: number;
-}
-
 export interface PairHistory {
   nodeFrom: Buffer | string;
   nodeTo: Buffer | string;
-  timestamp: number;
-  minPenalizeAmtSat: number;
-  successProb: number;
-  lastAttemptSuccessful: boolean;
+  history?: PairData;
+}
+
+export interface PairData {
+  failTime?: number;
+  failAmtSat?: number;
+  failAmtMsat?: number;
+  successTime?: number;
+  successAmtSat?: number;
+  successAmtMsat?: number;
+}
+
+export interface QueryProbabilityRequest {
+  fromNode?: Buffer | string,
+  toNode?: Buffer | string,
+  amtMsat?: number,
+}
+
+export interface QueryProbabilityResponse {
+  probability: number,
+  history?: PairData,
 }
 
 export interface QueryMissionControlResponse {
-  nodes: NodeHistory[];
   pairs: PairHistory[];
 }
 
 export interface BuildRouteRequest {
   amtMsat: number;
   finalCltvDelta?: number;
-  outgoingChanId?: number;
+  outgoingChanId?: string;
   hopPubkeys: Array<Buffer | string>;
 }
 
@@ -180,6 +199,12 @@ export interface RouterRpc {
    * It is a development feature.
    */
   queryMissionControl(args?: {}): Promise<QueryMissionControlResponse>;
+
+  /**
+   * queryProbability returns the current success probability estimate for a
+   * given node pair and amount.
+   */
+  queryProbability(args: QueryProbabilityRequest): Promise<QueryProbabilityResponse>;
 
   /**
    * buildRoute builds a fully specified route based on a list of hop public

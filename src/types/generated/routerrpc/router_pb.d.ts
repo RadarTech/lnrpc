@@ -13,6 +13,9 @@ export class SendPaymentRequest extends jspb.Message {
   getAmt(): number;
   setAmt(value: number): void;
 
+  getAmtMsat(): number;
+  setAmtMsat(value: number): void;
+
   getPaymentHash(): Uint8Array | string;
   getPaymentHash_asU8(): Uint8Array;
   getPaymentHash_asB64(): string;
@@ -30,8 +33,16 @@ export class SendPaymentRequest extends jspb.Message {
   getFeeLimitSat(): number;
   setFeeLimitSat(value: number): void;
 
-  getOutgoingChanId(): number;
-  setOutgoingChanId(value: number): void;
+  getFeeLimitMsat(): number;
+  setFeeLimitMsat(value: number): void;
+
+  getOutgoingChanId(): string;
+  setOutgoingChanId(value: string): void;
+
+  getLastHopPubkey(): Uint8Array | string;
+  getLastHopPubkey_asU8(): Uint8Array;
+  getLastHopPubkey_asB64(): string;
+  setLastHopPubkey(value: Uint8Array | string): void;
 
   getCltvLimit(): number;
   setCltvLimit(value: number): void;
@@ -41,8 +52,16 @@ export class SendPaymentRequest extends jspb.Message {
   setRouteHintsList(value: Array<rpc_pb.RouteHint>): void;
   addRouteHints(value?: rpc_pb.RouteHint, index?: number): rpc_pb.RouteHint;
 
-  getDestTlvMap(): jspb.Map<number, Uint8Array | string>;
-  clearDestTlvMap(): void;
+  getDestCustomRecordsMap(): jspb.Map<number, Uint8Array | string>;
+  clearDestCustomRecordsMap(): void;
+  getAllowSelfPayment(): boolean;
+  setAllowSelfPayment(value: boolean): void;
+
+  clearDestFeaturesList(): void;
+  getDestFeaturesList(): Array<rpc_pb.FeatureBit>;
+  setDestFeaturesList(value: Array<rpc_pb.FeatureBit>): void;
+  addDestFeatures(value: rpc_pb.FeatureBit, index?: number): rpc_pb.FeatureBit;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): SendPaymentRequest.AsObject;
   static toObject(includeInstance: boolean, msg: SendPaymentRequest): SendPaymentRequest.AsObject;
@@ -57,15 +76,20 @@ export namespace SendPaymentRequest {
   export type AsObject = {
     dest: Uint8Array | string,
     amt: number,
+    amtMsat: number,
     paymentHash: Uint8Array | string,
     finalCltvDelta: number,
     paymentRequest: string,
     timeoutSeconds: number,
     feeLimitSat: number,
-    outgoingChanId: number,
+    feeLimitMsat: number,
+    outgoingChanId: string,
+    lastHopPubkey: Uint8Array | string,
     cltvLimit: number,
     routeHints: Array<rpc_pb.RouteHint.AsObject>,
-    destTlvMap: Array<[number, Uint8Array | string]>,
+    destCustomRecordsMap: Array<[number, Uint8Array | string]>,
+    allowSelfPayment: boolean,
+    destFeatures: Array<rpc_pb.FeatureBit>,
   }
 }
 
@@ -105,6 +129,11 @@ export class PaymentStatus extends jspb.Message {
   getRoute(): rpc_pb.Route | undefined;
   setRoute(value?: rpc_pb.Route): void;
 
+  clearHtlcsList(): void;
+  getHtlcsList(): Array<rpc_pb.HTLCAttempt>;
+  setHtlcsList(value: Array<rpc_pb.HTLCAttempt>): void;
+  addHtlcs(value?: rpc_pb.HTLCAttempt, index?: number): rpc_pb.HTLCAttempt;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): PaymentStatus.AsObject;
   static toObject(includeInstance: boolean, msg: PaymentStatus): PaymentStatus.AsObject;
@@ -120,6 +149,7 @@ export namespace PaymentStatus {
     state: PaymentState,
     preimage: Uint8Array | string,
     route?: rpc_pb.Route.AsObject,
+    htlcs: Array<rpc_pb.HTLCAttempt.AsObject>,
   }
 }
 
@@ -304,6 +334,7 @@ export namespace Failure {
     PERMANENT_NODE_FAILURE = 20,
     PERMANENT_CHANNEL_FAILURE = 21,
     EXPIRY_TOO_FAR = 22,
+    MPP_TIMEOUT = 23,
     UNKNOWN_FAILURE = 998,
     UNREADABLE_FAILURE = 999,
   }
@@ -320,8 +351,8 @@ export class ChannelUpdate extends jspb.Message {
   getChainHash_asB64(): string;
   setChainHash(value: Uint8Array | string): void;
 
-  getChanId(): number;
-  setChanId(value: number): void;
+  getChanId(): string;
+  setChanId(value: string): void;
 
   getTimestamp(): number;
   setTimestamp(value: number): void;
@@ -366,7 +397,7 @@ export namespace ChannelUpdate {
   export type AsObject = {
     signature: Uint8Array | string,
     chainHash: Uint8Array | string,
-    chanId: number,
+    chanId: string,
     timestamp: number,
     messageFlags: number,
     channelFlags: number,
@@ -428,11 +459,6 @@ export namespace QueryMissionControlRequest {
 }
 
 export class QueryMissionControlResponse extends jspb.Message {
-  clearNodesList(): void;
-  getNodesList(): Array<NodeHistory>;
-  setNodesList(value: Array<NodeHistory>): void;
-  addNodes(value?: NodeHistory, index?: number): NodeHistory;
-
   clearPairsList(): void;
   getPairsList(): Array<PairHistory>;
   setPairsList(value: Array<PairHistory>): void;
@@ -450,38 +476,7 @@ export class QueryMissionControlResponse extends jspb.Message {
 
 export namespace QueryMissionControlResponse {
   export type AsObject = {
-    nodes: Array<NodeHistory.AsObject>,
     pairs: Array<PairHistory.AsObject>,
-  }
-}
-
-export class NodeHistory extends jspb.Message {
-  getPubkey(): Uint8Array | string;
-  getPubkey_asU8(): Uint8Array;
-  getPubkey_asB64(): string;
-  setPubkey(value: Uint8Array | string): void;
-
-  getLastFailTime(): number;
-  setLastFailTime(value: number): void;
-
-  getOtherSuccessProb(): number;
-  setOtherSuccessProb(value: number): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): NodeHistory.AsObject;
-  static toObject(includeInstance: boolean, msg: NodeHistory): NodeHistory.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: NodeHistory, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): NodeHistory;
-  static deserializeBinaryFromReader(message: NodeHistory, reader: jspb.BinaryReader): NodeHistory;
-}
-
-export namespace NodeHistory {
-  export type AsObject = {
-    pubkey: Uint8Array | string,
-    lastFailTime: number,
-    otherSuccessProb: number,
   }
 }
 
@@ -496,17 +491,10 @@ export class PairHistory extends jspb.Message {
   getNodeTo_asB64(): string;
   setNodeTo(value: Uint8Array | string): void;
 
-  getTimestamp(): number;
-  setTimestamp(value: number): void;
-
-  getMinPenalizeAmtSat(): number;
-  setMinPenalizeAmtSat(value: number): void;
-
-  getSuccessProb(): number;
-  setSuccessProb(value: number): void;
-
-  getLastAttemptSuccessful(): boolean;
-  setLastAttemptSuccessful(value: boolean): void;
+  hasHistory(): boolean;
+  clearHistory(): void;
+  getHistory(): PairData | undefined;
+  setHistory(value?: PairData): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): PairHistory.AsObject;
@@ -522,10 +510,105 @@ export namespace PairHistory {
   export type AsObject = {
     nodeFrom: Uint8Array | string,
     nodeTo: Uint8Array | string,
-    timestamp: number,
-    minPenalizeAmtSat: number,
-    successProb: number,
-    lastAttemptSuccessful: boolean,
+    history?: PairData.AsObject,
+  }
+}
+
+export class PairData extends jspb.Message {
+  getFailTime(): number;
+  setFailTime(value: number): void;
+
+  getFailAmtSat(): number;
+  setFailAmtSat(value: number): void;
+
+  getFailAmtMsat(): number;
+  setFailAmtMsat(value: number): void;
+
+  getSuccessTime(): number;
+  setSuccessTime(value: number): void;
+
+  getSuccessAmtSat(): number;
+  setSuccessAmtSat(value: number): void;
+
+  getSuccessAmtMsat(): number;
+  setSuccessAmtMsat(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): PairData.AsObject;
+  static toObject(includeInstance: boolean, msg: PairData): PairData.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: PairData, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PairData;
+  static deserializeBinaryFromReader(message: PairData, reader: jspb.BinaryReader): PairData;
+}
+
+export namespace PairData {
+  export type AsObject = {
+    failTime: number,
+    failAmtSat: number,
+    failAmtMsat: number,
+    successTime: number,
+    successAmtSat: number,
+    successAmtMsat: number,
+  }
+}
+
+export class QueryProbabilityRequest extends jspb.Message {
+  getFromNode(): Uint8Array | string;
+  getFromNode_asU8(): Uint8Array;
+  getFromNode_asB64(): string;
+  setFromNode(value: Uint8Array | string): void;
+
+  getToNode(): Uint8Array | string;
+  getToNode_asU8(): Uint8Array;
+  getToNode_asB64(): string;
+  setToNode(value: Uint8Array | string): void;
+
+  getAmtMsat(): number;
+  setAmtMsat(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): QueryProbabilityRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: QueryProbabilityRequest): QueryProbabilityRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: QueryProbabilityRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): QueryProbabilityRequest;
+  static deserializeBinaryFromReader(message: QueryProbabilityRequest, reader: jspb.BinaryReader): QueryProbabilityRequest;
+}
+
+export namespace QueryProbabilityRequest {
+  export type AsObject = {
+    fromNode: Uint8Array | string,
+    toNode: Uint8Array | string,
+    amtMsat: number,
+  }
+}
+
+export class QueryProbabilityResponse extends jspb.Message {
+  getProbability(): number;
+  setProbability(value: number): void;
+
+  hasHistory(): boolean;
+  clearHistory(): void;
+  getHistory(): PairData | undefined;
+  setHistory(value?: PairData): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): QueryProbabilityResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: QueryProbabilityResponse): QueryProbabilityResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: QueryProbabilityResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): QueryProbabilityResponse;
+  static deserializeBinaryFromReader(message: QueryProbabilityResponse, reader: jspb.BinaryReader): QueryProbabilityResponse;
+}
+
+export namespace QueryProbabilityResponse {
+  export type AsObject = {
+    probability: number,
+    history?: PairData.AsObject,
   }
 }
 
@@ -536,8 +619,8 @@ export class BuildRouteRequest extends jspb.Message {
   getFinalCltvDelta(): number;
   setFinalCltvDelta(value: number): void;
 
-  getOutgoingChanId(): number;
-  setOutgoingChanId(value: number): void;
+  getOutgoingChanId(): string;
+  setOutgoingChanId(value: string): void;
 
   clearHopPubkeysList(): void;
   getHopPubkeysList(): Array<Uint8Array | string>;
@@ -560,7 +643,7 @@ export namespace BuildRouteRequest {
   export type AsObject = {
     amtMsat: number,
     finalCltvDelta: number,
-    outgoingChanId: number,
+    outgoingChanId: string,
     hopPubkeys: Array<Uint8Array | string>,
   }
 }
@@ -594,5 +677,6 @@ export enum PaymentState {
   FAILED_NO_ROUTE = 3,
   FAILED_ERROR = 4,
   FAILED_INCORRECT_PAYMENT_DETAILS = 5,
+  FAILED_INSUFFICIENT_BALANCE = 6,
 }
 
