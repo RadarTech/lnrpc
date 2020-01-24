@@ -16,6 +16,7 @@ export function createLightning(config: ConnectionConfig): any {
       'subscribeInvoices',
       'subscribeTransactions',
       'subscribeChannelGraph',
+      'subscribePeerEvents',
       'subscribeChannelEvents',
       'subscribeChannelBackups',
       'sendToRoute',

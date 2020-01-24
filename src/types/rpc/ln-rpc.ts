@@ -1108,14 +1108,14 @@ export interface LnRpc {
    * Alternatively, this can be used to interactively drive PSBT signing for
    * funding for partially complete funding transactions.
    */
-  fundingStateStep(FundingTransitionMsg): Promise<FundingStateStepResp>;
+  fundingStateStep(args?: FundingTransitionMsg): Promise<FundingStateStepResp>;
 
   /**
    * subscribePeerEvents creates a uni-directional stream from the server to
    * the client in which any events relevant to the state of peers are sent
    * over. Events include peers going online and offline.
    */
-  subscribePeerEvents(PeerEventSubscription): Promise<PeerEvent>;
+  subscribePeerEvents(args?: {}): Readable<PeerEvent>;
 
   /**
    * getInfo returns general information concerning the lightning node including it’s identity pubkey, alias, the
