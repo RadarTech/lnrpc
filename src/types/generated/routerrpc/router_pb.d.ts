@@ -87,7 +87,7 @@ export namespace SendPaymentRequest {
     lastHopPubkey: Uint8Array | string,
     cltvLimit: number,
     routeHints: Array<rpc_pb.RouteHint.AsObject>,
-    destCustomRecordsMap: Array<[number, Uint8Array | string]>,
+    destCustomRecords: Array<[number, Uint8Array | string]>,
     allowSelfPayment: boolean,
     destFeatures: Array<rpc_pb.FeatureBit>,
   }

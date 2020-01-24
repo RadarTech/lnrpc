@@ -54,7 +54,7 @@ export interface SendPaymentRequest {
   lastHopPubkey?: Buffer | string;
   cltvLimit?: number;
   routeHints?: RouteHint[];
-  destCustomRecordsMap?: Array<[number, Buffer]> | string[];
+  destCustomRecords?: Array<[number, Buffer]> | string[];
   allowSelfPayment?: boolean;
   destFeatures?: FeatureBit[];
 }

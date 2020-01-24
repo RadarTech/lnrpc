@@ -467,7 +467,7 @@ export namespace SendRequest {
     outgoingChanId: string,
     lastHopPubkey: Uint8Array | string,
     cltvLimit: number,
-    destCustomRecordsMap: Array<[number, Uint8Array | string]>,
+    destCustomRecords: Array<[number, Uint8Array | string]>,
     allowSelfPayment: boolean,
     destFeatures: Array<FeatureBit>,
   }
@@ -756,7 +756,7 @@ export class EstimateFeeRequest extends jspb.Message {
 
 export namespace EstimateFeeRequest {
   export type AsObject = {
-    addrtoamountMap: Array<[string, number]>,
+    addrtoamount: Array<[string, number]>,
     targetConf: number,
   }
 }
@@ -806,7 +806,7 @@ export class SendManyRequest extends jspb.Message {
 
 export namespace SendManyRequest {
   export type AsObject = {
-    addrtoamountMap: Array<[string, number]>,
+    addrtoamount: Array<[string, number]>,
     targetConf: number,
     satPerByte: number,
   }
@@ -1528,7 +1528,7 @@ export namespace Peer {
     inbound: boolean,
     pingTime: number,
     syncType: Peer.SyncType,
-    featuresMap: Array<[number, Feature.AsObject]>,
+    features: Array<[number, Feature.AsObject]>,
   }
 
   export enum SyncType {
@@ -1720,7 +1720,7 @@ export namespace GetInfoResponse {
     testnet: boolean,
     chains: Array<Chain.AsObject>,
     uris: Array<string>,
-    featuresMap: Array<[number, Feature.AsObject]>,
+    features: Array<[number, Feature.AsObject]>,
   }
 }
 
@@ -2764,7 +2764,7 @@ export namespace QueryRoutesRequest {
     useMissionControl: boolean,
     ignoredPairs: Array<NodePair.AsObject>,
     cltvLimit: number,
-    destCustomRecordsMap: Array<[number, Uint8Array | string]>,
+    destCustomRecords: Array<[number, Uint8Array | string]>,
     outgoingChanId: string,
     lastHopPubkey: Uint8Array | string,
     routeHints: Array<RouteHint.AsObject>,
@@ -2907,7 +2907,7 @@ export namespace Hop {
     pubKey: string,
     tlvPayload: boolean,
     mppRecord?: MPPRecord.AsObject,
-    customRecordsMap: Array<[number, Uint8Array | string]>,
+    customRecords: Array<[number, Uint8Array | string]>,
   }
 }
 
@@ -3076,7 +3076,7 @@ export namespace LightningNode {
     alias: string,
     addresses: Array<NodeAddress.AsObject>,
     color: string,
-    featuresMap: Array<[number, Feature.AsObject]>,
+    features: Array<[number, Feature.AsObject]>,
   }
 }
 
@@ -3718,7 +3718,7 @@ export namespace Invoice {
     amtPaidMsat: number,
     state: Invoice.InvoiceState,
     htlcs: Array<InvoiceHTLC.AsObject>,
-    featuresMap: Array<[number, Feature.AsObject]>,
+    features: Array<[number, Feature.AsObject]>,
     isKeysend: boolean,
   }
 
@@ -3780,7 +3780,7 @@ export namespace InvoiceHTLC {
     resolveTime: number,
     expiryHeight: number,
     state: InvoiceHTLCState,
-    customRecordsMap: Array<[number, Uint8Array | string]>,
+    customRecords: Array<[number, Uint8Array | string]>,
     mppTotalAmtMsat: number,
   }
 }
@@ -4293,7 +4293,7 @@ export namespace PayReq {
     routeHints: Array<RouteHint.AsObject>,
     paymentAddr: Uint8Array | string,
     numMsat: number,
-    featuresMap: Array<[number, Feature.AsObject]>,
+    features: Array<[number, Feature.AsObject]>,
   }
 }
 

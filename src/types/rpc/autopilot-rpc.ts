@@ -13,7 +13,7 @@ export interface QueryScoresRequest {
 
 export interface HeuristicResult {
   heuristic: string;
-  scoresMap: Array<[string, number]>;
+  scores: Array<[string, number]>;
 }
 
 export interface QueryScoresResponse {
@@ -22,7 +22,7 @@ export interface QueryScoresResponse {
 
 export interface SetScoresRequest {
   heuristic: string;
-  scoresMap: Array<[string, number]>;
+  scores: Array<[string, number]>;
 }
 
 /**
