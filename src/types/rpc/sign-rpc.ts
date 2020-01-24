@@ -41,6 +41,34 @@ export interface InputScriptResp {
   inputScripts: InputScript[];
 }
 
+export interface SignMessageReq {
+  msg: Buffer | string;
+  keyLoc?: KeyLocator;
+}
+
+export interface SignMessageResp {
+  signature: Buffer | string;
+}
+
+export interface VerifyMessageReq {
+  msg: Buffer | string;
+  signature: Buffer | string;
+  pubkey: Buffer | string;
+}
+
+export interface VerifyMessageResp {
+  valid: boolean;
+}
+
+export interface SharedKeyRequest {
+  ephemeralPubkey: Buffer | string;
+  keyLoc?: KeyLocator;
+}
+
+export interface SharedKeyResponse {
+  sharedKey: Buffer | string;
+}
+
 /**
  * LND Sign gRPC API Client
  */
@@ -68,4 +96,33 @@ export interface SignRpc {
    * index.
    */
   computeInputScript(args: SignReq): Promise<InputScriptResp>;
+
+  /**
+   * SignMessage signs a message with the key specified in the key locator. The
+   * returned signature is fixed-size LN wire format encoded.
+   *
+   * The main difference to SignMessage in the main RPC is that a specific key is
+   * used to sign the message instead of the node identity private key.
+   */
+  signMessage(args: SignMessageReq): Promise<SignMessageResp>;
+
+  /**
+   * VerifyMessage verifies a signature over a message using the public key
+   * provided. The signature must be fixed-size LN wire format encoded.
+   *
+   * The main difference to VerifyMessage in the main RPC is that the public key
+   * used to sign the message does not have to be a node known to the network.
+   */
+  verifyMessage(args: VerifyMessageReq): Promise<VerifyMessageResp>;
+
+  /**
+   * DeriveSharedKey returns a shared secret key by performing Diffie-Hellman key
+   * derivation between the ephemeral public key in the request and the node's
+   * key specified in the key_loc parameter (or the node's identity private key
+   * if no key locator is specified):
+   *    P_shared = privKeyNode * ephemeralPubkey
+   * The resulting shared public key is serialized in the compressed format and
+   * hashed with sha256, resulting in the final key length of 256bit.
+   */
+   deriveSharedKey(args: SharedKeyRequest): Promise<SharedKeyResponse>;
 }

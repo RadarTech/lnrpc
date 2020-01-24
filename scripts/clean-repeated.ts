@@ -25,6 +25,8 @@ files.forEach((file, i) => {
   reader.on('line', (line) => {
     if (/List.*Array<.*>,/.test(line)) {
       writer.write(line.replace('List', ''));
+    } else if (/Map.*Array<.*>,/.test(line)) {
+      writer.write(line.replace('Map', ''));
     } else {
       writer.write(line);
     }

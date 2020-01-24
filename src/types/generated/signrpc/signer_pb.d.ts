@@ -239,3 +239,157 @@ export namespace InputScriptResp {
   }
 }
 
+export class SignMessageReq extends jspb.Message {
+  getMsg(): Uint8Array | string;
+  getMsg_asU8(): Uint8Array;
+  getMsg_asB64(): string;
+  setMsg(value: Uint8Array | string): void;
+
+  hasKeyLoc(): boolean;
+  clearKeyLoc(): void;
+  getKeyLoc(): KeyLocator | undefined;
+  setKeyLoc(value?: KeyLocator): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): SignMessageReq.AsObject;
+  static toObject(includeInstance: boolean, msg: SignMessageReq): SignMessageReq.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: SignMessageReq, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SignMessageReq;
+  static deserializeBinaryFromReader(message: SignMessageReq, reader: jspb.BinaryReader): SignMessageReq;
+}
+
+export namespace SignMessageReq {
+  export type AsObject = {
+    msg: Uint8Array | string,
+    keyLoc?: KeyLocator.AsObject,
+  }
+}
+
+export class SignMessageResp extends jspb.Message {
+  getSignature(): Uint8Array | string;
+  getSignature_asU8(): Uint8Array;
+  getSignature_asB64(): string;
+  setSignature(value: Uint8Array | string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): SignMessageResp.AsObject;
+  static toObject(includeInstance: boolean, msg: SignMessageResp): SignMessageResp.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: SignMessageResp, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SignMessageResp;
+  static deserializeBinaryFromReader(message: SignMessageResp, reader: jspb.BinaryReader): SignMessageResp;
+}
+
+export namespace SignMessageResp {
+  export type AsObject = {
+    signature: Uint8Array | string,
+  }
+}
+
+export class VerifyMessageReq extends jspb.Message {
+  getMsg(): Uint8Array | string;
+  getMsg_asU8(): Uint8Array;
+  getMsg_asB64(): string;
+  setMsg(value: Uint8Array | string): void;
+
+  getSignature(): Uint8Array | string;
+  getSignature_asU8(): Uint8Array;
+  getSignature_asB64(): string;
+  setSignature(value: Uint8Array | string): void;
+
+  getPubkey(): Uint8Array | string;
+  getPubkey_asU8(): Uint8Array;
+  getPubkey_asB64(): string;
+  setPubkey(value: Uint8Array | string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): VerifyMessageReq.AsObject;
+  static toObject(includeInstance: boolean, msg: VerifyMessageReq): VerifyMessageReq.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: VerifyMessageReq, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): VerifyMessageReq;
+  static deserializeBinaryFromReader(message: VerifyMessageReq, reader: jspb.BinaryReader): VerifyMessageReq;
+}
+
+export namespace VerifyMessageReq {
+  export type AsObject = {
+    msg: Uint8Array | string,
+    signature: Uint8Array | string,
+    pubkey: Uint8Array | string,
+  }
+}
+
+export class VerifyMessageResp extends jspb.Message {
+  getValid(): boolean;
+  setValid(value: boolean): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): VerifyMessageResp.AsObject;
+  static toObject(includeInstance: boolean, msg: VerifyMessageResp): VerifyMessageResp.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: VerifyMessageResp, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): VerifyMessageResp;
+  static deserializeBinaryFromReader(message: VerifyMessageResp, reader: jspb.BinaryReader): VerifyMessageResp;
+}
+
+export namespace VerifyMessageResp {
+  export type AsObject = {
+    valid: boolean,
+  }
+}
+
+export class SharedKeyRequest extends jspb.Message {
+  getEphemeralPubkey(): Uint8Array | string;
+  getEphemeralPubkey_asU8(): Uint8Array;
+  getEphemeralPubkey_asB64(): string;
+  setEphemeralPubkey(value: Uint8Array | string): void;
+
+  hasKeyLoc(): boolean;
+  clearKeyLoc(): void;
+  getKeyLoc(): KeyLocator | undefined;
+  setKeyLoc(value?: KeyLocator): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): SharedKeyRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: SharedKeyRequest): SharedKeyRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: SharedKeyRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SharedKeyRequest;
+  static deserializeBinaryFromReader(message: SharedKeyRequest, reader: jspb.BinaryReader): SharedKeyRequest;
+}
+
+export namespace SharedKeyRequest {
+  export type AsObject = {
+    ephemeralPubkey: Uint8Array | string,
+    keyLoc?: KeyLocator.AsObject,
+  }
+}
+
+export class SharedKeyResponse extends jspb.Message {
+  getSharedKey(): Uint8Array | string;
+  getSharedKey_asU8(): Uint8Array;
+  getSharedKey_asB64(): string;
+  setSharedKey(value: Uint8Array | string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): SharedKeyResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: SharedKeyResponse): SharedKeyResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: SharedKeyResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SharedKeyResponse;
+  static deserializeBinaryFromReader(message: SharedKeyResponse, reader: jspb.BinaryReader): SharedKeyResponse;
+}
+
+export namespace SharedKeyResponse {
+  export type AsObject = {
+    sharedKey: Uint8Array | string,
+  }
+}
+

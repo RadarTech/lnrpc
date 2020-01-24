@@ -1,4 +1,5 @@
 import { Duplex, Readable } from '../streams';
+import { KeyDescriptor } from './sign-rpc';
 
 export enum AddressType {
   WITNESS_PUBKEY_HASH = 0,
@@ -57,6 +58,61 @@ export enum PaymentStatus {
   FAILED = 3,
 }
 
+export enum LimitCase {
+  LIMIT_NOT_SET = 0,
+  FIXED = 1,
+  FIXED_MSAT = 3,
+  PERCENT = 2,
+}
+
+export enum FeatureBit {
+  DATALOSS_PROTECT_REQ = 0,
+  DATALOSS_PROTECT_OPT = 1,
+  INITIAL_ROUING_SYNC = 3,
+  UPFRONT_SHUTDOWN_SCRIPT_REQ = 4,
+  UPFRONT_SHUTDOWN_SCRIPT_OPT = 5,
+  GOSSIP_QUERIES_REQ = 6,
+  GOSSIP_QUERIES_OPT = 7,
+  TLV_ONION_REQ = 8,
+  TLV_ONION_OPT = 9,
+  EXT_GOSSIP_QUERIES_REQ = 10,
+  EXT_GOSSIP_QUERIES_OPT = 11,
+  STATIC_REMOTE_KEY_REQ = 12,
+  STATIC_REMOTE_KEY_OPT = 13,
+  PAYMENT_ADDR_REQ = 14,
+  PAYMENT_ADDR_OPT = 15,
+  MPP_REQ = 16,
+  MPP_OPT = 17,
+}
+
+export enum EventType {
+  PEER_ONLINE = 0,
+  PEER_OFFLINE = 1,
+}
+
+export enum ShimCase {
+  SHIM_NOT_SET = 0,
+  CHAN_POINT_SHIM = 1,
+}
+
+export enum TriggerCase {
+  TRIGGER_NOT_SET = 0,
+  SHIM_REGISTER = 1,
+  SHIM_CANCEL = 2,
+}
+
+export enum HTLCStatus {
+  IN_FLIGHT = 0,
+  SUCCEEDED = 1,
+  FAILED = 2,
+}
+
+export enum InvoiceHTLCState {
+  ACCEPTED = 0,
+  SETTLED = 1,
+  CANCELED = 2,
+}
+
 export interface Transaction {
   txHash: string;
   amount: string;
@@ -84,6 +140,12 @@ export interface Peer {
   inbound: boolean;
   pingTime: string;
   syncType: SyncType;
+  features?: Array<[number, Feature]>;
+}
+
+export interface PeerEvent {
+  pubKey: string;
+  type: EventType;
 }
 
 export interface PendingHTLC {
@@ -162,6 +224,10 @@ export interface Channel {
   chanStatusFlags: string;
   localChanReserveSat: string;
   remoteChanReserveSat: string;
+  staticRemoteKey: boolean;
+  lifetime: number;
+  uptime: number;
+  closeAddress: string;
 }
 
 export interface ChannelCloseSummary {
@@ -179,6 +245,7 @@ export interface ChannelCloseSummary {
 
 export interface FeeLimit {
   fixed?: string;
+  fixedMsat?: number;
   percent?: string;
 }
 
@@ -191,6 +258,14 @@ export interface Hop {
   amtToForwardMsat: string;
   feeMsat: string;
   pubKey: string;
+  tlvPayload?: boolean;
+  mppRecord?: MPPRecord;
+  customRecords?: Array<[number, Buffer]> | Array<[string]>;
+}
+
+export interface MPPRecord {
+  paymentAddr?: Buffer | string;
+  totalAmtMsat?: number;
 }
 
 export interface Route {
@@ -227,6 +302,15 @@ export interface Payment {
   status: PaymentStatus;
   feeSat: string;
   feeMsat: string;
+  creationTimeNs?: string;
+  htlcs?: HTLCAttempt[];
+}
+
+export interface HTLCAttempt {
+  status?: HTLCStatus;
+  route?: Route;
+  attemptTimeNs?: string;
+  resolveTimeNs?: string;
 }
 
 export interface NodeAddress {
@@ -240,6 +324,7 @@ export interface LightningNode {
   alias: string;
   addresses: NodeAddress[];
   color: string;
+  features?: Array<[number, Feature]>;
 }
 
 export interface RoutingPolicy {
@@ -267,6 +352,8 @@ export interface ForwardingEvent {
   amtOut: string;
   fee: string;
   feeMsat: string;
+  amtInMsat?: string;
+  amtOutMsat?: string;
 }
 
 export interface GenSeedRequest {
@@ -309,7 +396,7 @@ export interface EstimateFeeResponse {
 }
 
 export interface EstimateFeeRequest {
-  addrtoamountMap: Array<[string, number]>;
+  addrtoamount: Array<[string, number]>;
   targetConf: number;
 }
 
@@ -364,7 +451,7 @@ export interface SendCoinsResponse {
 }
 
 export interface SendManyRequest {
-  addrtoamountMap: Array<[string, number]>;
+  addrtoamount: Array<[string, number]>;
   targetConf?: number;
   satPerByte?: string;
 }
@@ -422,21 +509,23 @@ export interface ListUnspentResponse {
 }
 
 export interface GetInfoResponse {
+  version: string;
   identityPubkey: string;
   alias: string;
+  color: string;
   numPendingChannels: number;
   numActiveChannels: number;
+  numInactiveChannels: number;
   numPeers: number;
   blockHeight: number;
   blockHash: string;
+  bestHeaderTimestamp: string;
   syncedToChain: boolean;
+  syncedToGraph: boolean;
   testnet: boolean;
   chains: string[];
   uris: string[];
-  bestHeaderTimestamp: string;
-  version: string;
-  numInactiveChannels: number;
-  color: string;
+  features: Array<[number, Feature]>;
 }
 
 export interface PendingChannelsResponse {
@@ -483,6 +572,8 @@ export interface OpenChannelRequest {
   remoteCsvDelay?: number;
   minConfs?: number;
   spendUnconfirmed?: boolean;
+  closeAddress?: string;
+  fundingShim?: FundingShim;
 }
 
 export interface PendingUpdate {
@@ -495,9 +586,33 @@ export interface ChannelOpenUpdate {
 }
 
 export interface OpenStatusUpdate {
-  chanPending: PendingUpdate;
-  chanOpen: ChannelOpenUpdate;
+  chanPending?: PendingUpdate;
+  chanOpen?: ChannelOpenUpdate;
+  pendingChanId?: Buffer | string;
 }
+
+export interface ChanPointShim {
+  amt: number;
+  chanPoint?: ChannelPoint;
+  localKey?: KeyDescriptor;
+  remoteKey?: Buffer | string;
+  pendingChanId?: Buffer | string;
+}
+
+export interface FundingShim {
+  chainPointShim?: ChanPointShim;
+}
+
+export interface FundingShimCancel {
+  pendingChanId: Buffer | string;
+}
+
+export interface FundingTransitionMsg {
+  shimRegister?: FundingShim;
+  shimCancel?: FundingShimCancel;
+}
+
+export interface FundingStateStepResp {} // tslint:disable-line:no-empty-interface
 
 export interface ChannelPoint {
   fundingTxidBytes?: Buffer | string;
@@ -510,6 +625,7 @@ export interface CloseChannelRequest {
   force?: boolean;
   targetConf?: number;
   satPerByte?: string;
+  deliveryAddress?: string;
 }
 
 export interface ChannelCloseUpdate {
@@ -530,13 +646,18 @@ export interface SendRequest {
   dest?: Buffer | string;
   destString?: string;
   amt?: string;
+  amtMsat?: number;
   paymentHash?: Buffer | string;
   paymentHashString?: string;
   paymentRequest?: string;
   finalCltvDelta?: number;
   feeLimit?: FeeLimit;
   outgoingChanId?: string;
+  lastHopPubkey?: Buffer | string;
   cltvLimit?: number;
+  destCustomRecords: Array<[number, Buffer]> | string[];
+  allowSelfPayment?: boolean;
+  destFeatures: FeatureBit[];
 }
 
 export interface SendResponse {
@@ -552,6 +673,27 @@ export interface SendToRouteRequest {
   route?: Route;
 }
 
+export interface ChannelAcceptRequest {
+  nodePubkey: Buffer | string;
+  chainHash: Buffer | string;
+  pendingChanId: Buffer | string;
+  fundingAmt: string;
+  pushAmt: string;
+  dustLimit: string;
+  maxValueInFlight: string;
+  channelReserve: string;
+  minHtlc: string;
+  feePerKw: string;
+  csvDelay: number;
+  maxAcceptedHtlcs: number;
+  channelFlags: number;
+}
+
+export interface ChannelAcceptResponse {
+  accept: boolean;
+  pendingChanId: Buffer | string;
+}
+
 export interface Chain {
   chain: string;
   network: string;
@@ -563,6 +705,7 @@ export interface Invoice {
   rPreimage?: Buffer | string;
   rHash?: Buffer | string;
   value?: string;
+  valueMsat?: string;
   settled?: boolean;
   creationDate?: string;
   settleDate?: string;
@@ -579,6 +722,22 @@ export interface Invoice {
   amtPaidSat?: string;
   amtPaidMsat?: string;
   state?: InvoiceState;
+  htlcs?: InvoiceHTLC[];
+  features?: Array<[number, Feature]>;
+  isKeysend?: boolean;
+}
+
+export interface InvoiceHTLC {
+  chanId: string;
+  htlcIndex: number;
+  amtMsat: string;
+  acceptHeight: number;
+  acceptTime: number;
+  resolveTime: number;
+  expiryHeight: number;
+  state: InvoiceHTLCState;
+  customRecords: Array<[number, Buffer]> | string[];
+  mppTotalAmtMsat: string;
 }
 
 export interface AddInvoiceResponse {
@@ -625,6 +784,15 @@ export interface PayReq {
   fallbackAddr: string;
   cltvExpiry: string;
   routeHints?: RouteHint[];
+  paymentAddr: Buffer | string;
+  numMsat?: string;
+  features: Array<[number, Feature]>;
+}
+
+export interface Feature {
+  name: string;
+  isRequired: boolean;
+  isKnown: boolean;
 }
 
 export interface ListPaymentsRequest {
@@ -648,6 +816,15 @@ export interface ChannelUpdate {
   chanPoint: ChannelPoint;
   capacity: string;
   routingPolicy: RoutingPolicy;
+  advertisingNode: string;
+  connectingNode: string;
+}
+
+export interface ChannelEdgeUpdate {
+  chanId: string;
+  chanPoint?: ChannelPoint;
+  capacity: number;
+  routingPolicy?: RoutingPolicy;
   advertisingNode: string;
   connectingNode: string;
 }
@@ -702,6 +879,19 @@ export interface RestoreChanBackupRequest {
   multiChanBackup: Buffer | string;
 }
 
+export interface MacaroonPermission {
+  entity: string;
+  action: string;
+}
+
+export interface BakeMacaroonRequest {
+  permissions: MacaroonPermission[];
+}
+
+export interface BakeMacaroonResponse {
+  macaroon: string;
+}
+
 export interface ChanInfoRequest {
   chanId: string;
 }
@@ -732,16 +922,30 @@ export interface NodeInfo {
 export interface QueryRoutesRequest {
   pubKey: string;
   amt?: string;
+  amtMsat?: number;
   finalCltvDelta?: number;
   feeLimit?: FeeLimit;
   ignoredNodes?: Buffer[] | string[];
   ignoredEdges?: EdgeLocator[];
   sourcePubKey?: string;
   useMissionControl?: boolean;
+  ignoredPairs?: NodePair[];
+  cltvLimit?: number;
+  destCustomRecords?: Array<[number, Buffer]> | string[];
+  outgoingChanId?: string;
+  lastHopPubkey?: Buffer | string;
+  routeHints?: RouteHint[];
+  destFeatures?: FeatureBit[];
 }
 
 export interface QueryRoutesResponse {
   routes: Route[];
+  successProb: number;
+}
+
+export interface NodePair {
+  from?: Buffer | string;
+  to?: Buffer | string;
 }
 
 export interface NetworkInfo {
@@ -781,6 +985,9 @@ export interface PolicyUpdateRequest {
   baseFeeMsat: string;
   feeRate: number;
   timeLockDelta: number;
+  maxHtlcMsat?: string;
+  minHtlcMsat?: string;
+  minHtlcMsatSpecified?: boolean;
 }
 
 export interface ForwardingHistoryRequest {
@@ -912,6 +1119,25 @@ export interface LnRpc {
    * listPeers returns a verbose listing of all currently active peers.
    */
   listPeers(args?: {}): Promise<ListPeersResponse>;
+
+  /**
+   * fundingStateStep is an advanced funding related call that allows the caller
+   * to either execute some preparatory steps for a funding workflow, or
+   * manually progress a funding workflow. The primary way a funding flow is
+   * identified is via its pending channel ID. As an example, this method can be
+   * used to specify that we're expecting a funding flow for a particular
+   * pending channel ID, for which we need to use specific parameters.
+   * Alternatively, this can be used to interactively drive PSBT signing for
+   * funding for partially complete funding transactions.
+   */
+  fundingStateStep(args?: FundingTransitionMsg): Promise<FundingStateStepResp>;
+
+  /**
+   * subscribePeerEvents creates a uni-directional stream from the server to
+   * the client in which any events relevant to the state of peers are sent
+   * over. Events include peers going online and offline.
+   */
+  subscribePeerEvents(args?: {}): Readable<PeerEvent>;
 
   /**
    * getInfo returns general information concerning the lightning node including it’s identity pubkey, alias, the
@@ -1139,6 +1365,13 @@ export interface LnRpc {
    * channel(s) removed.
    */
   subscribeChannelBackups(args?: {}): Readable<ChanBackupSnapshot>;
+
+  /**
+   * bakeMacaroon allows the creation of a new macaroon with custom read and
+   * write permissions. No first-party caveats are added since this can be done
+   * offline.
+   */
+  bakeMacaroon(args: BakeMacaroonRequest): Promise<BakeMacaroonResponse>;
 
   /**
    * debugLevel allows a caller to programmatically set the logging verbosity of lnd. The logging can be targeted

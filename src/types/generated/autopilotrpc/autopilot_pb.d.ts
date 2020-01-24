@@ -141,7 +141,7 @@ export namespace QueryScoresResponse {
   export namespace HeuristicResult {
     export type AsObject = {
       heuristic: string,
-      scoresMap: Array<[string, number]>,
+      scores: Array<[string, number]>,
     }
   }
 }
@@ -165,7 +165,7 @@ export class SetScoresRequest extends jspb.Message {
 export namespace SetScoresRequest {
   export type AsObject = {
     heuristic: string,
-    scoresMap: Array<[string, number]>,
+    scores: Array<[string, number]>,
   }
 }
 
