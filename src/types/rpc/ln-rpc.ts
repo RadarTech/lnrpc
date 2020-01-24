@@ -931,7 +931,7 @@ export interface QueryRoutesRequest {
   useMissionControl?: boolean;
   ignoredPairs?: NodePair[];
   cltvLimit?: number;
-  destCustomRecordsMap?: Array<[number, Uint8Array]> | string[];
+  destCustomRecordsMap?: Array<[number, Buffer]> | string[];
   outgoingChanId?: string;
   lastHopPubkey?: Buffer | string;
   routeHints?: RouteHint[];
@@ -1367,11 +1367,11 @@ export interface LnRpc {
   subscribeChannelBackups(args?: {}): Readable<ChanBackupSnapshot>;
 
   /**
-   * BakeMacaroon allows the creation of a new macaroon with custom read and
+   * bakeMacaroon allows the creation of a new macaroon with custom read and
    * write permissions. No first-party caveats are added since this can be done
    * offline.
    */
-  BakeMacaroon(BakeMacaroonRequest): Promise<BakeMacaroonResponse>;
+  bakeMacaroon(args: BakeMacaroonRequest): Promise<BakeMacaroonResponse>;
 
   /**
    * debugLevel allows a caller to programmatically set the logging verbosity of lnd. The logging can be targeted
