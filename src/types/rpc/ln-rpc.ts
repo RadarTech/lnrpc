@@ -612,8 +612,6 @@ export interface FundingTransitionMsg {
   shimCancel?: FundingShimCancel;
 }
 
-export interface FundingStateStepResp {} // tslint:disable-line:no-empty-interface
-
 export interface ChannelPoint {
   fundingTxidBytes?: Buffer | string;
   fundingTxidStr?: string;
@@ -655,9 +653,9 @@ export interface SendRequest {
   outgoingChanId?: string;
   lastHopPubkey?: Buffer | string;
   cltvLimit?: number;
-  destCustomRecords: Array<[number, Buffer]> | string[];
+  destCustomRecords?: Array<[number, Buffer]> | string[];
   allowSelfPayment?: boolean;
-  destFeatures: FeatureBit[];
+  destFeatures?: FeatureBit[];
 }
 
 export interface SendResponse {
@@ -674,19 +672,19 @@ export interface SendToRouteRequest {
 }
 
 export interface ChannelAcceptRequest {
-  nodePubkey: Buffer | string;
-  chainHash: Buffer | string;
-  pendingChanId: Buffer | string;
-  fundingAmt: string;
-  pushAmt: string;
-  dustLimit: string;
-  maxValueInFlight: string;
-  channelReserve: string;
-  minHtlc: string;
-  feePerKw: string;
-  csvDelay: number;
-  maxAcceptedHtlcs: number;
-  channelFlags: number;
+  nodePubkey?: Buffer | string;
+  chainHash?: Buffer | string;
+  pendingChanId?: Buffer | string;
+  fundingAmt?: string;
+  pushAmt?: string;
+  dustLimit?: string;
+  maxValueInFlight?: string;
+  channelReserve?: string;
+  minHtlc?: string;
+  feePerKw?: string;
+  csvDelay?: number;
+  maxAcceptedHtlcs?: number;
+  channelFlags?: number;
 }
 
 export interface ChannelAcceptResponse {
@@ -784,9 +782,9 @@ export interface PayReq {
   fallbackAddr: string;
   cltvExpiry: string;
   routeHints?: RouteHint[];
-  paymentAddr: Buffer | string;
+  paymentAddr?: Buffer | string;
   numMsat?: string;
-  features: Array<[number, Feature]>;
+  features?: Array<[number, Feature]>;
 }
 
 export interface Feature {
@@ -1121,18 +1119,6 @@ export interface LnRpc {
   listPeers(args?: {}): Promise<ListPeersResponse>;
 
   /**
-   * fundingStateStep is an advanced funding related call that allows the caller
-   * to either execute some preparatory steps for a funding workflow, or
-   * manually progress a funding workflow. The primary way a funding flow is
-   * identified is via its pending channel ID. As an example, this method can be
-   * used to specify that we're expecting a funding flow for a particular
-   * pending channel ID, for which we need to use specific parameters.
-   * Alternatively, this can be used to interactively drive PSBT signing for
-   * funding for partially complete funding transactions.
-   */
-  fundingStateStep(args?: FundingTransitionMsg): Promise<FundingStateStepResp>;
-
-  /**
    * subscribePeerEvents creates a uni-directional stream from the server to
    * the client in which any events relevant to the state of peers are sent
    * over. Events include peers going online and offline.
@@ -1175,6 +1161,27 @@ export interface LnRpc {
    * to us for the funding transaction. If neither are specified, then a lax block confirmation target is used.
    */
   openChannel(args: OpenChannelRequest): Readable<OpenStatusUpdate>;
+
+  /**
+   * fundingStateStep is an advanced funding related call that allows the caller
+   * to either execute some preparatory steps for a funding workflow, or
+   * manually progress a funding workflow. The primary way a funding flow is
+   * identified is via its pending channel ID. As an example, this method can be
+   * used to specify that we're expecting a funding flow for a particular
+   * pending channel ID, for which we need to use specific parameters.
+   * Alternatively, this can be used to interactively drive PSBT signing for
+   * funding for partially complete funding transactions.
+   */
+  fundingStateStep(args?: FundingTransitionMsg): Promise<{}>;
+
+  /**
+   * ChannelAcceptor dispatches a bi-directional streaming RPC in which
+   * OpenChannel requests are sent to the client and the client responds with
+   * a boolean that tells LND whether or not to accept the channel. This allows
+   * node operators to specify their own criteria for accepting inbound channels
+   * through a single persistent connection.
+   */
+  channelAcceptor(args: ChannelAcceptRequest): Duplex<ChannelAcceptResponse>;
 
   /**
    * closeChannel attempts to close an active channel identified by its channel outpoint (ChannelPoint). The
