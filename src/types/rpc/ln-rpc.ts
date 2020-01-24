@@ -51,7 +51,7 @@ export enum BackupCase {
   MULTI_CHAN_BACKUP = 2,
 }
 
-export enum PaymentStatusEnum {
+export enum PaymentStatus {
   UNKNOWN = 0,
   IN_FLIGHT = 1,
   SUCCEEDED = 2,
@@ -299,7 +299,7 @@ export interface Payment {
   valueSat: string;
   valueMsat: string;
   paymentRequest: string;
-  status: PaymentStatusEnum;
+  status: PaymentStatus;
   feeSat: string;
   feeMsat: string;
   creationTimeNs?: string;
@@ -595,8 +595,8 @@ export interface ChanPointShim {
   amt: number;
   chanPoint?: ChannelPoint;
   localKey?: KeyDescriptor;
-  remoteKey?: Uint8Array | string;
-  pendingChanId?: Uint8Array | string;
+  remoteKey?: Buffer | string;
+  pendingChanId?: Buffer | string;
 }
 
 export interface FundingShim {
@@ -611,6 +611,8 @@ export interface FundingTransitionMsg {
   shimRegister?: FundingShim;
   shimCancel?: FundingShimCancel;
 }
+
+export interface FundingStateStepResp {} // tslint:disable-line:no-empty-interface
 
 export interface ChannelPoint {
   fundingTxidBytes?: Buffer | string;
@@ -1097,6 +1099,25 @@ export interface LnRpc {
   listPeers(args?: {}): Promise<ListPeersResponse>;
 
   /**
+   * fundingStateStep is an advanced funding related call that allows the caller
+   * to either execute some preparatory steps for a funding workflow, or
+   * manually progress a funding workflow. The primary way a funding flow is
+   * identified is via its pending channel ID. As an example, this method can be
+   * used to specify that we're expecting a funding flow for a particular
+   * pending channel ID, for which we need to use specific parameters.
+   * Alternatively, this can be used to interactively drive PSBT signing for
+   * funding for partially complete funding transactions.
+   */
+  fundingStateStep(FundingTransitionMsg): Promise<FundingStateStepResp>;
+
+  /**
+   * subscribePeerEvents creates a uni-directional stream from the server to
+   * the client in which any events relevant to the state of peers are sent
+   * over. Events include peers going online and offline.
+   */
+  subscribePeerEvents(PeerEventSubscription): Promise<PeerEvent>;
+
+  /**
    * getInfo returns general information concerning the lightning node including it’s identity pubkey, alias, the
    * chains it is connected to, and information concerning the number of open+pending channels.
    */
@@ -1322,6 +1343,13 @@ export interface LnRpc {
    * channel(s) removed.
    */
   subscribeChannelBackups(args?: {}): Readable<ChanBackupSnapshot>;
+
+  /**
+   * BakeMacaroon allows the creation of a new macaroon with custom read and
+   * write permissions. No first-party caveats are added since this can be done
+   * offline.
+   */
+  BakeMacaroon(BakeMacaroonRequest): Promise<BakeMacaroonResponse>;
 
   /**
    * debugLevel allows a caller to programmatically set the logging verbosity of lnd. The logging can be targeted

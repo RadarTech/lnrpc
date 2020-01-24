@@ -1,6 +1,5 @@
-import { HTLCAttempt } from '../generated/rpc_pb';
 import { Readable } from '../streams';
-import { FeatureBit, Route, RouteHint } from './ln-rpc';
+import { FeatureBit, HTLCAttempt, Route, RouteHint } from './ln-rpc';
 
 export enum PaymentState {
   IN_FLIGHT = 0,
@@ -55,12 +54,12 @@ export interface SendPaymentRequest {
   lastHopPubkey?: Buffer | string;
   cltvLimit?: number;
   routeHints?: RouteHint[];
-  destCustomRecordsMap?: Array<[number, Uint8Array]> | string[];
+  destCustomRecordsMap?: Array<[number, Buffer]> | string[];
   allowSelfPayment?: boolean;
   destFeatures?: FeatureBit[];
 }
 
-export interface PaymentStatus {
+export interface PaymentStatusUpdate {
   state: PaymentState;
   preimage: Buffer | string;
   route?: Route;
@@ -105,7 +104,7 @@ export interface Failure {
   code: FailureCode;
   channelUpdate?: ChanUpdate;
   htlcMsat: number;
-  onionSha256: Uint8Array | string;
+  onionSha256: Buffer | string;
   cltvExpiry: number;
   flags: number;
   failureSourceIndex: number;
@@ -167,13 +166,13 @@ export interface RouterRpc {
    * PaymentRequest to the final destination. The call returns a stream of
    * payment status updates.
    */
-  sendPayment(args: SendPaymentRequest): Readable<PaymentStatus>;
+  sendPayment(args: SendPaymentRequest): Readable<PaymentStatusUpdate>;
 
   /**
    * trackPayment returns an update stream for the payment identified by the
    * payment hash.
    */
-  trackPayment(args: TrackPaymentRequest): Readable<PaymentStatus>;
+  trackPayment(args: TrackPaymentRequest): Readable<PaymentStatusUpdate>;
 
   /**
    * estimateRouteFee allows callers to obtain a lower bound w.r.t how much it
