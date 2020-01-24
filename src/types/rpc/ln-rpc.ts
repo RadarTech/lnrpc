@@ -673,6 +673,27 @@ export interface SendToRouteRequest {
   route?: Route;
 }
 
+export interface ChannelAcceptRequest {
+  nodePubkey: Buffer | string;
+  chainHash: Buffer | string;
+  pendingChanId: Buffer | string;
+  fundingAmt: string;
+  pushAmt: string;
+  dustLimit: string;
+  maxValueInFlight: string;
+  channelReserve: string;
+  minHtlc: string;
+  feePerKw: string;
+  csvDelay: number;
+  maxAcceptedHtlcs: number;
+  channelFlags: number;
+}
+
+export interface ChannelAcceptResponse {
+  accept: boolean;
+  pendingChanId: Buffer | string;
+}
+
 export interface Chain {
   chain: string;
   network: string;
@@ -917,13 +938,14 @@ export interface QueryRoutesRequest {
   destFeatures?: FeatureBit[];
 }
 
+export interface QueryRoutesResponse {
+  routes: Route[];
+  successProb: number;
+}
+
 export interface NodePair {
   from?: Buffer | string;
   to?: Buffer | string;
-}
-
-export interface QueryRoutesResponse {
-  routes: Route[];
 }
 
 export interface NetworkInfo {
