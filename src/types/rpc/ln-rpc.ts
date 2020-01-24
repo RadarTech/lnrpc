@@ -1175,7 +1175,7 @@ export interface LnRpc {
   fundingStateStep(args?: FundingTransitionMsg): Promise<{}>;
 
   /**
-   * ChannelAcceptor dispatches a bi-directional streaming RPC in which
+   * channelAcceptor dispatches a bi-directional streaming RPC in which
    * OpenChannel requests are sent to the client and the client responds with
    * a boolean that tells LND whether or not to accept the channel. This allows
    * node operators to specify their own criteria for accepting inbound channels
