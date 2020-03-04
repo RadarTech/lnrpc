@@ -523,7 +523,7 @@ export interface GetInfoResponse {
   syncedToChain: boolean;
   syncedToGraph: boolean;
   testnet: boolean;
-  chains: string[];
+  chains: Chain[];
   uris: string[];
   features: Array<[number, Feature]>;
 }
