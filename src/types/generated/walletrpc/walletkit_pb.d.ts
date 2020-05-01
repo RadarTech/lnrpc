@@ -216,6 +216,15 @@ export class PendingSweep extends jspb.Message {
   getNextBroadcastHeight(): number;
   setNextBroadcastHeight(value: number): void;
 
+  getRequestedConfTarget(): number;
+  setRequestedConfTarget(value: number): void;
+
+  getRequestedSatPerByte(): number;
+  setRequestedSatPerByte(value: number): void;
+
+  getForce(): boolean;
+  setForce(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): PendingSweep.AsObject;
   static toObject(includeInstance: boolean, msg: PendingSweep): PendingSweep.AsObject;
@@ -234,6 +243,9 @@ export namespace PendingSweep {
     satPerByte: number,
     broadcastAttempts: number,
     nextBroadcastHeight: number,
+    requestedConfTarget: number,
+    requestedSatPerByte: number,
+    force: boolean,
   }
 }
 
@@ -287,6 +299,9 @@ export class BumpFeeRequest extends jspb.Message {
   getSatPerByte(): number;
   setSatPerByte(value: number): void;
 
+  getForce(): boolean;
+  setForce(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): BumpFeeRequest.AsObject;
   static toObject(includeInstance: boolean, msg: BumpFeeRequest): BumpFeeRequest.AsObject;
@@ -302,6 +317,7 @@ export namespace BumpFeeRequest {
     outpoint?: rpc_pb.OutPoint.AsObject,
     targetConf: number,
     satPerByte: number,
+    force: boolean,
   }
 }
 
@@ -335,5 +351,6 @@ export enum WitnessType {
   HTLC_SECOND_LEVEL_REVOKE = 10,
   WITNESS_KEY_HASH = 11,
   NESTED_WITNESS_KEY_HASH = 12,
+  COMMITMENT_ANCHOR = 13,
 }
 

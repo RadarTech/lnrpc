@@ -28,6 +28,7 @@ export enum UpdateType {
   CLOSED_CHANNEL = 1,
   ACTIVE_CHANNEL = 2,
   INACTIVE_CHANNEL = 3,
+  PENDING_OPEN_CHANNEL = 4,
 }
 
 export enum ChannelCase {
@@ -36,6 +37,7 @@ export enum ChannelCase {
   CLOSED_CHANNEL = 2,
   ACTIVE_CHANNEL = 3,
   INACTIVE_CHANNEL = 4,
+  PENDING_OPEN_CHANNEL = 6,
 }
 
 export enum InvoiceState {
@@ -85,7 +87,7 @@ export enum FeatureBit {
   MPP_OPT = 17,
 }
 
-export enum EventType {
+export enum PeerEventType {
   PEER_ONLINE = 0,
   PEER_OFFLINE = 1,
 }
@@ -93,12 +95,15 @@ export enum EventType {
 export enum ShimCase {
   SHIM_NOT_SET = 0,
   CHAN_POINT_SHIM = 1,
+  PSBT_SHIM = 2,
 }
 
 export enum TriggerCase {
   TRIGGER_NOT_SET = 0,
   SHIM_REGISTER = 1,
   SHIM_CANCEL = 2,
+  PSBT_VERIFY = 3,
+  PSBT_FINALIZE = 4,
 }
 
 export enum HTLCStatus {
@@ -111,6 +116,70 @@ export enum InvoiceHTLCState {
   ACCEPTED = 0,
   SETTLED = 1,
   CANCELED = 2,
+}
+
+export enum Initiator {
+  INITIATOR_UNKNOWN = 0,
+  INITIATOR_LOCAL = 1,
+  INITIATOR_REMOTE = 2,
+  INITIATOR_BOTH = 3,
+}
+
+export enum CommitmentType {
+  LEGACY = 0,
+  STATIC_REMOTE_KEY = 1,
+  ANCHORS = 2,
+  UNKNOWN_COMMITMENT_TYPE = 999,
+}
+
+export enum AnchorState {
+  LIMBO = 0,
+  RECOVERED = 1,
+  LOST = 2,
+}
+
+export enum NodeMetricType {
+  UNKNOWN = 0,
+  BETWEENNESS_CENTRALITY = 1,
+}
+
+export enum PaymentFailureReason {
+  FAILURE_REASON_NONE = 0,
+  FAILURE_REASON_TIMEOUT = 1,
+  FAILURE_REASON_NO_ROUTE = 2,
+  FAILURE_REASON_ERROR = 3,
+  FAILURE_REASON_INCORRECT_PAYMENT_DETAILS = 4,
+  FAILURE_REASON_INSUFFICIENT_BALANCE = 5,
+}
+
+export enum FailureCode {
+  RESERVED = 0,
+  INCORRECT_OR_UNKNOWN_PAYMENT_DETAILS = 1,
+  INCORRECT_PAYMENT_AMOUNT = 2,
+  FINAL_INCORRECT_CLTV_EXPIRY = 3,
+  FINAL_INCORRECT_HTLC_AMOUNT = 4,
+  FINAL_EXPIRY_TOO_SOON = 5,
+  INVALID_REALM = 6,
+  EXPIRY_TOO_SOON = 7,
+  INVALID_ONION_VERSION = 8,
+  INVALID_ONION_HMAC = 9,
+  INVALID_ONION_KEY = 10,
+  AMOUNT_BELOW_MINIMUM = 11,
+  FEE_INSUFFICIENT = 12,
+  INCORRECT_CLTV_EXPIRY = 13,
+  CHANNEL_DISABLED = 14,
+  TEMPORARY_CHANNEL_FAILURE = 15,
+  REQUIRED_NODE_FEATURE_MISSING = 16,
+  REQUIRED_CHANNEL_FEATURE_MISSING = 17,
+  UNKNOWN_NEXT_PEER = 18,
+  TEMPORARY_NODE_FAILURE = 19,
+  PERMANENT_NODE_FAILURE = 20,
+  PERMANENT_CHANNEL_FAILURE = 21,
+  EXPIRY_TOO_FAR = 22,
+  MPP_TIMEOUT = 23,
+  INTERNAL_FAILURE = 997,
+  UNKNOWN_FAILURE = 998,
+  UNREADABLE_FAILURE = 999,
 }
 
 export interface Transaction {
@@ -130,6 +199,11 @@ export interface LightningAddress {
   host: string;
 }
 
+export interface TimestampedError {
+  timestamp: number;
+  error: string;
+}
+
 export interface Peer {
   pubKey: string;
   address: string;
@@ -141,11 +215,12 @@ export interface Peer {
   pingTime: string;
   syncType: SyncType;
   features?: Array<[number, Feature]>;
+  errors?: TimestampedError[];
 }
 
 export interface PeerEvent {
   pubKey: string;
-  type: EventType;
+  type: PeerEventType;
 }
 
 export interface PendingHTLC {
@@ -172,6 +247,8 @@ export interface PendingChannel {
   remoteBalance: string;
   localChanReserveSat: string;
   remoteChanReserveSat: string;
+  initiator: Initiator;
+  commitmentType: CommitmentType;
 }
 
 export interface PendingOpenChannel {
@@ -195,11 +272,22 @@ export interface ForceClosedChannel {
   blocksTilMaturity: number;
   recoveredBalance: string;
   pendingHtlcs: PendingHTLC[];
+  anchor: AnchorState;
+}
+
+export interface Commitments {
+  localTxid: string;
+  remoteTxid: string;
+  remotePendingTxid: string;
+  localCommitFeeSat: number;
+  remoteCommitFeeSat: number;
+  remotePendingCommitFeeSat: number;
 }
 
 export interface WaitingCloseChannel {
   channel?: PendingChannel;
   limboBalance: string;
+  commitments?: Commitments;
 }
 
 export interface Channel {
@@ -225,9 +313,12 @@ export interface Channel {
   localChanReserveSat: string;
   remoteChanReserveSat: string;
   staticRemoteKey: boolean;
+  commitmentType: CommitmentType;
   lifetime: number;
   uptime: number;
   closeAddress: string;
+  pushAmountSat: number;
+  thawHeight: number;
 }
 
 export interface ChannelCloseSummary {
@@ -241,6 +332,8 @@ export interface ChannelCloseSummary {
   settledBalance: string;
   timeLockedBalance: string;
   closeType: ClosureType;
+  openInitiator: Initiator;
+  closeInitiator: Initiator;
 }
 
 export interface FeeLimit {
@@ -293,7 +386,6 @@ export interface Payment {
   paymentHash: string;
   value: string;
   creationDate: string;
-  path: string[];
   fee: string;
   paymentPreimage: string;
   valueSat: string;
@@ -304,6 +396,34 @@ export interface Payment {
   feeMsat: string;
   creationTimeNs?: string;
   htlcs?: HTLCAttempt[];
+  paymentIndex: number;
+  failureReason?: PaymentFailureReason;
+}
+
+export interface ChannelUpdate {
+  signature: Buffer | string;
+  chainHash: Buffer | string;
+  chanId: string;
+  timestamp: number;
+  messageFlags: number;
+  channelFlags: number;
+  timeLockDelta: number;
+  htlcMinimumMsat: number;
+  baseFee: number;
+  feeRate: number;
+  htlcMaximumMsat: number;
+  extraOpaqueData: Buffer | string;
+}
+
+export interface Failure {
+  code: FailureCode;
+  channelUpdate?: ChannelUpdate;
+  htlcMsat: number;
+  onionSha256: Buffer | string;
+  cltvExpiry: number;
+  flags: number;
+  failureSourceIndex: number;
+  height: number;
 }
 
 export interface HTLCAttempt {
@@ -311,6 +431,7 @@ export interface HTLCAttempt {
   route?: Route;
   attemptTimeNs?: string;
   resolveTimeNs?: string;
+  failure?: Failure;
 }
 
 export interface NodeAddress {
@@ -338,7 +459,8 @@ export interface RoutingPolicy {
 }
 
 export interface ChannelFeeReport {
-  chanPoint: string;
+  chanId: string;
+  channelPoint: string;
   baseFeeMsat: string;
   feePerMil: string;
   feeRate: number;
@@ -373,7 +495,7 @@ export interface OutPoint {
 }
 
 export interface Utxo {
-  type: AddressType;
+  addressType: AddressType;
   address: string;
   amountSat: string;
   pkScript: string;
@@ -495,6 +617,10 @@ export interface DisconnectPeerRequest {
   pubKey: string;
 }
 
+export interface ListPeersRequest {
+  latestError?: boolean;
+}
+
 export interface ListPeersResponse {
   peers: Peer[];
 }
@@ -510,6 +636,7 @@ export interface ListUnspentResponse {
 
 export interface GetInfoResponse {
   version: string;
+  commitHash: string;
   identityPubkey: string;
   alias: string;
   color: string;
@@ -541,6 +668,7 @@ export interface ListChannelsRequest {
   inactiveOnly?: boolean;
   publicOnly?: boolean;
   privateOnly?: boolean;
+  peer?: Buffer | string;
 }
 
 export interface ListChannelsResponse {
@@ -585,9 +713,16 @@ export interface ChannelOpenUpdate {
   channelPoint: ChannelPoint;
 }
 
+export interface ReadyForPsbtFunding {
+  fundingAddress: string;
+  fundingAmount: number;
+  psbt: Buffer | string;
+}
+
 export interface OpenStatusUpdate {
   chanPending?: PendingUpdate;
   chanOpen?: ChannelOpenUpdate;
+  psbtFund?: ReadyForPsbtFunding;
   pendingChanId?: Buffer | string;
 }
 
@@ -597,19 +732,38 @@ export interface ChanPointShim {
   localKey?: KeyDescriptor;
   remoteKey?: Buffer | string;
   pendingChanId?: Buffer | string;
+  thawHeight: number;
+}
+
+export interface PsbtShim {
+  pendingChanId: Buffer | string;
+  basePsbt: Buffer | string;
 }
 
 export interface FundingShim {
   chainPointShim?: ChanPointShim;
+  psbtShim?: PsbtShim;
 }
 
 export interface FundingShimCancel {
   pendingChanId: Buffer | string;
 }
 
+export interface FundingPsbtVerify {
+  fundedPsbt: Buffer | string;
+  pendingChanId: Buffer | string;
+}
+
+export interface FundingPsbtFinalize {
+  signedPsbt: Buffer | string;
+  pendingChanId: Buffer | string;
+}
+
 export interface FundingTransitionMsg {
   shimRegister?: FundingShim;
   shimCancel?: FundingShimCancel;
+  psbtVerify?: FundingPsbtVerify;
+  psbtFinalize?: FundingPsbtFinalize;
 }
 
 export interface ChannelPoint {
@@ -795,10 +949,15 @@ export interface Feature {
 
 export interface ListPaymentsRequest {
   includeIncomplete?: boolean;
+  indexOffset?: number;
+  maxPayments?: number;
+  reversed?: boolean;
 }
 
 export interface ListPaymentsResponse {
   payments: Payment[];
+  firstIndexOffset: number;
+  lastIndexOffset: number;
 }
 
 export interface NodeUpdate {
@@ -807,15 +966,6 @@ export interface NodeUpdate {
   globalFeatures: string;
   alias: string;
   color: string;
-}
-
-export interface ChannelUpdate {
-  chanId: string;
-  chanPoint: ChannelPoint;
-  capacity: string;
-  routingPolicy: RoutingPolicy;
-  advertisingNode: string;
-  connectingNode: string;
 }
 
 export interface ChannelEdgeUpdate {
@@ -836,12 +986,25 @@ export interface ClosedChannelUpdate {
 
 export interface GraphTopologyUpdate {
   nodeUpdates: NodeUpdate[];
-  channelUpdates: ChannelUpdate[];
+  channelUpdates: ChannelEdgeUpdate[];
   closedChans: ClosedChannelUpdate[];
 }
 
 export interface ChannelGraphRequest {
   includeUnannounced?: boolean;
+}
+
+export interface NodeMetricsRequest {
+  types?: NodeMetricType;
+}
+
+export interface FloatMetric {
+  value: number;
+  normalizedValue: number;
+}
+
+export interface NodeMetricsResponse {
+  betweennessCentrality: Array<[string, FloatMetric]>;
 }
 
 export interface ChannelGraph {
@@ -854,6 +1017,7 @@ export interface ChannelEventUpdate {
   closedChannel?: ChannelCloseSummary;
   activeChannel?: ChannelPoint;
   inactiveChannel?: ChannelPoint;
+  pendingOpenChannel?: PendingUpdate;
   type: ChannelEventUpdate;
 }
 
@@ -1116,7 +1280,7 @@ export interface LnRpc {
   /**
    * listPeers returns a verbose listing of all currently active peers.
    */
-  listPeers(args?: {}): Promise<ListPeersResponse>;
+  listPeers(args?: ListPeersRequest): Promise<ListPeersResponse>;
 
   /**
    * subscribePeerEvents creates a uni-directional stream from the server to
@@ -1200,9 +1364,9 @@ export interface LnRpc {
   abandonChannel(args: AbandonChannelRequest): Promise<{}>;
 
   /**
-   * sendPayment dispatches a bi-directional streaming RPC for sending payments through the Lightning Network. A
-   * single RPC invocation creates a persistent bi-directional stream allowing clients to rapidly send payments
-   * through the Lightning Network with a single persistent connection.
+   * Deprecated, use routerrpc.sendPayment. sendPayment dispatches a bi-directional streaming RPC for sending payments
+   * through the Lightning Network. A single RPC invocation creates a persistent bi-directional stream allowing clients
+   * to rapidly send payments through the Lightning Network with a single persistent connection.
    */
   sendPayment(args: SendRequest): Duplex<SendRequest, SendResponse>;
 
@@ -1280,6 +1444,12 @@ export interface LnRpc {
    * policy which includes: the time lock delta, fee information, etc.
    */
   describeGraph(args?: ChannelGraphRequest): Promise<ChannelGraph>;
+
+  /**
+   * getNodeMetrics returns node metrics calculated from the graph. Currently
+   * the only supported metric is betweenness centrality of individual nodes.
+   */
+  getNodeMetrics(args?: ChannelGraphRequest): Promise<NodeMetricsResponse>;
 
   /**
    * getChanInfo returns the latest authenticated network announcement for the given channel identified by its
