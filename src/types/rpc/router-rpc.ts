@@ -1,5 +1,38 @@
 import { Readable } from '../streams';
-import { FeatureBit, HTLCAttempt, Route, RouteHint } from './ln-rpc';
+import { Failure, FailureCode, FeatureBit, HTLCAttempt, Payment, Route, RouteHint } from './ln-rpc';
+
+export enum HtlcEventType {
+  UNKNOWN = 0,
+  SEND = 1,
+  RECEIVE = 2,
+  FORWARD = 3,
+}
+
+export enum FailureDetail {
+  UNKNOWN = 0,
+  NO_DETAIL = 1,
+  ONION_DECODE = 2,
+  LINK_NOT_ELIGIBLE = 3,
+  ON_CHAIN_TIMEOUT = 4,
+  HTLC_EXCEEDS_MAX = 5,
+  INSUFFICIENT_BALANCE = 6,
+  INCOMPLETE_FORWARD = 7,
+  HTLC_ADD_FAILED = 8,
+  FORWARDS_DISABLED = 9,
+  INVOICE_CANCELED = 10,
+  INVOICE_UNDERPAID = 11,
+  INVOICE_EXPIRY_TOO_SOON = 12,
+  INVOICE_NOT_OPEN = 13,
+  MPP_INVOICE_TIMEOUT = 14,
+  ADDRESS_MISMATCH = 15,
+  SET_TOTAL_MISMATCH = 16,
+  SET_TOTAL_TOO_LOW = 17,
+  SET_OVERPAID = 18,
+  UNKNOWN_INVOICE = 19,
+  INVALID_KEYSEND = 20,
+  MPP_IN_PROGRESS = 21,
+  CIRCULAR_ROUTE = 22,
+}
 
 export enum PaymentState {
   IN_FLIGHT = 0,
@@ -9,35 +42,6 @@ export enum PaymentState {
   FAILED_ERROR = 4,
   FAILED_INCORRECT_PAYMENT_DETAILS = 5,
   FAILED_INSUFFICIENT_BALANCE = 6,
-}
-
-export enum FailureCode {
-  RESERVED = 0,
-  INCORRECT_OR_UNKNOWN_PAYMENT_DETAILS = 1,
-  INCORRECT_PAYMENT_AMOUNT = 2,
-  FINAL_INCORRECT_CLTV_EXPIRY = 3,
-  FINAL_INCORRECT_HTLC_AMOUNT = 4,
-  FINAL_EXPIRY_TOO_SOON = 5,
-  INVALID_REALM = 6,
-  EXPIRY_TOO_SOON = 7,
-  INVALID_ONION_VERSION = 8,
-  INVALID_ONION_HMAC = 9,
-  INVALID_ONION_KEY = 10,
-  AMOUNT_BELOW_MINIMUM = 11,
-  FEE_INSUFFICIENT = 12,
-  INCORRECT_CLTV_EXPIRY = 13,
-  CHANNEL_DISABLED = 14,
-  TEMPORARY_CHANNEL_FAILURE = 15,
-  REQUIRED_NODE_FEATURE_MISSING = 16,
-  REQUIRED_CHANNEL_FEATURE_MISSING = 17,
-  UNKNOWN_NEXT_PEER = 18,
-  TEMPORARY_NODE_FAILURE = 19,
-  PERMANENT_NODE_FAILURE = 20,
-  PERMANENT_CHANNEL_FAILURE = 21,
-  EXPIRY_TOO_FAR = 22,
-  MPP_TIMEOUT = 23,
-  UNKNOWN_FAILURE = 998,
-  UNREADABLE_FAILURE = 999,
 }
 
 export interface SendPaymentRequest {
@@ -57,17 +61,13 @@ export interface SendPaymentRequest {
   destCustomRecords?: Array<[number, Buffer]> | string[];
   allowSelfPayment?: boolean;
   destFeatures?: FeatureBit[];
-}
-
-export interface PaymentStatusUpdate {
-  state: PaymentState;
-  preimage: Buffer | string;
-  route?: Route;
-  htlcs?: HTLCAttempt[];
+  maxParts?: number;
+  noInflightUpdates?: boolean;
 }
 
 export interface TrackPaymentRequest {
   paymentHash: Buffer | string;
+  noInflightUpdates?: boolean;
 }
 
 export interface RouteFeeRequest {
@@ -98,17 +98,6 @@ export interface ChanUpdate {
   feeRate: number;
   htlcMaximumMsat: number;
   extraOpaqueData: Buffer | string;
-}
-
-export interface Failure {
-  code: FailureCode;
-  channelUpdate?: ChanUpdate;
-  htlcMsat: number;
-  onionSha256: Buffer | string;
-  cltvExpiry: number;
-  flags: number;
-  failureSourceIndex: number;
-  height: number;
 }
 
 export interface SendToRouteResponse {
@@ -157,22 +146,59 @@ export interface BuildRouteResponse {
   route?: Route;
 }
 
+export interface HtlcInfo {
+  incomingTimelock: number;
+  outgoingTimelock: number;
+  incomingAmtMsat: number;
+  outgoingAmtMsat: number;
+}
+
+export interface ForwardEvent {
+  info?: HtlcInfo;
+}
+
+export interface LinkFailEvent {
+  info?: HtlcInfo;
+  wireFailure: FailureCode;
+  failureDetail: FailureDetail;
+  failureString: string;
+}
+
+export interface HtlcEvent {
+  incomingChannelId: number;
+  outgoingChannelId: number;
+  incomingHtlcId: number;
+  outgoingHtlcId: number;
+  timestampNs: number;
+  eventType: HtlcEventType;
+  forwardEvent?: ForwardEvent;
+  forwardFailEvent?: {};
+  settleEvent?: {};
+  linkFailEvent?: LinkFailEvent;
+}
+
+export interface PaymentStatusUpdate {
+  state: PaymentState;
+  preimage?: Buffer | string;
+  htlcs: HTLCAttempt[];
+}
+
 /**
  * LND Router gRPC API Client
  */
 export interface RouterRpc {
   /**
-   * sendPayment attempts to route a payment described by the passed
+   * sendPaymentV2 attempts to route a payment described by the passed
    * PaymentRequest to the final destination. The call returns a stream of
-   * payment status updates.
+   * payment updates.
    */
-  sendPayment(args: SendPaymentRequest): Readable<PaymentStatusUpdate>;
+  sendPaymentV2(args: SendPaymentRequest): Readable<Payment>;
 
   /**
-   * trackPayment returns an update stream for the payment identified by the
+   * trackPaymentV2 returns an update stream for the payment identified by the
    * payment hash.
    */
-  trackPayment(args: TrackPaymentRequest): Readable<PaymentStatusUpdate>;
+  trackPaymentV2(args: TrackPaymentRequest): Readable<Payment>;
 
   /**
    * estimateRouteFee allows callers to obtain a lower bound w.r.t how much it
@@ -211,4 +237,23 @@ export interface RouterRpc {
    * calculate the correct fees and time locks.
    */
   buildRoute(args: BuildRouteRequest): Promise<BuildRouteResponse>;
+
+  /**
+   * subscribeHtlcEvents creates a uni-directional stream from the server to
+   * the client which delivers a stream of htlc events.
+   */
+  subscribeHtlcEvents(args?: {}): Readable<HtlcEvent>;
+
+  /**
+   * Deprecated, use sendPaymentV2. sendPayment attempts to route a payment described
+   * by the passed PaymentRequest to the final destination. The call returns a stream of
+   * payment status updates.
+   */
+  sendPayment(args: SendPaymentRequest): Readable<PaymentStatusUpdate>;
+
+  /**
+   * Deprecated, use trackPaymentV2. trackPayment returns an update stream for the payment
+   * identified by the payment hash.
+   */
+  trackPayment(args: TrackPaymentRequest): Readable<PaymentStatusUpdate>;
 }

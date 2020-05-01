@@ -15,6 +15,7 @@ export enum WitnessType {
   HTLC_SECOND_LEVEL_REVOKE = 10,
   WITNESS_KEY_HASH = 11,
   NESTED_WITNESS_KEY_HASH = 12,
+  COMMITMENT_ANCHOR = 13,
 }
 
 export interface KeyReq {
@@ -58,6 +59,9 @@ export interface PendingSweep {
   satPerByte: number;
   broadcastAttempts: number;
   nextBroadcastHeight: number;
+  requestedConfTarget: number;
+  requestedSatPerByte: number;
+  force: boolean;
 }
 
 export interface PendingSweepsResponse {
@@ -68,6 +72,7 @@ export interface BumpFeeRequest {
   outpoint: OutPoint;
   targetConf?: number;
   satPerByte?: number;
+  force?: boolean;
 }
 
 /**
