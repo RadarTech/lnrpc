@@ -13,6 +13,9 @@ export function createRouter(config: ConnectionConfig): any {
       credentials,
     );
     const subscriptionMethods = [
+      'sendPaymentV2',
+      'trackPaymentV2',
+      'subscribeHtlcEvents',
       'sendPayment',
       'trackPayment',
     ];
