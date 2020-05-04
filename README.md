@@ -221,6 +221,8 @@ yarn generate
 Newly generated type definitions will be available in `./generated`.
 You can now delete the old proto file inside the lnd directory.
 Use the generated type definitions to update the types in `src/types/rpc`.
+Any added streaming methods must be included in the `subscriptionMethods` array that's into the `createServiceClient` function.
+This prevents streaming methods from being promisified.
 
 ### License
 
