@@ -5,6 +5,144 @@ import * as jspb from "google-protobuf";
 import * as rpc_pb from "../rpc_pb";
 import * as signrpc_signer_pb from "../signrpc/signer_pb";
 
+export class ListUnspentRequest extends jspb.Message {
+  getMinConfs(): number;
+  setMinConfs(value: number): void;
+
+  getMaxConfs(): number;
+  setMaxConfs(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ListUnspentRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: ListUnspentRequest): ListUnspentRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ListUnspentRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ListUnspentRequest;
+  static deserializeBinaryFromReader(message: ListUnspentRequest, reader: jspb.BinaryReader): ListUnspentRequest;
+}
+
+export namespace ListUnspentRequest {
+  export type AsObject = {
+    minConfs: number,
+    maxConfs: number,
+  }
+}
+
+export class ListUnspentResponse extends jspb.Message {
+  clearUtxosList(): void;
+  getUtxosList(): Array<rpc_pb.Utxo>;
+  setUtxosList(value: Array<rpc_pb.Utxo>): void;
+  addUtxos(value?: rpc_pb.Utxo, index?: number): rpc_pb.Utxo;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ListUnspentResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: ListUnspentResponse): ListUnspentResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ListUnspentResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ListUnspentResponse;
+  static deserializeBinaryFromReader(message: ListUnspentResponse, reader: jspb.BinaryReader): ListUnspentResponse;
+}
+
+export namespace ListUnspentResponse {
+  export type AsObject = {
+    utxos: Array<rpc_pb.Utxo.AsObject>,
+  }
+}
+
+export class LeaseOutputRequest extends jspb.Message {
+  getId(): Uint8Array | string;
+  getId_asU8(): Uint8Array;
+  getId_asB64(): string;
+  setId(value: Uint8Array | string): void;
+
+  hasOutpoint(): boolean;
+  clearOutpoint(): void;
+  getOutpoint(): rpc_pb.OutPoint | undefined;
+  setOutpoint(value?: rpc_pb.OutPoint): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): LeaseOutputRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: LeaseOutputRequest): LeaseOutputRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: LeaseOutputRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): LeaseOutputRequest;
+  static deserializeBinaryFromReader(message: LeaseOutputRequest, reader: jspb.BinaryReader): LeaseOutputRequest;
+}
+
+export namespace LeaseOutputRequest {
+  export type AsObject = {
+    id: Uint8Array | string,
+    outpoint?: rpc_pb.OutPoint.AsObject,
+  }
+}
+
+export class LeaseOutputResponse extends jspb.Message {
+  getExpiration(): number;
+  setExpiration(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): LeaseOutputResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: LeaseOutputResponse): LeaseOutputResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: LeaseOutputResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): LeaseOutputResponse;
+  static deserializeBinaryFromReader(message: LeaseOutputResponse, reader: jspb.BinaryReader): LeaseOutputResponse;
+}
+
+export namespace LeaseOutputResponse {
+  export type AsObject = {
+    expiration: number,
+  }
+}
+
+export class ReleaseOutputRequest extends jspb.Message {
+  getId(): Uint8Array | string;
+  getId_asU8(): Uint8Array;
+  getId_asB64(): string;
+  setId(value: Uint8Array | string): void;
+
+  hasOutpoint(): boolean;
+  clearOutpoint(): void;
+  getOutpoint(): rpc_pb.OutPoint | undefined;
+  setOutpoint(value?: rpc_pb.OutPoint): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ReleaseOutputRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: ReleaseOutputRequest): ReleaseOutputRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ReleaseOutputRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ReleaseOutputRequest;
+  static deserializeBinaryFromReader(message: ReleaseOutputRequest, reader: jspb.BinaryReader): ReleaseOutputRequest;
+}
+
+export namespace ReleaseOutputRequest {
+  export type AsObject = {
+    id: Uint8Array | string,
+    outpoint?: rpc_pb.OutPoint.AsObject,
+  }
+}
+
+export class ReleaseOutputResponse extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ReleaseOutputResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: ReleaseOutputResponse): ReleaseOutputResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ReleaseOutputResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ReleaseOutputResponse;
+  static deserializeBinaryFromReader(message: ReleaseOutputResponse, reader: jspb.BinaryReader): ReleaseOutputResponse;
+}
+
+export namespace ReleaseOutputResponse {
+  export type AsObject = {
+  }
+}
+
 export class KeyReq extends jspb.Message {
   getKeyFingerPrint(): number;
   setKeyFingerPrint(value: number): void;
@@ -71,6 +209,9 @@ export class Transaction extends jspb.Message {
   getTxHex_asB64(): string;
   setTxHex(value: Uint8Array | string): void;
 
+  getLabel(): string;
+  setLabel(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Transaction.AsObject;
   static toObject(includeInstance: boolean, msg: Transaction): Transaction.AsObject;
@@ -84,6 +225,7 @@ export class Transaction extends jspb.Message {
 export namespace Transaction {
   export type AsObject = {
     txHex: Uint8Array | string,
+    label: string,
   }
 }
 
@@ -116,6 +258,9 @@ export class SendOutputsRequest extends jspb.Message {
   setOutputsList(value: Array<signrpc_signer_pb.TxOut>): void;
   addOutputs(value?: signrpc_signer_pb.TxOut, index?: number): signrpc_signer_pb.TxOut;
 
+  getLabel(): string;
+  setLabel(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): SendOutputsRequest.AsObject;
   static toObject(includeInstance: boolean, msg: SendOutputsRequest): SendOutputsRequest.AsObject;
@@ -130,6 +275,7 @@ export namespace SendOutputsRequest {
   export type AsObject = {
     satPerKw: number,
     outputs: Array<signrpc_signer_pb.TxOut.AsObject>,
+    label: string,
   }
 }
 
@@ -333,6 +479,129 @@ export class BumpFeeResponse extends jspb.Message {
 }
 
 export namespace BumpFeeResponse {
+  export type AsObject = {
+  }
+}
+
+export class ListSweepsRequest extends jspb.Message {
+  getVerbose(): boolean;
+  setVerbose(value: boolean): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ListSweepsRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: ListSweepsRequest): ListSweepsRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ListSweepsRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ListSweepsRequest;
+  static deserializeBinaryFromReader(message: ListSweepsRequest, reader: jspb.BinaryReader): ListSweepsRequest;
+}
+
+export namespace ListSweepsRequest {
+  export type AsObject = {
+    verbose: boolean,
+  }
+}
+
+export class ListSweepsResponse extends jspb.Message {
+  hasTransactionDetails(): boolean;
+  clearTransactionDetails(): void;
+  getTransactionDetails(): rpc_pb.TransactionDetails | undefined;
+  setTransactionDetails(value?: rpc_pb.TransactionDetails): void;
+
+  hasTransactionIds(): boolean;
+  clearTransactionIds(): void;
+  getTransactionIds(): ListSweepsResponse.TransactionIDs | undefined;
+  setTransactionIds(value?: ListSweepsResponse.TransactionIDs): void;
+
+  getSweepsCase(): ListSweepsResponse.SweepsCase;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ListSweepsResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: ListSweepsResponse): ListSweepsResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ListSweepsResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ListSweepsResponse;
+  static deserializeBinaryFromReader(message: ListSweepsResponse, reader: jspb.BinaryReader): ListSweepsResponse;
+}
+
+export namespace ListSweepsResponse {
+  export type AsObject = {
+    transactionDetails?: rpc_pb.TransactionDetails.AsObject,
+    transactionIds?: ListSweepsResponse.TransactionIDs.AsObject,
+  }
+
+  export class TransactionIDs extends jspb.Message {
+    clearTransactionIdsList(): void;
+    getTransactionIdsList(): Array<string>;
+    setTransactionIdsList(value: Array<string>): void;
+    addTransactionIds(value: string, index?: number): string;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): TransactionIDs.AsObject;
+    static toObject(includeInstance: boolean, msg: TransactionIDs): TransactionIDs.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: TransactionIDs, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): TransactionIDs;
+    static deserializeBinaryFromReader(message: TransactionIDs, reader: jspb.BinaryReader): TransactionIDs;
+  }
+
+  export namespace TransactionIDs {
+    export type AsObject = {
+      transactionIds: Array<string>,
+    }
+  }
+
+  export enum SweepsCase {
+    SWEEPS_NOT_SET = 0,
+    TRANSACTION_DETAILS = 1,
+    TRANSACTION_IDS = 2,
+  }
+}
+
+export class LabelTransactionRequest extends jspb.Message {
+  getTxid(): Uint8Array | string;
+  getTxid_asU8(): Uint8Array;
+  getTxid_asB64(): string;
+  setTxid(value: Uint8Array | string): void;
+
+  getLabel(): string;
+  setLabel(value: string): void;
+
+  getOverwrite(): boolean;
+  setOverwrite(value: boolean): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): LabelTransactionRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: LabelTransactionRequest): LabelTransactionRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: LabelTransactionRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): LabelTransactionRequest;
+  static deserializeBinaryFromReader(message: LabelTransactionRequest, reader: jspb.BinaryReader): LabelTransactionRequest;
+}
+
+export namespace LabelTransactionRequest {
+  export type AsObject = {
+    txid: Uint8Array | string,
+    label: string,
+    overwrite: boolean,
+  }
+}
+
+export class LabelTransactionResponse extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): LabelTransactionResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: LabelTransactionResponse): LabelTransactionResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: LabelTransactionResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): LabelTransactionResponse;
+  static deserializeBinaryFromReader(message: LabelTransactionResponse, reader: jspb.BinaryReader): LabelTransactionResponse;
+}
+
+export namespace LabelTransactionResponse {
   export type AsObject = {
   }
 }

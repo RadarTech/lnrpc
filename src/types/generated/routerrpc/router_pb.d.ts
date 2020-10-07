@@ -39,6 +39,11 @@ export class SendPaymentRequest extends jspb.Message {
   getOutgoingChanId(): string;
   setOutgoingChanId(value: string): void;
 
+  clearOutgoingChanIdsList(): void;
+  getOutgoingChanIdsList(): Array<number>;
+  setOutgoingChanIdsList(value: Array<number>): void;
+  addOutgoingChanIds(value: number, index?: number): number;
+
   getLastHopPubkey(): Uint8Array | string;
   getLastHopPubkey_asU8(): Uint8Array;
   getLastHopPubkey_asB64(): string;
@@ -90,6 +95,7 @@ export namespace SendPaymentRequest {
     feeLimitSat: number,
     feeLimitMsat: number,
     outgoingChanId: string,
+    outgoingChanIds: Array<number>,
     lastHopPubkey: Uint8Array | string,
     cltvLimit: number,
     routeHints: Array<rpc_pb.RouteHint.AsObject>,
@@ -741,6 +747,113 @@ export namespace PaymentStatus {
   }
 }
 
+export class CircuitKey extends jspb.Message {
+  getChanId(): number;
+  setChanId(value: number): void;
+
+  getHtlcId(): number;
+  setHtlcId(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): CircuitKey.AsObject;
+  static toObject(includeInstance: boolean, msg: CircuitKey): CircuitKey.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: CircuitKey, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CircuitKey;
+  static deserializeBinaryFromReader(message: CircuitKey, reader: jspb.BinaryReader): CircuitKey;
+}
+
+export namespace CircuitKey {
+  export type AsObject = {
+    chanId: number,
+    htlcId: number,
+  }
+}
+
+export class ForwardHtlcInterceptRequest extends jspb.Message {
+  hasIncomingCircuitKey(): boolean;
+  clearIncomingCircuitKey(): void;
+  getIncomingCircuitKey(): CircuitKey | undefined;
+  setIncomingCircuitKey(value?: CircuitKey): void;
+
+  getIncomingAmountMsat(): number;
+  setIncomingAmountMsat(value: number): void;
+
+  getIncomingExpiry(): number;
+  setIncomingExpiry(value: number): void;
+
+  getPaymentHash(): Uint8Array | string;
+  getPaymentHash_asU8(): Uint8Array;
+  getPaymentHash_asB64(): string;
+  setPaymentHash(value: Uint8Array | string): void;
+
+  getOutgoingRequestedChanId(): number;
+  setOutgoingRequestedChanId(value: number): void;
+
+  getOutgoingAmountMsat(): number;
+  setOutgoingAmountMsat(value: number): void;
+
+  getOutgoingExpiry(): number;
+  setOutgoingExpiry(value: number): void;
+
+  getCustomRecordsMap(): jspb.Map<number, Uint8Array | string>;
+  clearCustomRecordsMap(): void;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ForwardHtlcInterceptRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: ForwardHtlcInterceptRequest): ForwardHtlcInterceptRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ForwardHtlcInterceptRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ForwardHtlcInterceptRequest;
+  static deserializeBinaryFromReader(message: ForwardHtlcInterceptRequest, reader: jspb.BinaryReader): ForwardHtlcInterceptRequest;
+}
+
+export namespace ForwardHtlcInterceptRequest {
+  export type AsObject = {
+    incomingCircuitKey?: CircuitKey.AsObject,
+    incomingAmountMsat: number,
+    incomingExpiry: number,
+    paymentHash: Uint8Array | string,
+    outgoingRequestedChanId: number,
+    outgoingAmountMsat: number,
+    outgoingExpiry: number,
+    customRecords: Array<[number, Uint8Array | string]>,
+  }
+}
+
+export class ForwardHtlcInterceptResponse extends jspb.Message {
+  hasIncomingCircuitKey(): boolean;
+  clearIncomingCircuitKey(): void;
+  getIncomingCircuitKey(): CircuitKey | undefined;
+  setIncomingCircuitKey(value?: CircuitKey): void;
+
+  getAction(): ResolveHoldForwardAction;
+  setAction(value: ResolveHoldForwardAction): void;
+
+  getPreimage(): Uint8Array | string;
+  getPreimage_asU8(): Uint8Array;
+  getPreimage_asB64(): string;
+  setPreimage(value: Uint8Array | string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ForwardHtlcInterceptResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: ForwardHtlcInterceptResponse): ForwardHtlcInterceptResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ForwardHtlcInterceptResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ForwardHtlcInterceptResponse;
+  static deserializeBinaryFromReader(message: ForwardHtlcInterceptResponse, reader: jspb.BinaryReader): ForwardHtlcInterceptResponse;
+}
+
+export namespace ForwardHtlcInterceptResponse {
+  export type AsObject = {
+    incomingCircuitKey?: CircuitKey.AsObject,
+    action: ResolveHoldForwardAction,
+    preimage: Uint8Array | string,
+  }
+}
+
 export enum FailureDetail {
   UNKNOWN = 0,
   NO_DETAIL = 1,
@@ -775,5 +888,11 @@ export enum PaymentState {
   FAILED_ERROR = 4,
   FAILED_INCORRECT_PAYMENT_DETAILS = 5,
   FAILED_INSUFFICIENT_BALANCE = 6,
+}
+
+export enum ResolveHoldForwardAction {
+  SETTLE = 0,
+  FAIL = 1,
+  RESUME = 2,
 }
 

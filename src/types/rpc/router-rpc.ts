@@ -1,4 +1,4 @@
-import { Readable } from '../streams';
+import { Duplex, Readable } from '../streams';
 import { Failure, FailureCode, FeatureBit, HTLCAttempt, Payment, Route, RouteHint } from './ln-rpc';
 
 export enum HtlcEventType {
@@ -44,6 +44,12 @@ export enum PaymentState {
   FAILED_INSUFFICIENT_BALANCE = 6,
 }
 
+export enum ResolveHoldForwardAction {
+  SETTLE = 0,
+  FAIL = 1,
+  RESUME = 2,
+}
+
 export interface SendPaymentRequest {
   dest?: Buffer | string;
   amt?: number;
@@ -55,6 +61,7 @@ export interface SendPaymentRequest {
   feeLimitSat?: number;
   feeLimitMsat?: number;
   outgoingChanId?: string;
+  outgoingChanIds?: number[];
   lastHopPubkey?: Buffer | string;
   cltvLimit?: number;
   routeHints?: RouteHint[];
@@ -183,6 +190,28 @@ export interface PaymentStatusUpdate {
   htlcs: HTLCAttempt[];
 }
 
+export interface CircuitKey {
+  chanId?: number;
+  htlcId?: number;
+}
+
+export interface ForwardHtlcInterceptRequest {
+  incomingCircuitKey?: CircuitKey;
+  incomingAmountMsat?: number;
+  incomingExpiry?: number;
+  paymentHash?: Buffer | string;
+  outgoingRequestedChanId?: number;
+  outgoingAmountMsat?: number;
+  outgoingExpiry?: number;
+  customRecords?: Array<[number, Buffer | string]>;
+}
+
+export interface ForwardHtlcInterceptResponse {
+  incomingCircuitKey?: CircuitKey;
+  action: ResolveHoldForwardAction;
+  preimage: Buffer | string;
+}
+
 /**
  * LND Router gRPC API Client
  */
@@ -212,6 +241,14 @@ export interface RouterRpc {
    * manually. This can be used for things like rebalancing, and atomic swaps.
    */
   sendToRoute(args: SendToRouteReq): Promise<SendToRouteResponse>;
+
+  /**
+   * sendToRouteV2 attempts to make a payment via the specified route. This
+   * method differs from SendPayment in that it allows users to specify a full
+   * route manually. This can be used for things like rebalancing, and atomic
+   * swaps.
+   */
+  sendToRouteV2(args: SendToRouteReq): Promise<HTLCAttempt>;
 
   /**
    * resetMissionControl clears all mission control state and starts with a clean
@@ -256,4 +293,13 @@ export interface RouterRpc {
    * identified by the payment hash.
    */
   trackPayment(args: TrackPaymentRequest): Readable<PaymentStatusUpdate>;
+
+  /**
+   * htlcInterceptor dispatches a bi-directional streaming RPC in which
+   * Forwarded HTLC requests are sent to the client and the client responds with
+   * a boolean that tells LND if this htlc should be intercepted.
+   * In case of interception, the htlc can be either settled, cancelled or
+   * resumed later by using the ResolveHoldForward endpoint.
+   */
+  htlcInterceptor(args?: ForwardHtlcInterceptRequest): Duplex<ForwardHtlcInterceptResponse>;
 }

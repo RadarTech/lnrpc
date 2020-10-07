@@ -18,6 +18,7 @@ export function createRouter(config: ConnectionConfig): any {
       'subscribeHtlcEvents',
       'sendPayment',
       'trackPayment',
+      'htlcInterceptor',
     ];
 
     return createServiceClient({

@@ -1,4 +1,4 @@
-import { OutPoint } from './ln-rpc';
+import { OutPoint, TransactionDetails, Utxo } from './ln-rpc';
 import { KeyDescriptor, KeyLocator, TxOut } from './sign-rpc';
 
 export enum WitnessType {
@@ -18,6 +18,35 @@ export enum WitnessType {
   COMMITMENT_ANCHOR = 13,
 }
 
+export enum SweepsCase {
+  SWEEPS_NOT_SET = 0,
+  TRANSACTION_DETAILS = 1,
+  TRANSACTION_IDS = 2,
+}
+
+export interface ListUnspentRequest {
+  minConfs?: number;
+  maxConfs?: number;
+}
+
+export interface ListUnspentResponse {
+  utxos: Utxo[];
+}
+
+export interface LeaseOutputRequest {
+  id: Buffer | string;
+  outpoint?: OutPoint;
+}
+
+export interface LeaseOutputResponse {
+  expiration: number;
+}
+
+export interface ReleaseOutputRequest {
+  id: Buffer | string;
+  outpoint?: OutPoint;
+}
+
 export interface KeyReq {
   keyFingerPrint: number;
   keyFamily: number;
@@ -29,6 +58,7 @@ export interface AddrResponse {
 
 export interface Tx {
   txHex: Buffer | string;
+  label?: string;
 }
 
 export interface PublishResponse {
@@ -38,6 +68,7 @@ export interface PublishResponse {
 export interface SendOutputsRequest {
   satPerKw: number;
   outputs: TxOut[];
+  label?: string;
 }
 
 export interface SendOutputsResponse {
@@ -75,10 +106,51 @@ export interface BumpFeeRequest {
   force?: boolean;
 }
 
+export interface ListSweepsRequest {
+  verbose?: boolean;
+}
+
+export interface TransactionIDs {
+  transactionIds: string[];
+}
+
+export interface ListSweepsResponse {
+  transactionDetails?: TransactionDetails;
+  transactionIds?: TransactionIDs;
+}
+
+export interface LabelTransactionRequest {
+  txid: Buffer | string;
+  label: string;
+  overwrite?: boolean;
+}
+
 /**
  * LND Wallet gRPC API Client
  */
 export interface WalletRpc {
+  /**
+   * listUnspent returns a list of all utxos spendable by the wallet with a
+   * number of confirmations between the specified minimum and maximum.
+   */
+  listUnspent(args?: ListUnspentRequest): Promise<ListUnspentResponse>;
+
+  /**
+   * leaseOutput locks an output to the given ID, preventing it from being
+   * available for any future coin selection attempts. The absolute time of the
+   * lock's expiration is returned. The expiration of the lock can be extended by
+   * successive invocations of this RPC. Outputs can be unlocked before their
+   * expiration through `ReleaseOutput`.
+   */
+  leaseOutput(args: LeaseOutputRequest): Promise<LeaseOutputResponse>;
+
+  /**
+   * releaseOutput unlocks an output, allowing it to be available for coin
+   * selection if it remains unspent. The ID should match the one used to
+   * originally lock the output.
+   */
+  releaseOutput(args?: ReleaseOutputRequest): Promise<{}>;
+
   /**
    * deriveNextKey attempts to derive the *next* key within the key family
    * (account in BIP43) specified. This method should return the next external
@@ -154,4 +226,19 @@ export interface WalletRpc {
    * the new fee preference is sufficient is delegated to the user.
    */
   bumpFee(args: BumpFeeRequest): Promise<{}>;
+
+  /**
+   * listSweeps returns a list of the sweep transactions our node has produced.
+   * Note that these sweeps may not be confirmed yet, as we record sweeps on
+   * broadcast, not confirmation.
+   */
+  listSweeps(args?: ListSweepsRequest): Promise<ListSweepsResponse>;
+
+  /**
+   * labelTransaction adds a label to a transaction. If the transaction already
+   * has a label the call will fail unless the overwrite bool is set. This will
+   * overwrite the exiting transaction label. Labels must not be empty, and
+   * cannot exceed 500 characters.
+   */
+  labelTransaction(args: LabelTransactionRequest): Promise<{}>;
 }
