@@ -125,6 +125,23 @@ export enum Initiator {
   INITIATOR_BOTH = 3,
 }
 
+export enum ResolutionType {
+  TYPE_UNKNOWN = 0,
+  ANCHOR = 1,
+  INCOMING_HTLC = 2,
+  OUTGOING_HTLC = 3,
+  COMMIT = 4,
+}
+
+export enum ResolutionOutcome {
+  OUTCOME_UNKNOWN = 0,
+  CLAIMED = 1,
+  UNCLAIMED = 2,
+  ABANDONED = 3,
+  FIRST_STAGE = 4,
+  TIMEOUT = 5,
+}
+
 export enum CommitmentType {
   LEGACY = 0,
   STATIC_REMOTE_KEY = 1,
@@ -192,6 +209,7 @@ export interface Transaction {
   totalFees: string;
   destAddresses: string[];
   rawTxHex: string;
+  label?: string;
 }
 
 export interface LightningAddress {
@@ -290,6 +308,15 @@ export interface WaitingCloseChannel {
   commitments?: Commitments;
 }
 
+export interface ChannelConstraints {
+  csvDelay: number;
+  chanReserveSat: number;
+  dustLimitSat: number;
+  maxPendingAmtMsat: number;
+  minHtlcMsat: number;
+  maxAcceptedHtlcs: number;
+}
+
 export interface Channel {
   active: boolean;
   remotePubkey: string;
@@ -319,6 +346,16 @@ export interface Channel {
   closeAddress: string;
   pushAmountSat: number;
   thawHeight: number;
+  localConstraints?: ChannelConstraints;
+  remoteConstraints?: ChannelConstraints;
+}
+
+export interface Resolution {
+  resolutionType: ResolutionType;
+  outcome: ResolutionOutcome;
+  outpoint?: OutPoint;
+  amountSat: number;
+  sweepTxid: string;
 }
 
 export interface ChannelCloseSummary {
@@ -334,6 +371,7 @@ export interface ChannelCloseSummary {
   closeType: ClosureType;
   openInitiator: Initiator;
   closeInitiator: Initiator;
+  resolutions: Resolution[];
 }
 
 export interface FeeLimit {
@@ -432,6 +470,7 @@ export interface HTLCAttempt {
   attemptTimeNs?: string;
   resolveTimeNs?: string;
   failure?: Failure;
+  preimage?: Buffer | string;
 }
 
 export interface NodeAddress {
@@ -556,6 +595,11 @@ export interface ChannelBalanceResponse {
   pendingOpenBalance: string;
 }
 
+export interface GetTransactionsRequest {
+  startHeight?: number;
+  endHeight?: number;
+}
+
 export interface TransactionDetails {
   transactions: Transaction[];
 }
@@ -566,6 +610,7 @@ export interface SendCoinsRequest {
   targetConf?: number;
   satPerByte?: string;
   sendAll?: boolean;
+  labal?: string;
 }
 
 export interface SendCoinsResponse {
@@ -576,6 +621,7 @@ export interface SendManyRequest {
   addrtoamount: Array<[string, number]>;
   targetConf?: number;
   satPerByte?: string;
+  label?: string;
 }
 
 export interface SendManyResponse {
@@ -655,6 +701,12 @@ export interface GetInfoResponse {
   features: Array<[number, Feature]>;
 }
 
+export interface GetRecoveryInfoResponse {
+  recoveryMode: boolean;
+  recoveryFinished: boolean;
+  progress: number;
+}
+
 export interface PendingChannelsResponse {
   totalLimboBalance: string;
   pendingOpenChannels: PendingOpenChannel[];
@@ -702,6 +754,8 @@ export interface OpenChannelRequest {
   spendUnconfirmed?: boolean;
   closeAddress?: string;
   fundingShim?: FundingShim;
+  remoteMaxValueInFlightMsat?: number;
+  remoteMaxHtlcs?: number;
 }
 
 export interface PendingUpdate {
@@ -738,6 +792,7 @@ export interface ChanPointShim {
 export interface PsbtShim {
   pendingChanId: Buffer | string;
   basePsbt: Buffer | string;
+  noPublish?: boolean;
 }
 
 export interface FundingShim {
@@ -757,6 +812,7 @@ export interface FundingPsbtVerify {
 export interface FundingPsbtFinalize {
   signedPsbt: Buffer | string;
   pendingChanId: Buffer | string;
+  finalRawTx?: Buffer | string;
 }
 
 export interface FundingTransitionMsg {
@@ -792,6 +848,7 @@ export interface CloseStatusUpdate {
 
 export interface AbandonChannelRequest {
   channelPoint?: ChannelPoint;
+  pendingFundingShimOnly?: boolean;
 }
 
 export interface SendRequest {
@@ -1054,6 +1111,25 @@ export interface BakeMacaroonResponse {
   macaroon: string;
 }
 
+export interface MacaroonPermissionList {
+  permissions: MacaroonPermission[];
+}
+
+export interface ListPermissionsResponse {
+  methodPermissions: Array<[string, MacaroonPermissionList]>;
+}
+
+export interface Op {
+  entity: string;
+  actions: string[];
+}
+
+export interface MacaroonId {
+  nonce: Buffer | string;
+  storageid: Buffer | string;
+  ops: Op[];
+}
+
 export interface ChanInfoRequest {
   chanId: string;
 }
@@ -1213,7 +1289,7 @@ export interface LnRpc {
   /**
    * getTransactions returns a list describing all the known transactions relevant to the wallet.
    */
-  getTransactions(args?: {}): Promise<TransactionDetails>;
+  getTransactions(args?: GetTransactionsRequest): Promise<TransactionDetails>;
 
   /**
    * EstimateFee asks the chain backend to estimate the fee rate and total fees for a transaction
@@ -1296,6 +1372,13 @@ export interface LnRpc {
   getInfo(args?: {}): Promise<GetInfoResponse>;
 
   /**
+   * getRecoveryInfo returns information concerning the recovery mode including
+   * whether it's in a recovery mode, whether the recovery is finished, and the
+   * progress made so far.
+   */
+  getRecoveryInfo(args?: {}): Promise<GetRecoveryInfoResponse>;
+
+  /**
    * pendingChannels returns a list of all the channels that are currently considered “pending”. A channel is
    * pending if it has finished the funding workflow and is waiting for confirmations for the funding txn, or is in
    * the process of closure, either initiated cooperatively or non-cooperatively.
@@ -1364,7 +1447,7 @@ export interface LnRpc {
   abandonChannel(args: AbandonChannelRequest): Promise<{}>;
 
   /**
-   * Deprecated, use routerrpc.sendPayment. sendPayment dispatches a bi-directional streaming RPC for sending payments
+   * Deprecated, use routerrpc.sendPaymentV2. sendPayment dispatches a bi-directional streaming RPC for sending payments
    * through the Lightning Network. A single RPC invocation creates a persistent bi-directional stream allowing clients
    * to rapidly send payments through the Lightning Network with a single persistent connection.
    */
@@ -1378,9 +1461,9 @@ export interface LnRpc {
   sendPaymentSync(args: SendRequest): Promise<SendResponse>;
 
   /**
-   * sendToRoute is a bi-directional streaming RPC for sending payment through the Lightning Network. This method
-   * differs from SendPayment in that it allows users to specify a full route manually. This can be used for things
-   * like rebalancing, and atomic swaps.
+   * Deprecated, use routerrpc.sendToRouteV2. sendToRoute is a bi-directional streaming RPC for sending payment
+   * through the Lightning Network. This method differs from SendPayment in that it allows users to specify a full
+   * route manually. This can be used for things like rebalancing, and atomic swaps.
    */
   sendToRoute(args: SendToRouteRequest): Duplex<SendToRouteRequest, SendResponse>;
 
@@ -1549,6 +1632,12 @@ export interface LnRpc {
    * offline.
    */
   bakeMacaroon(args: BakeMacaroonRequest): Promise<BakeMacaroonResponse>;
+
+  /**
+   * listPermissions lists all RPC method URIs and their required macaroon
+   * permissions to access them.
+   */
+  listPermissions(args?: {}): Promise<ListPermissionsResponse>;
 
   /**
    * debugLevel allows a caller to programmatically set the logging verbosity of lnd. The logging can be targeted
