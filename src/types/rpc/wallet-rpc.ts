@@ -24,12 +24,12 @@ export enum SweepsCase {
   TRANSACTION_IDS = 2,
 }
 
-export interface ListUnspentRequest {
+export interface ListUnspentReq {
   minConfs?: number;
   maxConfs?: number;
 }
 
-export interface ListUnspentResponse {
+export interface ListUnspentResp {
   utxos: Utxo[];
 }
 
@@ -133,7 +133,7 @@ export interface WalletRpc {
    * listUnspent returns a list of all utxos spendable by the wallet with a
    * number of confirmations between the specified minimum and maximum.
    */
-  listUnspent(args?: ListUnspentRequest): Promise<ListUnspentResponse>;
+  listUnspent(args?: ListUnspentReq): Promise<ListUnspentResp>;
 
   /**
    * leaseOutput locks an output to the given ID, preventing it from being
