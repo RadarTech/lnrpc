@@ -1,6 +1,6 @@
 {
   "name": "@radar/lnrpc",
-  "version": "v0.11.1-beta",
+  "version": "v0.11.1-beta.0",
   "description": "A Typescript gRPC client for LND with support for all LND sub-servers",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",

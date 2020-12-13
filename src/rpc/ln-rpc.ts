@@ -2,7 +2,7 @@ import { join } from 'path';
 import pkgDir from 'pkg-dir';
 import packageJson from '../../package.json';
 import { createLightning, createWalletUnlocker } from '../services';
-import { LnRpc, LnRpcClientConfig } from '../types';
+import { LnRpc, LnRpcClientConfig, WalletUnlockerRpc } from '../types';
 import { createCredentials } from './create-credentials';
 import { createGrpcObject } from './create-grpc-object';
 import { defaults } from './defaults';
@@ -19,11 +19,17 @@ import { defaults } from './defaults';
  * @param userConfig The user provided configuration details
  * @return Returns proxy to lnrpc instance
  */
-export async function createLnRpc<T extends unknown>(userConfig: LnRpcClientConfig): Promise<T & LnRpc> {
+export async function createLnRpc<T extends unknown>(
+  userConfig: LnRpcClientConfig,
+): Promise<T & LnRpc & WalletUnlockerRpc> {
   const rootPath = await pkgDir(__dirname);
-  const protoFilePath = join(
+  const lightningProtoFilePath = join(
     rootPath,
     `lnd/${packageJson.config['lnd-release-tag']}/rpc.proto`,
+  );
+  const walletUnlockerProtoFilePath = join(
+    rootPath,
+    `lnd/${packageJson.config['lnd-release-tag']}/walletunlocker.proto`,
   );
 
   // Configuration options
@@ -37,11 +43,17 @@ export async function createLnRpc<T extends unknown>(userConfig: LnRpcClientConf
   const credentials = await createCredentials(config);
 
   // Create RPC from proto and return GRPC
-  const grpcPkgObj = createGrpcObject({
+  const lightningGrpcPkgObj = createGrpcObject({
     includeDefaults,
-    protoFilePath,
     grpcLoader,
     grpc,
+    protoFilePath: lightningProtoFilePath,
+  });
+  const walletUnlockerGrpcPkgObj = createGrpcObject({
+    includeDefaults,
+    grpcLoader,
+    grpc,
+    protoFilePath: walletUnlockerProtoFilePath,
   });
 
   /**
@@ -49,21 +61,21 @@ export async function createLnRpc<T extends unknown>(userConfig: LnRpcClientConf
    * @type {lnrpc}
    */
   const lnrpc = Object.create(null, {
-    description: {value: grpcPkgObj},
+    description: {value: walletUnlockerGrpcPkgObj}, // walletunlocker.proto imports rpc.proto
     lightning: {
       value:
         lightning || createLightning({
-          grpcPkgObj,
           server,
           credentials,
+          grpcPkgObj: lightningGrpcPkgObj,
         }),
     },
     walletUnlocker: {
       value:
         walletUnlocker || createWalletUnlocker({
-          grpcPkgObj,
           server,
           credentials,
+          grpcPkgObj: walletUnlockerGrpcPkgObj,
         }),
     },
   });
