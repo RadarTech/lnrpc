@@ -1,5 +1,6 @@
 # RPC Servers
 curl ${npm_package_config_lnd_url}/${npm_package_config_lnd_release_tag}/lnrpc/rpc.proto --create-dirs -o lnd/${npm_package_config_lnd_release_tag}/rpc.proto
+curl ${npm_package_config_lnd_url}/${npm_package_config_lnd_release_tag}/lnrpc/walletunlocker.proto --create-dirs -o lnd/${npm_package_config_lnd_release_tag}/walletunlocker.proto
 curl ${npm_package_config_lnd_url}/${npm_package_config_lnd_release_tag}/lnrpc/autopilotrpc/autopilot.proto --create-dirs -o lnd/${npm_package_config_lnd_release_tag}/autopilotrpc/autopilot.proto
 curl ${npm_package_config_lnd_url}/${npm_package_config_lnd_release_tag}/lnrpc/chainrpc/chainnotifier.proto --create-dirs -o lnd/${npm_package_config_lnd_release_tag}/chainrpc/chainnotifier.proto
 curl ${npm_package_config_lnd_url}/${npm_package_config_lnd_release_tag}/lnrpc/invoicesrpc/invoices.proto --create-dirs -o lnd/${npm_package_config_lnd_release_tag}/invoicesrpc/invoices.proto
