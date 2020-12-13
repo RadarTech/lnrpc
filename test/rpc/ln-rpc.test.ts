@@ -205,18 +205,19 @@ describe('Lnrpc Factory', () => {
   });
 
   describe('grpc lnd/proto instantiation', () => {
-    // eslint-disable-next-line max-len
-    it('should load `./lnd/lnd_version/rpc.proto` filename via `grpc.loadSync()`', async () => {
+    // tslint:disable-next-line:max-line-length
+    it('should load `./lnd/lnd_version/rpc.proto` and `./lnd/lnd_version/walletunlocker.proto` via `grpc.loadSync()`', async () => {
       const root = await pkgDir(__dirname);
-      const expected = join(
+      const expectedPath = join(
         root,
-        `lnd/${packageJson.config['lnd-release-tag']}/rpc.proto`,
+        `lnd/${packageJson.config['lnd-release-tag']}`,
       );
+      const expected = new RegExp(`${expectedPath}/(rpc\\.proto|walletunlocker\\.proto)$`);
 
       return createLnrpc({
         grpcLoader: {
           loadSync(actual) {
-            equal(actual, expected, 'loaded generated `rpc.proto` via load');
+            assert(expected.test(actual), 'loaded generated proto file via load');
             return {};
           },
         } as unknown as GrpcLoader,
