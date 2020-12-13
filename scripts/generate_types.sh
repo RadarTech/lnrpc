@@ -51,6 +51,7 @@ protoc/bin/protoc \
   google/api/annotations.proto \
   google/api/http.proto \
   rpc.proto \
+  walletunlocker.proto \
   autopilotrpc/autopilot.proto \
   chainrpc/chainnotifier.proto \
   invoicesrpc/invoices.proto \
