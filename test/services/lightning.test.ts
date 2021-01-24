@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { ChannelCredentials } from 'grpc';
+import { ChannelCredentials } from '@grpc/grpc-js';
 import { createLightning } from '../../src/services';
 import { grpcStub } from '../helpers/grpc-stub';
 const {equal} = assert;
