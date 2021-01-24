@@ -10,6 +10,12 @@ import { GrpcServiceConfig } from '../types';
  * @param config The GRPC service configuration
  */
 export function createServiceClient(config: GrpcServiceConfig) {
+  // create a list of function names on the service class to prevent
+  // promisifying internal functions on the base class grpc.Client
+  const ownProps = Object.getOwnPropertyNames(
+    Object.getPrototypeOf(config.service)
+  );
+
   return new Proxy(config.service, {
      /**
       * Promisify any requested (non-subscription) lightning RPC method
@@ -19,8 +25,9 @@ export function createServiceClient(config: GrpcServiceConfig) {
     get(target: unknown, key: string) {
       const method = target[key];
 
-      if (typeof method !== 'function') {
-        return target[key]; // forward
+      if (typeof method !== 'function' || !ownProps.includes(key)) {
+        // forward non-function properties and base class functions
+        return target[key];
       } else if (config.subscriptionMethods) {
         if (config.subscriptionMethods.includes(key)) {
           return defaultEmptyArg(method, false);
