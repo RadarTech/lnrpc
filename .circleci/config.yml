@@ -37,10 +37,6 @@ jobs:
         command: |
           sudo npm install -g yarn
           yarn audit --groups dependencies
-  test-node-8:
-    docker:
-    - image: circleci/node:8
-    <<: *run_tests
   test-node-10:
     docker:
     - image: circleci/node:10
@@ -55,6 +51,5 @@ workflows:
   default:
     jobs:
       - lint
-      - test-node-8
       - test-node-10
       - test-node-11

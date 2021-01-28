@@ -1,5 +1,5 @@
+import grpc, { ChannelCredentials, Client } from '@grpc/grpc-js';
 import * as grpcLoader from '@grpc/proto-loader';
-import grpc, { ChannelCredentials, Client, GrpcObject } from 'grpc';
 
 export type GrpcLoader = typeof grpcLoader;
 

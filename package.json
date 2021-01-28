@@ -28,9 +28,9 @@
   "author": "RadarTech",
   "license": "MIT",
   "dependencies": {
+    "@grpc/grpc-js": "^1.2.4",
     "@grpc/proto-loader": "^0.4.0",
     "@types/google-protobuf": "^3.2.7",
-    "grpc": "^1.24.4",
     "pkg-dir": "^2.0.0",
     "ts-protoc-gen": "^0.8.0"
   },
@@ -47,6 +47,6 @@
     "typescript": "^3.7.0"
   },
   "engines": {
-    "node": ">= 8.*"
+    "node": ">= 10.*"
   }
 }
