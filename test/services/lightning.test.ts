@@ -65,7 +65,7 @@ describe('Lightning Service', () => {
         'GRPC_LIGHTNING_SERVICE_ERR',
         'has expected error',
       );
-      resolve();
+      resolve(true);
     });
   });
 

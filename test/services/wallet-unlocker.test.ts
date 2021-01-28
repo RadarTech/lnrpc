@@ -65,7 +65,7 @@ describe('Wallet Unlocker Service', () => {
         'GRPC_WALLET_UNLOCKER_SERVICE_ERR',
         'has expected error',
       );
-      resolve();
+      resolve(true);
     });
   });
 
