@@ -1,5 +1,5 @@
-import * as grpcLoader from '@grpc/proto-loader';
 import * as grpc from '@grpc/grpc-js';
+import * as grpcLoader from '@grpc/proto-loader';
 import os from 'os';
 
 const homeDir = os.homedir();

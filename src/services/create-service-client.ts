@@ -13,7 +13,7 @@ export function createServiceClient(config: GrpcServiceConfig) {
   // create a list of function names on the service class to prevent
   // promisifying internal functions on the base class grpc.Client
   const ownProps = Object.getOwnPropertyNames(
-    Object.getPrototypeOf(config.service)
+    Object.getPrototypeOf(config.service),
   );
 
   return new Proxy(config.service, {
